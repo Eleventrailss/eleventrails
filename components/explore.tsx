@@ -51,15 +51,62 @@ export default function Explore() {
           <img src="/explore-top.png" alt="Explore separator" className="w-full h-auto object-cover" />
         </div>
         <div ref={containerRef} className="relative z-10 grid md:grid-cols-2 gap-4 sm:gap-[10px] items-start mb-12 sm:mb-16">
-        <div className="w-full max-w-full scale-[0.85] md:scale-100 origin-center">
-            <div className="grid grid-rows-2 gap-4">
+        <div className="w-full max-w-full md:scale-100 origin-center">
+            {/* Mobile: Grid 3 kolom dengan semua gambar kotak sama ukuran */}
+            <div className="grid grid-cols-3 gap-2 md:hidden">
+              <img 
+                data-explore-img
+                src="/dirt-bike-trail-landscape.jpg" 
+                alt="Trail 1" 
+                className="w-full h-full object-cover" 
+                style={{
+                  width: '100%',
+                  aspectRatio: '1 / 1',
+                  borderRadius:'0',
+                  transform: 'scale(0.8)',
+                  opacity: '0',
+                  transition: 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.8s ease-out'
+                }} 
+              />
+              <img 
+                data-explore-img
+                src="/off-road-motorcycle.jpg" 
+                alt="Trail 2" 
+                className="w-full h-full object-cover" 
+                style={{
+                  width: '100%',
+                  aspectRatio: '1 / 1',
+                  borderRadius:'0',
+                  transform: 'scale(0.8)',
+                  opacity: '0',
+                  transition: 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.8s ease-out'
+                }} 
+              />
+              <img 
+                data-explore-img
+                src="/extreme-bike-riding.jpg" 
+                alt="Trail 3" 
+                className="w-full h-full object-cover" 
+                style={{
+                  width: '100%',
+                  aspectRatio: '1 / 1',
+                  borderRadius:'0',
+                  transform: 'scale(0.8)',
+                  opacity: '0',
+                  transition: 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.8s ease-out'
+                }} 
+              />
+            </div>
+            {/* Desktop: Layout asli dengan 2 rows */}
+            <div className="hidden md:grid grid-rows-2 gap-4">
               <div>
                 <img 
                   data-explore-img
                   src="/dirt-bike-trail-landscape.jpg" 
                   alt="Trail 1" 
-                  className="w-full max-w-full h-auto object-cover" 
+                  className="w-full h-auto object-cover" 
                   style={{
+                    width: '100%',
                     maxWidth:'501px',
                     height:'auto',
                     aspectRatio:'501/249',
@@ -74,31 +121,35 @@ export default function Explore() {
                 <img 
                   data-explore-img
                   src="/off-road-motorcycle.jpg" 
-                  alt="Trail 3" 
-                  className="w-full max-w-full h-auto object-cover" 
+                  alt="Trail 2" 
+                  className="w-full h-auto object-cover" 
                   style={{
+                    width: '100%',
                     maxWidth:'241px',
                     height:'auto',
                     aspectRatio:'241/249',
                     borderRadius:'0',
                     transform: 'scale(0.8)',
                     opacity: '0',
-                    transition: 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.8s ease-out'
+                    transition: 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.8s ease-out',
+                    flex: '1 1 0%'
                   }} 
                 />
                 <img 
                   data-explore-img
                   src="/extreme-bike-riding.jpg" 
-                  alt="Trail 4" 
-                  className="w-full max-w-full h-auto object-cover" 
+                  alt="Trail 3" 
+                  className="w-full h-auto object-cover" 
                   style={{
+                    width: '100%',
                     maxWidth:'241px',
                     height:'auto',
                     aspectRatio:'241/249',
                     borderRadius:'0',
                     transform: 'scale(0.8)',
                     opacity: '0',
-                    transition: 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.8s ease-out'
+                    transition: 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.8s ease-out',
+                    flex: '1 1 0%'
                   }} 
                 />
               </div>
