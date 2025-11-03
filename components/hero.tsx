@@ -1,6 +1,6 @@
 export default function Hero() {
   return (
-    <section className="relative -mt-[180px] pt-[180px] pb-5 sm:pb-12 lg:pb-20 min-h-[600px] sm:h-[700px] lg:h-[968px] w-full max-w-[1452px] mx-auto bg-slate-950 overflow-hidden">
+    <section className="relative -mt-[180px] pt-[180px] pb-5 sm:pb-12 lg:pb-20 min-h-[600px] sm:h-[700px] lg:h-[968px] w-full max-w-[1452px] mx-auto bg-slate-950 overflow-hidden" style={{ paddingBottom: '220px' }}>
       <div className="absolute inset-0">
         <img 
           src="/hero-bg.png" 
@@ -35,12 +35,13 @@ export default function Hero() {
               Experience the ultimate dirt bike adventure across stunning trails and challenging terrain.
             </p>
             <div className="flex justify-center lg:justify-start">
-              <button 
-                type="button"
+              <a 
+                href="/rides"
                 className="flex items-stretch overflow-hidden rounded-none font-bold transition hover:opacity-90 scale-80 sm:scale-100"
                 style={{
                   width: '234px',
-                  height: '58px'
+                  height: '58px',
+                  textDecoration: 'none'
                 }}
               >
               <span 
@@ -56,7 +57,7 @@ export default function Hero() {
               >
                 EXPLORE RIDES
               </span>
-              </button>
+              </a>
             </div>
             </div>
             <div className="shrink-0 hidden lg:block -ml-[100px]" style={{ marginTop: '80px' }}>

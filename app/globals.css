@@ -153,3 +153,27 @@ img {
     transform: translateX(-50%);
   }
 }
+
+/* Values card flip on hover */
+.values-card-container {
+  perspective: 1000px;
+}
+
+.values-card {
+  transform-style: preserve-3d;
+  transition: transform 0.8s ease-in-out;
+}
+
+.values-card:hover {
+  transform: rotateY(180deg);
+}
+
+.values-card-front,
+.values-card-back {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.values-card-back {
+  transform: rotateY(180deg);
+}

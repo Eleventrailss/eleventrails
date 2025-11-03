@@ -1,9 +1,9 @@
 export default function Values() {
   const values = [
-    { title: "Safety", description: "Prioritas utama kami adalah keselamatan setiap rider." },
-    { title: "Excellence", description: "Selalu berusaha menjadi yang terbaik dalam layanan dan pengalaman." },
-    { title: "Adventure", description: "Petualangan tak terlupakan untuk memacu adrenalin." },
-    { title: "Community", description: "Membangun komunitas rider solid dan saling mendukung." },
+    { title: "Safety", description: "Our top priority is the safety of every rider." },
+    { title: "Excellence", description: "We always strive to be the best in service and experience." },
+    { title: "Adventure", description: "Unforgettable adventures to boost your adrenaline." },
+    { title: "Community", description: "Building a solid and supportive rider community." },
   ]
 
   return (
@@ -24,18 +24,33 @@ export default function Values() {
           {values.map((value, index) => (
             <div
               key={index}
-              className="relative w-full max-w-[256px] mx-auto"
-              style={{height:'auto', aspectRatio:'256/359'}}
+              className="values-card-container relative w-full max-w-[256px] mx-auto"
+              style={{
+                height:'auto', 
+                aspectRatio:'256/359'
+              }}
             >
-              <img
-                src="/off-road-motorcycle.jpg"
-                alt={value.title}
-                className="object-cover w-full h-full"
-                style={{filter: 'blur(1px)', borderRadius: '0'}}
-              />
-              <div className="absolute inset-0 bg-black" style={{opacity: 0.2}}></div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <h3 className="text-white text-2xl text-center z-10" style={{fontFamily:'Rubik One, sans-serif', fontWeight: 400}}>{value.title}</h3>
+              <div className="values-card relative w-full h-full cursor-pointer">
+                {/* Front Side (Image with Title) */}
+                <div className="values-card-front absolute w-full h-full">
+                  <img
+                    src="/off-road-motorcycle.jpg"
+                    alt={value.title}
+                    className="object-cover w-full h-full"
+                    style={{filter: 'blur(1px)', borderRadius: '0'}}
+                  />
+                  <div className="absolute inset-0 bg-black" style={{opacity: 0.2}}></div>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <h3 className="text-white text-2xl text-center z-10" style={{fontFamily:'Rubik One, sans-serif', fontWeight: 400}}>{value.title}</h3>
+                  </div>
+                </div>
+
+                {/* Back Side (Description) */}
+                <div className="values-card-back absolute w-full h-full flex items-center justify-center p-6" style={{backgroundColor: '#EE6A28'}}>
+                  <p className="text-white text-center leading-relaxed" style={{fontFamily:'Plus Jakarta Sans, sans-serif', fontSize:'16px', fontWeight:500}}>
+                    {value.description}
+                  </p>
+                </div>
               </div>
             </div>
           ))}

@@ -117,7 +117,7 @@ export default function TravelStories() {
                       className="bg-orange-500 hover:bg-orange-600 text-white flex items-center justify-center" 
                       style={{ width: '85%' }}
                     >
-                      EXPLORE RIDES
+                      EXPLORE STORIES
                     </span>
                   </a>
                 </div>

@@ -65,7 +65,11 @@ export default function Testimonials() {
   const [isScrolled, setIsScrolled] = useState(false)
   const sectionRef = useRef<HTMLElement>(null)
 
+  const observerRef = useRef<IntersectionObserver | null>(null)
+
   useEffect(() => {
+    if (typeof window === 'undefined') return
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -77,13 +81,16 @@ export default function Testimonials() {
       { threshold: 0.1 }
     )
 
+    observerRef.current = observer
+
     if (sectionRef.current) {
       observer.observe(sectionRef.current)
     }
 
     return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current)
+      if (observerRef.current) {
+        observerRef.current.disconnect()
+        observerRef.current = null
       }
     }
   }, [])

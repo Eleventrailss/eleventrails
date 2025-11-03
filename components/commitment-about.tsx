@@ -1,10 +1,71 @@
+"use client"
+
+import { useState, useEffect, useRef } from "react"
+
 export default function CommitmentAbout() {
+  const [hasAnimated, setHasAnimated] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const observerRef = useRef<IntersectionObserver | null>(null)
+  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "6282266007272"
+  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=Hi%2C%20I%20would%20like%20to%20book%20a%20ride%20with%20ElevenTrails%21`
+
+  useEffect(() => {
+    if (hasAnimated || typeof window === 'undefined') return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !hasAnimated) {
+            setHasAnimated(true)
+            
+            // Trigger animation for images with staggered delay
+            const images = entry.target.querySelectorAll('[data-commitment-about-img]')
+            images.forEach((img, index) => {
+              setTimeout(() => {
+                (img as HTMLElement).style.transform = 'scale(1)'
+                ;(img as HTMLElement).style.opacity = '1'
+              }, index * 200)
+            })
+          }
+        })
+      },
+      { threshold: 0.2 }
+    )
+
+    observerRef.current = observer
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current)
+    }
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect()
+        observerRef.current = null
+      }
+    }
+  }, [hasAnimated])
+
   return (
-    <section className="-mt-[50px] pt-[100px] pb-12 sm:pb-16 lg:pb-20" style={{ backgroundColor: '#272727' }}>
+    <section ref={containerRef} className="-mt-[50px] pt-[100px] pb-12 sm:pb-16 lg:pb-20" style={{ backgroundColor: '#272727' }}>
       <div className="max-w-7xl mx-auto px-[30px]">
         <div className="grid md:grid-cols-2 gap-0 md:gap-0 items-start">
           <div className="w-full max-w-full mb-6 md:mb-0 scale-[0.85] md:scale-100 origin-center overflow-hidden">
-            <img src="/professional-bike-rider.jpg" className="w-full max-w-full h-auto object-cover" style={{maxWidth:'476px',width:'100%',height:'auto',aspectRatio:'476/528',borderRadius:'0'}} />
+            <img 
+              data-commitment-about-img
+              src="/professional-bike-rider.jpg" 
+              className="w-full max-w-full h-auto object-cover" 
+              style={{
+                maxWidth:'476px',
+                width:'100%',
+                height:'auto',
+                aspectRatio:'476/528',
+                borderRadius:'0',
+                transform: 'scale(0.8)',
+                opacity: '0',
+                transition: 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.8s ease-out'
+              }} 
+            />
           </div>
           <div className="w-full max-w-full">
             <h2 className="font-rubik-one text-4xl md:text-[52px] font-bold text-white mb-4 leading-tight w-full max-w-full md:w-[415px]">
@@ -41,7 +102,7 @@ export default function CommitmentAbout() {
               guests. We believe in pushing limits responsibly and helping riders of all levels achieve their goals.
             </p>
             <a
-              href="https://wa.me/6281234567890"
+              href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Book via WhatsApp"
@@ -85,8 +146,37 @@ export default function CommitmentAbout() {
             </a>
           </div>
           <div className="w-full max-w-full mb-6 md:mb-0 scale-100 origin-center overflow-hidden md:w-[120%] md:ml-[150px]">
-            <img src="/professional-bike-rider.jpg" className="w-full max-w-full h-auto object-cover" style={{maxWidth:'395px',width:'100%',height:'auto',aspectRatio:'395/348',borderRadius:'0',marginBottom:'10px'}} />
-            <img src="/professional-bike-rider.jpg" className="w-full max-w-full h-auto object-cover" style={{maxWidth:'395px',width:'100%',height:'auto',aspectRatio:'395/348',borderRadius:'0'}} />
+            <img 
+              data-commitment-about-img
+              src="/professional-bike-rider.jpg" 
+              className="w-full max-w-full h-auto object-cover" 
+              style={{
+                maxWidth:'395px',
+                width:'100%',
+                height:'auto',
+                aspectRatio:'395/348',
+                borderRadius:'0',
+                marginBottom:'10px',
+                transform: 'scale(0.8)',
+                opacity: '0',
+                transition: 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.8s ease-out'
+              }} 
+            />
+            <img 
+              data-commitment-about-img
+              src="/professional-bike-rider.jpg" 
+              className="w-full max-w-full h-auto object-cover" 
+              style={{
+                maxWidth:'395px',
+                width:'100%',
+                height:'auto',
+                aspectRatio:'395/348',
+                borderRadius:'0',
+                transform: 'scale(0.8)',
+                opacity: '0',
+                transition: 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.8s ease-out'
+              }} 
+            />
           </div>
         </div>
       </div>

@@ -5,6 +5,7 @@ import { Clock, MapPin, Navigation, TrendingUp, HelpCircle, ChevronDown, Chevron
 
 export default function GalleryRidesDetail({ title, description }: { title: string; description?: string }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
+  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "6282266007272"
 
   const toggleItem = (index: number) => {
     setOpenIndex(openIndex === index ? null : index)
@@ -163,8 +164,10 @@ export default function GalleryRidesDetail({ title, description }: { title: stri
                   <span style={{ fontWeight: 'bold', fontSize: '13px', color: '#ffffff' }}>Book Now</span>
                 </div>
               </a>
-              <button
-                type="button"
+              <a
+                href={`https://wa.me/${whatsappNumber}?text=Hi%2C%20I%20have%20a%20question%20about%20${encodeURIComponent(title || 'this ride')}.`}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 scale-80 sm:scale-100"
                 style={{
                   width: '182px',
@@ -178,13 +181,14 @@ export default function GalleryRidesDetail({ title, description }: { title: stri
                   border: 'none',
                   borderRadius: '0',
                   cursor: 'pointer',
-                  transition: 'opacity 0.2s'
+                  transition: 'opacity 0.2s',
+                  textDecoration: 'none'
                 }}
                 onMouseEnter={(e) => e.currentTarget.style.opacity = '0.9'}
                 onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
               >
                 Ask Question
-              </button>
+              </a>
             </div>
           </div>
           </div>

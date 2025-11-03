@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Header from "@/components/header"
 import Testimonials from "@/components/testimonials"
@@ -117,15 +117,14 @@ export default function RidesDetailPage() {
   const router = useRouter()
   const rideId = params?.id as string
   
+  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "6282266007272"
+  
   const [loading, setLoading] = useState(true)
   const [ride, setRide] = useState<Ride | null>(null)
   const [rideInfos, setRideInfos] = useState<RideInfo[]>([])
   const [galleryPhotos, setGalleryPhotos] = useState<GalleryPhoto[]>([])
   const [relatedRides, setRelatedRides] = useState<RelatedRide[]>([])
   const [openIndex, setOpenIndex] = useState<number | null>(null)
-  const [visibleGalleryIndices, setVisibleGalleryIndices] = useState<Set<number>>(new Set())
-  
-  const galleryRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (rideId) {
@@ -173,8 +172,11 @@ export default function RidesDetailPage() {
 
       if (galleryError) {
         console.error('Error fetching gallery photos:', galleryError)
+        setGalleryPhotos([])
       } else {
-        setGalleryPhotos(galleryData || [])
+        const photos = galleryData || []
+        setGalleryPhotos(photos)
+        console.log('Gallery photos fetched:', photos.length)
       }
 
       // Fetch related rides (excluding current ride)
@@ -221,48 +223,6 @@ export default function RidesDetailPage() {
   const toggleItem = (index: number) => {
     setOpenIndex(openIndex === index ? null : index)
   }
-
-  // Intersection Observer untuk gallery animation
-  useEffect(() => {
-    if (galleryRef.current && galleryPhotos.length > 0) {
-      // Check if this is initial render
-      let hasAnimated = false
-
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting && !hasAnimated) {
-              hasAnimated = true
-              const galleryItems = galleryRef.current?.querySelectorAll('[data-gallery-item]')
-              if (galleryItems) {
-                galleryItems.forEach((item, idx) => {
-                  const index = parseInt(item.getAttribute('data-index') || '0')
-                  setTimeout(() => {
-                    setVisibleGalleryIndices((prev) => {
-                      const newSet = new Set(prev)
-                      newSet.add(index)
-                      return newSet
-                    })
-                  }, index * 150) // 150ms delay per item
-                })
-              }
-            }
-          })
-        },
-        {
-          threshold: 0.1,
-          rootMargin: '-50px 0px'
-        }
-      )
-
-      // Observe the container instead of individual items
-      observer.observe(galleryRef.current)
-
-      return () => {
-        observer.disconnect()
-      }
-    }
-  }, [galleryPhotos])
 
   if (loading) {
     return (
@@ -497,8 +457,10 @@ export default function RidesDetailPage() {
                     <span style={{ fontWeight: 'bold', fontSize: '13px', color: '#ffffff' }}>Book Now</span>
                   </div>
                 </a>
-                <button
-                  type="button"
+                <a
+                  href={`https://wa.me/${whatsappNumber}?text=Hi%2C%20I%20have%20a%20question%20about%20${encodeURIComponent(ride?.title || 'this ride')}.`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 scale-80 sm:scale-100"
                   style={{
                     width: '182px',
@@ -512,13 +474,14 @@ export default function RidesDetailPage() {
                     border: 'none',
                     borderRadius: '0',
                     cursor: 'pointer',
-                    transition: 'opacity 0.2s'
+                    transition: 'opacity 0.2s',
+                    textDecoration: 'none'
                   }}
                   onMouseEnter={(e) => e.currentTarget.style.opacity = '0.9'}
                   onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
                 >
                   Ask Question
-                </button>
+                </a>
               </div>
             </div>
           </div>
@@ -702,22 +665,12 @@ export default function RidesDetailPage() {
       {/* Gallery Section */}
       {galleryPhotos.length > 0 && (
         <section className="relative -mt-0 pt-0 -mb-0" style={{ backgroundColor: '#272727', paddingBottom: '50px', marginTop: 0, paddingTop: '50px', marginBottom: 0 }}>
-          <div ref={galleryRef} className="max-w-7xl mx-auto px-[30px] relative" style={{ paddingTop: 0, marginTop: 0 }}>
+          <div className="max-w-7xl mx-auto px-[30px] relative" style={{ paddingTop: 0, marginTop: 0 }}>
             <div className="relative z-10">
               <div className="flex gap-6 items-start mb-6 sm:mb-8" style={{ flexWrap: 'wrap' }}>
                 <div className="flex gap-6 items-start" style={{ flexWrap: 'wrap', width: '100%' }}>
                   {galleryPhotos.length > 0 && (
-                    <div 
-                      data-gallery-item 
-                      data-index="0"
-                      style={{ 
-                        width: '576px', 
-                        maxWidth: '100%',
-                        transition: 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.6s ease-out',
-                        transform: visibleGalleryIndices.has(0) ? 'scale(1)' : 'scale(0.85)',
-                        opacity: visibleGalleryIndices.has(0) ? 1 : 0
-                      }}
-                    >
+                    <div style={{ width: '576px', maxWidth: '100%' }}>
                       <img 
                         src={galleryPhotos[0].photo_url} 
                         alt={galleryPhotos[0].alt_text || 'Gallery photo'}
@@ -767,18 +720,7 @@ export default function RidesDetailPage() {
                   {galleryPhotos.slice(1, 4).length > 0 && (
                     <div className="flex gap-6 items-start mb-6 sm:mb-8" style={{ flexWrap: 'wrap' }}>
                       {galleryPhotos.slice(1, 4).map((photo, idx) => (
-                        <div 
-                          key={photo.id} 
-                          data-gallery-item 
-                          data-index={idx + 1}
-                          style={{ 
-                            width: '362px', 
-                            maxWidth: '100%',
-                            transition: 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.6s ease-out',
-                            transform: visibleGalleryIndices.has(idx + 1) ? 'scale(1)' : 'scale(0.85)',
-                            opacity: visibleGalleryIndices.has(idx + 1) ? 1 : 0
-                          }}
-                        >
+                        <div key={photo.id} style={{ width: '362px', maxWidth: '100%' }}>
                           <img 
                             src={photo.photo_url} 
                             alt={photo.alt_text || 'Gallery photo'}
@@ -802,17 +744,7 @@ export default function RidesDetailPage() {
                     <div className="flex gap-6 items-start mb-0" style={{ flexWrap: 'wrap' }}>
                       {galleryPhotos.slice(4, 6).length === 2 ? (
                         <>
-                          <div 
-                            data-gallery-item 
-                            data-index="4"
-                            style={{ 
-                              width: '362px', 
-                              maxWidth: '100%',
-                              transition: 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.6s ease-out',
-                              transform: visibleGalleryIndices.has(4) ? 'scale(1)' : 'scale(0.85)',
-                              opacity: visibleGalleryIndices.has(4) ? 1 : 0
-                            }}
-                          >
+                          <div style={{ width: '362px', maxWidth: '100%' }}>
                             <img 
                               src={galleryPhotos[4].photo_url} 
                               alt={galleryPhotos[4].alt_text || 'Gallery photo'}
@@ -828,17 +760,7 @@ export default function RidesDetailPage() {
                               }}
                             />
                           </div>
-                          <div 
-                            data-gallery-item 
-                            data-index="5"
-                            style={{ 
-                              width: '741px', 
-                              maxWidth: '100%',
-                              transition: 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.6s ease-out',
-                              transform: visibleGalleryIndices.has(5) ? 'scale(1)' : 'scale(0.85)',
-                              opacity: visibleGalleryIndices.has(5) ? 1 : 0
-                            }}
-                          >
+                          <div style={{ width: '741px', maxWidth: '100%' }}>
                             <img 
                               src={galleryPhotos[5]?.photo_url || '/placeholder.svg'} 
                               alt={galleryPhotos[5]?.alt_text || 'Gallery photo'}
@@ -857,18 +779,7 @@ export default function RidesDetailPage() {
                         </>
                       ) : (
                         galleryPhotos.slice(4).map((photo, idx) => (
-                          <div 
-                            key={photo.id} 
-                            data-gallery-item 
-                            data-index={4 + idx}
-                            style={{ 
-                              width: '362px', 
-                              maxWidth: '100%',
-                              transition: 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.6s ease-out',
-                              transform: visibleGalleryIndices.has(4 + idx) ? 'scale(1)' : 'scale(0.85)',
-                              opacity: visibleGalleryIndices.has(4 + idx) ? 1 : 0
-                            }}
-                          >
+                          <div key={photo.id} style={{ width: '362px', maxWidth: '100%' }}>
                             <img 
                               src={photo.photo_url} 
                               alt={photo.alt_text || 'Gallery photo'}
