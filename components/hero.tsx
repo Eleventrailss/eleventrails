@@ -14,7 +14,7 @@ export default function Hero() {
             minHeight: '100%'
           }}
         />
-        <div className="absolute inset-0 bg-[#171717DE]"></div>
+        <div className="absolute inset-0 bg-[#1717179E]"></div>
       </div>
 
       <div className="relative h-full flex items-center py-12 sm:py-16 lg:py-0" style={{paddingTop: '80px', marginTop: '60px'}}>

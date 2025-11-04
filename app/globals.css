@@ -154,7 +154,7 @@ img {
   }
 }
 
-/* Values card flip on hover */
+/* Values card flip on hover - Desktop only */
 .values-card-container {
   perspective: 1000px;
 }
@@ -162,6 +162,9 @@ img {
 .values-card {
   transform-style: preserve-3d;
   transition: transform 0.8s ease-in-out;
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 .values-card:hover {
@@ -172,8 +175,52 @@ img {
 .values-card-back {
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.values-card-front {
+  z-index: 2;
+  transform: rotateY(0deg);
 }
 
 .values-card-back {
   transform: rotateY(180deg);
+  z-index: 1;
+}
+
+/* Mobile: Simple card without flip effect */
+.values-card-mobile {
+  position: relative;
+  width: 100%;
+}
+
+.values-card-mobile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Mobile optimizations for values cards */
+@media (max-width: 640px) {
+  .values-card-container {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    perspective: none;
+  }
+  
+  .values-card {
+    display: none;
+  }
+  
+  .values-card-mobile {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
 }

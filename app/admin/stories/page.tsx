@@ -4,11 +4,13 @@ import { useState, useEffect } from "react"
 import AdminSidebar from "@/components/admin/admin-sidebar"
 import AdminNavbar from "@/components/admin/admin-navbar"
 import AdminAuthCheck from "@/components/admin/admin-auth-check"
+import { SidebarProvider, useSidebar } from "@/components/admin/sidebar-context"
 import { supabase } from "@/lib/supabase"
 import { Edit, Trash2, Eye, Upload, X, Plus, Power, Copy, Check } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
+import Pagination from "@/components/admin/pagination"
 
 interface Story {
   id: string
@@ -21,10 +23,15 @@ interface Story {
   created_at: string
 }
 
-export default function AdminStoriesPage() {
+function AdminStoriesContent() {
   const [stories, setStories] = useState<Story[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const { isCollapsed } = useSidebar()
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 10
   
   // Add Modal state
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -450,12 +457,11 @@ export default function AdminStoriesPage() {
   }
 
   return (
-    <AdminAuthCheck>
-      <div className="bg-slate-950 min-h-screen">
-        <AdminSidebar />
-        <div className="lg:ml-64">
-          <AdminNavbar />
-          <main className="p-6 lg:p-8 px-[30px] pt-24 lg:pt-8" style={{ paddingTop: '100px' }}>
+    <div className="bg-slate-950 min-h-screen">
+      <AdminSidebar />
+      <div className={`transition-all duration-300 ${isCollapsed ? 'lg:ml-0' : 'lg:ml-64'}`}>
+        <AdminNavbar />
+        <main className="p-6 lg:p-8 px-[30px] pt-24 lg:pt-8" style={{ paddingTop: '100px' }}>
             <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <h1 className="text-white text-2xl sm:text-3xl font-bold">Stories</h1>
               <div className="flex flex-wrap gap-2">
@@ -647,10 +653,16 @@ export default function AdminStoriesPage() {
                     </tbody>
                   </table>
                 </div>
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={Math.ceil(stories.length / itemsPerPage)}
+                  onPageChange={setCurrentPage}
+                  itemsPerPage={itemsPerPage}
+                  totalItems={stories.length}
+                />
               </div>
             )}
-          </main>
-        </div>
+        </main>
 
         {/* Add Story Modal */}
         <Dialog open={isModalOpen} onOpenChange={(open) => {
@@ -966,6 +978,16 @@ export default function AdminStoriesPage() {
           </DialogContent>
         </Dialog>
       </div>
+    </div>
+  )
+}
+
+export default function AdminStoriesPage() {
+  return (
+    <AdminAuthCheck>
+      <SidebarProvider>
+        <AdminStoriesContent />
+      </SidebarProvider>
     </AdminAuthCheck>
   )
 }

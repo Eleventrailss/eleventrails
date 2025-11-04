@@ -7,8 +7,25 @@ import CTA from "@/components/cta"
 import Footer from "@/components/footer"
 
 export const metadata: Metadata = {
-  title: 'ElevenTrails - FAQ',
-  description: 'Frequently Asked Questions - Everything you need to know about ElevenTrails dirt bike adventures',
+  title: 'FAQ - Frequently Asked Questions About Dirt Bike Tours - ElevenTrails',
+  description: 'Everything you need to know about ElevenTrails dirt bike adventures. Find answers to common questions about trail riding tours, booking, safety, gear, and more.',
+  keywords: [
+    'dirt bike tour FAQ',
+    'trail riding questions',
+    'adventure tour FAQ',
+    'dirt bike tour information',
+    'tour booking FAQ',
+    'off-road tour questions',
+    'adventure travel FAQ',
+    'dirt bike tour guide',
+    'tour safety questions',
+    'bike tour FAQ'
+  ],
+  openGraph: {
+    title: 'FAQ - Frequently Asked Questions About Dirt Bike Tours - ElevenTrails',
+    description: 'Everything you need to know about ElevenTrails dirt bike adventures.',
+    images: ['/hero-bg.png'],
+  },
 }
 
 export default function FaqPage() {

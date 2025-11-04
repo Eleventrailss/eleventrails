@@ -8,8 +8,30 @@ import CTA from "@/components/cta"
 import Footer from "@/components/footer"
 
 export const metadata: Metadata = {
-  title: 'ElevenTrails - Rides',
-  description: 'Choose your perfect ride - Explore our range of dirt bike trail packages for all skill levels',
+  title: 'Dirt Bike Tours & Trail Riding Packages - ElevenTrails',
+  description: 'Choose your perfect dirt bike adventure tour package. Explore our range of trail riding experiences for all skill levels - from beginner-friendly tours to extreme off-road adventures in Lombok.',
+  keywords: [
+    'dirt bike tour packages',
+    'trail riding tours',
+    'dirt bike tour Lombok',
+    'off-road tour packages',
+    'mountain biking tours',
+    'extreme sports packages',
+    'adventure tour packages',
+    'dirt bike rental',
+    'motocross tour',
+    'bike tour packages',
+    'trail riding packages',
+    'off-road adventure packages',
+    'extreme riding tours',
+    'dirt bike experience',
+    'adventure travel packages'
+  ],
+  openGraph: {
+    title: 'Dirt Bike Tours & Trail Riding Packages - ElevenTrails',
+    description: 'Choose your perfect dirt bike adventure tour package. Explore our range of trail riding experiences for all skill levels.',
+    images: ['/hero-bg.png'],
+  },
 }
 
 export default function RidesPage() {

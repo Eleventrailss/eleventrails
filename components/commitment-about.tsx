@@ -1,13 +1,62 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
+import { getGeneralSettings, getGeneralSetting } from "@/lib/general-settings"
 
 export default function CommitmentAbout() {
   const [hasAnimated, setHasAnimated] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
   const observerRef = useRef<IntersectionObserver | null>(null)
   const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "6282266007272"
-  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=Hi%2C%20I%20would%20like%20to%20book%20a%20ride%20with%20ElevenTrails%21`
+  const [whatsappMessage, setWhatsappMessage] = useState("Hi%2C%20I%20would%20like%20to%20book%20a%20ride%20with%20ElevenTrails%21")
+  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`
+  const [images, setImages] = useState({
+    about_commitment_pic: "/professional-bike-rider.jpg",
+    about_ready_pic_1: "/professional-bike-rider.jpg",
+    about_ready_pic_2: "/professional-bike-rider.jpg"
+  })
+  const [commitmentText, setCommitmentText] = useState("")
+  const [embarkText, setEmbarkText] = useState("")
+  
+  useEffect(() => {
+    fetchImages()
+    fetchWhatsappMessage()
+    fetchTextParagraphs()
+  }, [])
+
+  const fetchTextParagraphs = async () => {
+    const [commitment, embark] = await Promise.all([
+      getGeneralSetting('about_commitment_text_paragraph'),
+      getGeneralSetting('about_embrak_text_paragraph')
+    ])
+    if (commitment) {
+      setCommitmentText(commitment)
+    }
+    if (embark) {
+      setEmbarkText(embark)
+    }
+  }
+
+  const fetchWhatsappMessage = async () => {
+    const message = await getGeneralSetting('whatsapp_message_booknow')
+    if (message) {
+      setWhatsappMessage(encodeURIComponent(message))
+    }
+  }
+
+  const fetchImages = async () => {
+    const settings = await getGeneralSettings([
+      'about_commitment_pic',
+      'about_ready_pic_1',
+      'about_ready_pic_2'
+    ])
+    
+    setImages(prev => ({
+      about_commitment_pic: settings.about_commitment_pic || prev.about_commitment_pic,
+      about_ready_pic_1: settings.about_ready_pic_1 || prev.about_ready_pic_1,
+      about_ready_pic_2: settings.about_ready_pic_2 || prev.about_ready_pic_2
+    }))
+  }
 
   useEffect(() => {
     if (hasAnimated || typeof window === 'undefined') return
@@ -53,7 +102,8 @@ export default function CommitmentAbout() {
           <div className="w-full max-w-full mb-6 md:mb-0 scale-[0.85] md:scale-100 origin-center overflow-hidden">
             <img 
               data-commitment-about-img
-              src="/professional-bike-rider.jpg" 
+              src={images.about_commitment_pic} 
+              alt="/placeholder.svg"
               className="w-full max-w-full h-auto object-cover" 
               style={{
                 maxWidth:'476px',
@@ -72,35 +122,44 @@ export default function CommitmentAbout() {
               <span className="block">OUR COMMITMENT</span>
               
             </h2>
-            <p className="text-gray-300 text-lg mb-6">
-              Our team consists of experienced riders and adventure guides with over 50 years of combined experience in
-              extreme sports and trail riding. We're passionate about sharing the thrill of off-road adventures while
-              ensuring safety and creating unforgettable memories.
-            </p>
-            <br />
-            <p className="text-gray-300 text-lg mb-6">
-              Each team member is certified, trained, and dedicated to providing the best possible experience for our
-              guests. We believe in pushing limits responsibly and helping riders of all levels achieve their goals.
-            </p>
+            {commitmentText ? (
+              <div className="text-gray-300 text-lg mb-6" dangerouslySetInnerHTML={{ __html: commitmentText }} />
+            ) : (
+              <>
+                <p className="text-gray-300 text-lg mb-6">
+                  Our team consists of experienced riders and adventure guides with over 50 years of combined experience in
+                  extreme sports and trail riding. We're passionate about sharing the thrill of off-road adventures while
+                  ensuring safety and creating unforgettable memories.
+                </p>
+                <br />
+                <p className="text-gray-300 text-lg mb-6">
+                  Each team member is certified, trained, and dedicated to providing the best possible experience for our
+                  guests. We believe in pushing limits responsibly and helping riders of all levels achieve their goals.
+                </p>
+              </>
+            )}
           </div>
         </div>
 
         <div className="grid md:grid-cols-2 gap-0 md:gap-0 items-start" style={{paddingTop:'50px'}}>
             <div className="w-full md:w-[117%]">
             <h2 className="font-rubik-one text-4xl md:text-[52px] font-bold text-white mb-4 leading-tight">
-              <span className="block">READY TO EMBRAK ON THE OFF ROAD ADVENTURE OF A LIFETIME ?</span>
+              <span className="block">READY TO EMBARK ON THE OFF ROAD ADVENTURE OF A LIFETIME?</span>
               
             </h2>
-            <p className="text-gray-300 text-lg mb-6">
-              Our team consists of experienced riders and adventure guides with over 50 years of combined experience in
-              extreme sports and trail riding. We're passionate about sharing the thrill of off-road adventures while
-              ensuring safety and creating unforgettable memories.
-            </p>
-            <br />
-            <p className="text-gray-300 text-lg mb-6">
-              Each team member is certified, trained, and dedicated to providing the best possible experience for our
-              guests. We believe in pushing limits responsibly and helping riders of all levels achieve their goals.
-            </p>
+            {embarkText ? (
+              <div className="text-gray-300 text-lg mb-6" dangerouslySetInnerHTML={{ __html: embarkText }} />
+            ) : (
+              <>
+                <p className="text-gray-300 text-lg mb-6">
+                  Join us for an unforgettable dirt bike adventure through Lombok's most spectacular landscapes. Our expert guides will lead you through challenging trails, breathtaking viewpoints, and hidden gems that showcase the natural beauty of this incredible island. Whether you're seeking adrenaline-pumping action or scenic exploration, we have the perfect trail for you.
+                </p>
+                <br />
+                <p className="text-gray-300 text-lg mb-6">
+                  Book your adventure today and experience the thrill of off-road riding with ElevenTrails. Our team is ready to help you create memories that will last a lifetime. Contact us via WhatsApp to reserve your spot and start planning your ultimate dirt bike adventure.
+                </p>
+              </>
+            )}
             <a
               href={whatsappUrl}
               target="_blank"
@@ -148,7 +207,8 @@ export default function CommitmentAbout() {
           <div className="w-full max-w-full mb-6 md:mb-0 scale-100 origin-center overflow-hidden md:w-[120%] md:ml-[150px]">
             <img 
               data-commitment-about-img
-              src="/professional-bike-rider.jpg" 
+              src={images.about_ready_pic_1} 
+              alt="/placeholder.svg"
               className="w-full max-w-full h-auto object-cover" 
               style={{
                 maxWidth:'395px',
@@ -164,7 +224,8 @@ export default function CommitmentAbout() {
             />
             <img 
               data-commitment-about-img
-              src="/professional-bike-rider.jpg" 
+              src={images.about_ready_pic_2} 
+              alt="/placeholder.svg"
               className="w-full max-w-full h-auto object-cover" 
               style={{
                 maxWidth:'395px',

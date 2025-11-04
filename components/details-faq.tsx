@@ -1,41 +1,51 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ChevronDown, ChevronUp } from "lucide-react"
+import { supabase } from "@/lib/supabase"
+
+interface FAQ {
+  id: string
+  question: string
+  answer: string
+  display_order: number
+  is_active: boolean
+}
 
 export default function DetailsFaq() {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
+  const [faqs, setFaqs] = useState<FAQ[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchFaqs()
+  }, [])
+
+  const fetchFaqs = async () => {
+    try {
+      setLoading(true)
+      const { data, error } = await supabase
+        .from('faqs')
+        .select('*')
+        .eq('is_active', true)
+        .order('display_order', { ascending: true })
+        .order('created_at', { ascending: false })
+
+      if (error) {
+        throw error
+      }
+
+      setFaqs(data || [])
+    } catch (error) {
+      console.error('Error fetching FAQs:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const toggleItem = (index: number) => {
     setOpenIndex(openIndex === index ? null : index)
   }
-
-  const faqs = [
-    {
-      question: "Bagaimana cara melakukan booking?",
-      answer: "Anda dapat melakukan booking melalui WhatsApp atau mengisi formulir di website kami. Tim kami akan menghubungi Anda untuk konfirmasi dan detail lebih lanjut."
-    },
-    {
-      question: "Apa yang perlu dibawa saat melakukan trail riding?",
-      answer: "Kami menyediakan semua peralatan safety termasuk helm, sepatu boots, dan protective gear. Anda cukup membawa pakaian yang nyaman dan air minum. Kamera untuk dokumentasi juga direkomendasikan."
-    },
-    {
-      question: "Berapa lama durasi perjalanan trail riding?",
-      answer: "Durasi trail riding bervariasi tergantung paket yang dipilih, mulai dari 3 jam hingga 7 jam. Paket full day biasanya dimulai pagi hari dan selesai di sore hari."
-    },
-    {
-      question: "Apakah tersedia untuk pemula?",
-      answer: "Ya, kami memiliki paket khusus untuk pemula dengan jalur yang lebih mudah dan instruktur berpengalaman yang akan membantu Anda belajar teknik dasar trail riding dengan aman."
-    },
-    {
-      question: "Bagaimana kebijakan pembatalan dan refund?",
-      answer: "Pembatalan 48 jam sebelum jadwal akan mendapatkan refund penuh. Pembatalan kurang dari 48 jam akan dikenakan biaya 50%. Pembatalan di hari H tidak dapat di-refund."
-    },
-    {
-      question: "Apa saja level kesulitan trail yang tersedia?",
-      answer: "Kami menyediakan 3 level kesulitan: Easy (untuk pemula), Medium (untuk rider berpengalaman), dan Hard (untuk expert rider yang mencari tantangan ekstrem)."
-    }
-  ]
 
   return (
     <section className="relative bg-white pt-12 sm:pt-16 lg:pt-20 pb-6 sm:pb-8 -mb-[-20px]">
@@ -58,66 +68,76 @@ export default function DetailsFaq() {
             </h3>
           </div>
 
-          <div className="w-full space-y-4 mb-6">
-            {faqs.map((faq, index) => (
-              <div key={index}>
-                <button
-                  type="button"
-                  onClick={() => toggleItem(index)}
-                  className="w-full flex items-center gap-4 p-4 hover:bg-gray-50 transition-colors scale-90 sm:scale-100"
-                  style={{
-                    textAlign: 'left',
-                    border: 'none',
-                    background: 'transparent',
-                    cursor: 'pointer'
-                  }}
-                >
-                  <div style={{ flex: 1 }}>
-                    <p
-                      style={{
-                        fontFamily: 'Rubik One, sans-serif',
-                        fontWeight: 400,
-                        fontSize: '32px',
-                        color: '#1f2937',
-                        margin: 0
-                      }}
-                    >
-                      {faq.question}
-                    </p>
-                  </div>
-                  <div style={{ flexShrink: 0 }}>
-                    {openIndex === index ? (
-                      <ChevronUp size={24} color="#1f2937" />
-                    ) : (
-                      <ChevronDown size={24} color="#1f2937" />
-                    )}
-                  </div>
-                </button>
-                {openIndex === index && (
-                  <div
-                    className="px-4 pb-4"
+          {loading ? (
+            <div className="text-center py-12">
+              <p className="text-gray-600 text-lg">Loading FAQs...</p>
+            </div>
+          ) : faqs.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-600 text-lg">No FAQs available at the moment.</p>
+            </div>
+          ) : (
+            <div className="w-full space-y-4 mb-6">
+              {faqs.map((faq, index) => (
+                <div key={faq.id}>
+                  <button
+                    type="button"
+                    onClick={() => toggleItem(index)}
+                    className="w-full flex items-center gap-4 p-4 hover:bg-gray-50 transition-colors scale-90 sm:scale-100"
                     style={{
-                      paddingLeft: '16px',
-                      paddingTop: '0'
+                      textAlign: 'left',
+                      border: 'none',
+                      background: 'transparent',
+                      cursor: 'pointer'
                     }}
                   >
-                    <p
+                    <div style={{ flex: 1 }}>
+                      <p
+                        style={{
+                          fontFamily: 'Rubik One, sans-serif',
+                          fontWeight: 400,
+                          fontSize: '32px',
+                          color: '#1f2937',
+                          margin: 0
+                        }}
+                      >
+                        {faq.question}
+                      </p>
+                    </div>
+                    <div style={{ flexShrink: 0 }}>
+                      {openIndex === index ? (
+                        <ChevronUp size={24} color="#1f2937" />
+                      ) : (
+                        <ChevronDown size={24} color="#1f2937" />
+                      )}
+                    </div>
+                  </button>
+                  {openIndex === index && (
+                    <div
+                      className="px-4 pb-4"
                       style={{
-                        fontFamily: 'Plus Jakarta Sans, sans-serif',
-                        fontWeight: 400,
-                        fontSize: '18px',
-                        color: '#4b5563',
-                        margin: 0,
-                        lineHeight: '1.6'
+                        paddingLeft: '16px',
+                        paddingTop: '0'
                       }}
                     >
-                      {faq.answer}
-                    </p>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+                      <p
+                        style={{
+                          fontFamily: 'Plus Jakarta Sans, sans-serif',
+                          fontWeight: 400,
+                          fontSize: '18px',
+                          color: '#4b5563',
+                          margin: 0,
+                          lineHeight: '1.6'
+                        }}
+                      >
+                        {faq.answer}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </section>

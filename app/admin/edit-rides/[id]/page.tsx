@@ -5,6 +5,7 @@ import { useRouter, useParams } from "next/navigation"
 import AdminSidebar from "@/components/admin/admin-sidebar"
 import AdminNavbar from "@/components/admin/admin-navbar"
 import AdminAuthCheck from "@/components/admin/admin-auth-check"
+import { SidebarProvider, useSidebar } from "@/components/admin/sidebar-context"
 import { supabase } from "@/lib/supabase"
 import { 
   ChevronLeft, 
@@ -81,10 +82,11 @@ interface GalleryPhoto {
   photo_url: string
 }
 
-export default function EditRidesPage() {
+function EditRidesContent() {
   const router = useRouter()
   const params = useParams()
   const rideId = params?.id as string
+  const { isCollapsed } = useSidebar()
   const [currentStep, setCurrentStep] = useState(1)
   const totalSteps = 4
   const [loading, setLoading] = useState(false)
@@ -647,29 +649,26 @@ export default function EditRidesPage() {
 
   if (loadingData) {
     return (
-      <AdminAuthCheck>
-        <div className="bg-slate-950 min-h-screen">
-          <AdminSidebar />
-          <div className="lg:ml-64">
-            <AdminNavbar />
-            <main className="p-6 lg:p-8 px-[30px] pt-24 lg:pt-8">
+      <div className="bg-slate-950 min-h-screen">
+        <AdminSidebar />
+        <div className={`transition-all duration-300 ${isCollapsed ? 'lg:ml-0' : 'lg:ml-64'}`}>
+          <AdminNavbar />
+          <main className="p-6 lg:p-8 px-[30px] pt-24 lg:pt-8">
               <div className="bg-slate-900 rounded-lg p-6 text-center">
                 <p className="text-gray-400">Memuat data...</p>
               </div>
-            </main>
-          </div>
+          </main>
         </div>
-      </AdminAuthCheck>
+      </div>
     )
   }
 
   return (
-    <AdminAuthCheck>
-      <div className="bg-slate-950 min-h-screen">
-        <AdminSidebar />
-        <div className="lg:ml-64">
-          <AdminNavbar />
-          <main className="p-6 lg:p-8 px-[30px]" style={{ paddingTop: '100px' }}>
+    <div className="bg-slate-950 min-h-screen">
+      <AdminSidebar />
+      <div className={`transition-all duration-300 ${isCollapsed ? 'lg:ml-0' : 'lg:ml-64'}`}>
+        <AdminNavbar />
+        <main className="p-6 lg:p-8 px-[30px]" style={{ paddingTop: '100px' }}>
             <div className="mb-6">
               <h1 className="text-white text-2xl sm:text-3xl font-bold mb-4">Edit Rides</h1>
               
@@ -1173,9 +1172,18 @@ export default function EditRidesPage() {
                 )}
               </div>
             </div>
-          </main>
-        </div>
+        </main>
       </div>
+    </div>
+  )
+}
+
+export default function EditRidesPage() {
+  return (
+    <AdminAuthCheck>
+      <SidebarProvider>
+        <EditRidesContent />
+      </SidebarProvider>
     </AdminAuthCheck>
   )
 }

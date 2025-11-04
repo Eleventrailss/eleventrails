@@ -5,11 +5,13 @@ import { useRouter } from "next/navigation"
 import AdminSidebar from "@/components/admin/admin-sidebar"
 import AdminNavbar from "@/components/admin/admin-navbar"
 import AdminAuthCheck from "@/components/admin/admin-auth-check"
+import { SidebarProvider, useSidebar } from "@/components/admin/sidebar-context"
 import { supabase } from "@/lib/supabase"
 import { ChevronLeft, Plus, X, Upload } from "lucide-react"
 
-export default function AddStoriesPage() {
+function AddStoriesContent() {
   const router = useRouter()
+  const { isCollapsed } = useSidebar()
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -136,12 +138,11 @@ export default function AddStoriesPage() {
 
 
   return (
-    <AdminAuthCheck>
-      <div className="bg-slate-950 min-h-screen">
-        <AdminSidebar />
-        <div className="lg:ml-64">
-          <AdminNavbar />
-          <main className="p-6 lg:p-8 px-[30px] pt-24 lg:pt-8">
+    <div className="bg-slate-950 min-h-screen">
+      <AdminSidebar />
+      <div className={`transition-all duration-300 ${isCollapsed ? 'lg:ml-0' : 'lg:ml-64'}`}>
+        <AdminNavbar />
+        <main className="p-6 lg:p-8 px-[30px] pt-24 lg:pt-8">
             <div className="mb-6">
               <div className="flex items-center gap-4 mb-4">
                 <button
@@ -306,9 +307,18 @@ export default function AddStoriesPage() {
                 </button>
               </div>
             </form>
-          </main>
-        </div>
+        </main>
       </div>
+    </div>
+  )
+}
+
+export default function AddStoriesPage() {
+  return (
+    <AdminAuthCheck>
+      <SidebarProvider>
+        <AddStoriesContent />
+      </SidebarProvider>
     </AdminAuthCheck>
   )
 }

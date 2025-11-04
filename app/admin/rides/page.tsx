@@ -4,9 +4,11 @@ import { useState, useEffect } from "react"
 import AdminSidebar from "@/components/admin/admin-sidebar"
 import AdminNavbar from "@/components/admin/admin-navbar"
 import AdminAuthCheck from "@/components/admin/admin-auth-check"
+import { SidebarProvider, useSidebar } from "@/components/admin/sidebar-context"
 import { supabase } from "@/lib/supabase"
 import { Edit, Trash2, Eye, Power, Copy, Check, X } from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox"
+import Pagination from "@/components/admin/pagination"
 
 interface Ride {
   id: string
@@ -21,10 +23,15 @@ interface Ride {
   created_at: string
 }
 
-export default function AdminRidesPage() {
+function AdminRidesContent() {
   const [rides, setRides] = useState<Ride[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const { isCollapsed } = useSidebar()
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 10
   
   // Duplicate state
   const [isDuplicateMode, setIsDuplicateMode] = useState(false)
@@ -256,12 +263,11 @@ export default function AdminRidesPage() {
   }
 
   return (
-    <AdminAuthCheck>
-      <div className="bg-slate-950 min-h-screen">
-        <AdminSidebar />
-        <div className="lg:ml-64">
-          <AdminNavbar />
-          <main className="p-6 lg:p-8 px-[30px]" style={{ paddingTop: '100px' }}>
+    <div className="bg-slate-950 min-h-screen">
+      <AdminSidebar />
+      <div className={`transition-all duration-300 ${isCollapsed ? 'lg:ml-0' : 'lg:ml-64'}`}>
+        <AdminNavbar />
+        <main className="p-6 lg:p-8 px-[30px]" style={{ paddingTop: '100px' }}>
             <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <h1 className="text-white text-2xl sm:text-3xl font-bold">Rides</h1>
               <div className="flex flex-wrap gap-2">
@@ -365,7 +371,7 @@ export default function AdminRidesPage() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-700">
-                      {rides.map((ride) => (
+                      {rides.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((ride) => (
                         <tr key={ride.id} className="hover:bg-slate-800/50 transition-colors">
                           {isDuplicateMode && (
                             <td className="px-2 sm:px-4 py-3 text-center">
@@ -461,11 +467,27 @@ export default function AdminRidesPage() {
                     </tbody>
                   </table>
                 </div>
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={Math.ceil(rides.length / itemsPerPage)}
+                  onPageChange={setCurrentPage}
+                  itemsPerPage={itemsPerPage}
+                  totalItems={rides.length}
+                />
               </div>
             )}
-          </main>
-        </div>
+        </main>
       </div>
+    </div>
+  )
+}
+
+export default function AdminRidesPage() {
+  return (
+    <AdminAuthCheck>
+      <SidebarProvider>
+        <AdminRidesContent />
+      </SidebarProvider>
     </AdminAuthCheck>
   )
 }

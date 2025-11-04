@@ -1,8 +1,23 @@
 "use client"
 
+import { useState, useEffect } from "react"
+import { getGeneralSetting } from "@/lib/general-settings"
+
 export default function CTA() {
   const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "6282266007272"
-  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=Hi%2C%20I%20would%20like%20to%20plan%20my%20ride%20with%20ElevenTrails%21`
+  const [whatsappMessage, setWhatsappMessage] = useState("Hi%2C%20I%20would%20like%20to%20plan%20my%20ride%20with%20ElevenTrails%21")
+  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`
+  
+  useEffect(() => {
+    fetchWhatsappMessage()
+  }, [])
+
+  const fetchWhatsappMessage = async () => {
+    const message = await getGeneralSetting('whatsapp_message_contact_us')
+    if (message) {
+      setWhatsappMessage(encodeURIComponent(message))
+    }
+  }
 
   return (
     <section className="bg-orange-500 py-12 sm:py-16 lg:py-20">

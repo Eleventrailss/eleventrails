@@ -15,8 +15,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 })
     }
 
-    if (!folder || (folder !== 'rides' && folder !== 'stories')) {
-      return NextResponse.json({ error: 'Invalid folder. Must be "rides" or "stories"' }, { status: 400 })
+    if (!folder || (folder !== 'rides' && folder !== 'stories' && folder !== 'general_setting' && folder !== 'testimonials')) {
+      return NextResponse.json({ error: 'Invalid folder. Must be "rides", "stories", "general_setting", or "testimonials"' }, { status: 400 })
     }
 
     const bytes = await file.arrayBuffer()

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import AdminSidebar from "@/components/admin/admin-sidebar"
 import AdminNavbar from "@/components/admin/admin-navbar"
 import AdminAuthCheck from "@/components/admin/admin-auth-check"
+import { SidebarProvider, useSidebar } from "@/components/admin/sidebar-context"
 import { supabase } from "@/lib/supabase"
 import { 
   ChevronLeft, 
@@ -81,8 +82,9 @@ interface GalleryPhoto {
   photo_url: string
 }
 
-export default function AddRidesPage() {
+function AddRidesContent() {
   const router = useRouter()
+  const { isCollapsed } = useSidebar()
   const [currentStep, setCurrentStep] = useState(1)
   const totalSteps = 4
   const [loading, setLoading] = useState(false)
@@ -550,12 +552,11 @@ export default function AddRidesPage() {
   }
 
   return (
-    <AdminAuthCheck>
-      <div className="bg-slate-950 min-h-screen">
-        <AdminSidebar />
-        <div className="lg:ml-64">
-          <AdminNavbar />
-          <main className="p-6 lg:p-8 px-[30px]" style={{ paddingTop: '100px' }}>
+    <div className="bg-slate-950 min-h-screen">
+      <AdminSidebar />
+      <div className={`transition-all duration-300 ${isCollapsed ? 'lg:ml-0' : 'lg:ml-64'}`}>
+        <AdminNavbar />
+        <main className="p-6 lg:p-8 px-[30px]" style={{ paddingTop: '100px' }}>
             <div className="mb-6">
               <h1 className="text-white text-2xl sm:text-3xl font-bold mb-4">Add Rides</h1>
               
@@ -1059,9 +1060,18 @@ export default function AddRidesPage() {
                 )}
               </div>
             </div>
-          </main>
-        </div>
+        </main>
       </div>
+    </div>
+  )
+}
+
+export default function AddRidesPage() {
+  return (
+    <AdminAuthCheck>
+      <SidebarProvider>
+        <AddRidesContent />
+      </SidebarProvider>
     </AdminAuthCheck>
   )
 }

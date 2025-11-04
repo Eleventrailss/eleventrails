@@ -1,0 +1,22 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://eleventrails.com/sitemap.xml
+
+# Disallow admin pages
+User-agent: *
+Disallow: /admin/
+
+# Disallow API routes
+User-agent: *
+Disallow: /api/
+
+# Allow important pages
+User-agent: *
+Allow: /
+Allow: /about
+Allow: /rides
+Allow: /stories
+Allow: /faq
+

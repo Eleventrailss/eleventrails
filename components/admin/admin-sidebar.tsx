@@ -6,15 +6,19 @@ import {
   LayoutDashboard, 
   PlusCircle, 
   BookOpen, 
+  Settings,
+  HelpCircle,
+  MessageSquare,
   LogOut,
   Menu,
   X
 } from "lucide-react"
 import { useState } from "react"
+import { useSidebar } from "./sidebar-context"
 
 export default function AdminSidebar() {
   const pathname = usePathname()
-  const [isOpen, setIsOpen] = useState(false)
+  const { isCollapsed, isMobileOpen, setMobileOpen } = useSidebar()
 
   const menuItems = [
     {
@@ -34,6 +38,24 @@ export default function AdminSidebar() {
       label: "Stories",
       icon: BookOpen,
       active: pathname === "/admin/stories"
+    },
+    {
+      href: "/admin/settings",
+      label: "Settings",
+      icon: Settings,
+      active: pathname === "/admin/settings"
+    },
+    {
+      href: "/admin/faq",
+      label: "FAQ",
+      icon: HelpCircle,
+      active: pathname === "/admin/faq"
+    },
+    {
+      href: "/admin/testimonials",
+      label: "Testimonials",
+      icon: MessageSquare,
+      active: pathname === "/admin/testimonials"
     }
   ]
 
@@ -48,56 +70,49 @@ export default function AdminSidebar() {
 
   return (
     <>
-      {/* Mobile Menu Button */}
-      <div className="lg:hidden fixed top-4 left-4 z-50 flex items-center gap-3">
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="p-2 bg-[#EE6A28] text-white rounded"
-        >
-          {isOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-        <h2 className="text-white text-lg font-semibold">Dashboard</h2>
-      </div>
-
       {/* Sidebar */}
       <aside
         className={`
-          fixed left-0 w-64 bg-slate-900 text-white transform transition-transform duration-300
-          ${isOpen ? "translate-x-0" : "-translate-x-full"}
+          fixed left-0 bg-slate-900 text-white transform transition-all duration-300
+          ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
           lg:translate-x-0
+          top-0
           lg:top-0
-          lg:bottom-0
-          lg:h-full
+          bottom-0
+          w-64
+          ${isCollapsed ? "lg:w-0 lg:overflow-hidden" : "lg:w-64"}
         `}
         style={{ 
           zIndex: 48,
-          top: '72px',
-          bottom: 0
+          height: '100vh',
+          overflowY: 'auto'
         }}
       >
-        <div className="p-6">
-          <Link href="/" className="flex items-center gap-2 mb-8">
-            <h1 className="font-bold text-xl" style={{color:'#EE6A28'}}>ElevenTrails</h1>
-            <span className="text-xs text-gray-400">Admin</span>
-          </Link>
+        <div className={`p-4 lg:p-6 h-full flex flex-col ${isCollapsed ? 'lg:hidden' : ''}`}>
+          <div className="mb-6 lg:mb-8">
+            <h1 className="font-bold text-lg lg:text-xl text-white flex items-center gap-2">
+              <span style={{color:'#EE6A28'}}>ElevenTrails</span>
+              <span className="text-gray-400 text-xs lg:text-sm">Admin</span>
+            </h1>
+          </div>
 
-          <nav className="space-y-2">
+          <nav className="space-y-2 flex-1">
             {menuItems.map((item) => {
               const Icon = item.icon
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  onClick={() => setIsOpen(false)}
+                  onClick={() => setMobileOpen(false)}
                   className={`
-                    flex items-center gap-3 px-4 py-3 rounded-lg transition-colors
+                    flex items-center gap-3 px-3 lg:px-4 py-2.5 lg:py-3 rounded-lg transition-colors text-sm lg:text-base
                     ${item.active 
                       ? "bg-[#EE6A28] text-white" 
                       : "text-gray-300 hover:bg-slate-800 hover:text-white"
                     }
                   `}
                 >
-                  <Icon size={20} />
+                  <Icon size={18} className="lg:w-5 lg:h-5" />
                   <span className="font-medium">{item.label}</span>
                 </Link>
               )
@@ -106,26 +121,22 @@ export default function AdminSidebar() {
 
           <button
             onClick={handleLogout}
-            className="mt-8 w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-slate-800 hover:text-white transition-colors"
+            className="mt-4 lg:mt-8 w-full flex items-center gap-3 px-3 lg:px-4 py-2.5 lg:py-3 rounded-lg text-gray-300 hover:bg-slate-800 hover:text-white transition-colors text-sm lg:text-base"
           >
-            <LogOut size={20} />
+            <LogOut size={18} className="lg:w-5 lg:h-5" />
             <span className="font-medium">Logout</span>
           </button>
         </div>
       </aside>
 
       {/* Overlay for mobile */}
-      {isOpen && (
+      {isMobileOpen && (
         <div
-          onClick={() => setIsOpen(false)}
-          className="lg:hidden fixed"
+          onClick={() => setMobileOpen(false)}
+          className="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm"
           style={{ 
-            zIndex: 44,
-            top: '72px',
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.3)'
+            zIndex: 47,
+            top: 0
           }}
         />
       )}

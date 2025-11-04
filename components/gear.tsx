@@ -1,11 +1,41 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
+import { getGeneralSettings, getGeneralSetting } from "@/lib/general-settings"
 
 export default function Gear() {
   const [hasAnimated, setHasAnimated] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
   const observerRef = useRef<IntersectionObserver | null>(null)
+  const [images, setImages] = useState({
+    home_gear_pic_1: "/motorcycle-helmet-protective-gear.jpg",
+    home_gear_pic_2: "/motorcycle-gloves-boots.jpg"
+  })
+  const [textParagraph, setTextParagraph] = useState("")
+
+  useEffect(() => {
+    fetchImages()
+    fetchTextParagraph()
+  }, [])
+
+  const fetchTextParagraph = async () => {
+    const text = await getGeneralSetting('home_gear_text_paragraph')
+    if (text) {
+      setTextParagraph(text)
+    }
+  }
+
+  const fetchImages = async () => {
+    const settings = await getGeneralSettings([
+      'home_gear_pic_1',
+      'home_gear_pic_2'
+    ])
+    
+    setImages(prev => ({
+      home_gear_pic_1: settings.home_gear_pic_1 || prev.home_gear_pic_1,
+      home_gear_pic_2: settings.home_gear_pic_2 || prev.home_gear_pic_2
+    }))
+  }
 
   useEffect(() => {
     if (hasAnimated || typeof window === 'undefined') return
@@ -62,20 +92,26 @@ export default function Gear() {
               <span className="block">GEAR UP FOR</span>
               <span className="block">THE <span className="text-orange-500">ADVENTURE</span></span>
             </h2>
-            <p className="text-slate-950 text-lg mb-6">
-              We provide top-quality protective gear and equipment to ensure your safety and comfort on every ride. From
-              helmets to protective suits, we've got everything you need.
-            </p>
-            <p className="text-slate-950 text-lg mb-6">
-              Our gear is regularly maintained and meets international safety standards. We understand that quality equipment
-              is essential for an enjoyable and safe adventure, which is why we never compromise on safety.
-            </p>
+            {textParagraph ? (
+              <div className="text-slate-950 text-lg mb-6" dangerouslySetInnerHTML={{ __html: textParagraph }} />
+            ) : (
+              <>
+                <p className="text-slate-950 text-lg mb-6">
+                  We provide top-quality protective gear and equipment to ensure your safety and comfort on every ride. From
+                  helmets to protective suits, we've got everything you need.
+                </p>
+                <p className="text-slate-950 text-lg mb-6">
+                  Our gear is regularly maintained and meets international safety standards. We understand that quality equipment
+                  is essential for an enjoyable and safe adventure, which is why we never compromise on safety.
+                </p>
+              </>
+            )}
           </div>
           <div ref={containerRef} className="relative inline-block w-full max-w-full scale-[0.85] md:scale-100 origin-center">
             <img 
               data-gear-main
-              src="/motorcycle-helmet-protective-gear.jpg" 
-              alt="Gear 1" 
+              src={images.home_gear_pic_1} 
+              alt="/placeholder.svg" 
               className="w-full max-w-full h-auto object-cover" 
               style={{ 
                 maxWidth: '469px', 
@@ -90,8 +126,8 @@ export default function Gear() {
             <div className="absolute -left-[5px] -bottom-[35px] w-[272px] max-w-[60%] h-auto bg-orange-500 z-0" style={{aspectRatio:'272/174'}}></div>
             <img
               data-gear-overlay
-              src="/motorcycle-gloves-boots.jpg"
-              alt="Gloves and Boots"
+              src={images.home_gear_pic_2}
+              alt="/placeholder.svg"
               className="absolute -left-[20px] -bottom-[20px] w-[272px] max-w-[60%] h-auto object-cover z-10 shadow-md"
               style={{
                 aspectRatio:'272/174', 

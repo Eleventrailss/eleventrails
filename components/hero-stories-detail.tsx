@@ -14,7 +14,7 @@ export default function HeroStoriesDetail() {
             minHeight: '100%'
           }}
         />
-        <div className="absolute inset-0 bg-[#171717DE]"></div>
+        <div className="absolute inset-0 bg-[#1717179E]"></div>
       </div>
 
       <div className="relative w-full h-full flex items-center justify-center" style={{position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, calc(-50% + 100px))', width: '100%', height: '100%', padding: '20px', boxSizing: 'border-box'}}>

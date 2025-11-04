@@ -3,13 +3,26 @@
 import { useState, useEffect } from "react"
 import { Menu, X, MessageCircle } from "lucide-react"
 import Link from "next/link"
+import { getGeneralSetting } from "@/lib/general-settings"
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const [whatsappMessage, setWhatsappMessage] = useState("Hi%2C%20I%20would%20like%20to%20book%20a%20ride%20with%20ElevenTrails%21")
   
   const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "6282266007272"
-  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=Hi%2C%20I%20would%20like%20to%20book%20a%20ride%20with%20ElevenTrails%21`
+  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`
+  
+  useEffect(() => {
+    fetchWhatsappMessage()
+  }, [])
+
+  const fetchWhatsappMessage = async () => {
+    const message = await getGeneralSetting('whatsapp_message_booknow')
+    if (message) {
+      setWhatsappMessage(encodeURIComponent(message))
+    }
+  }
 
   useEffect(() => {
     const handleScroll = () => {
