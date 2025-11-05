@@ -12,12 +12,26 @@ import {
   Menu,
   X
 } from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useSidebar } from "./sidebar-context"
+import { getGeneralSetting } from "@/lib/general-settings"
+import { getSupabaseImageUrl } from "@/lib/supabase-storage"
 
 export default function AdminSidebar() {
   const pathname = usePathname()
   const { isCollapsed, isMobileOpen, setMobileOpen } = useSidebar()
+  const [logoUrl, setLogoUrl] = useState<string | null>(null)
+
+  useEffect(() => {
+    fetchLogo()
+  }, [])
+
+  const fetchLogo = async () => {
+    const logo = await getGeneralSetting('apps_logo')
+    if (logo) {
+      setLogoUrl(getSupabaseImageUrl(logo))
+    }
+  }
 
   const menuItems = [
     {
@@ -73,7 +87,7 @@ export default function AdminSidebar() {
           lg:top-0
           bottom-0
           w-64
-          ${isCollapsed ? "lg:w-0 lg:overflow-hidden" : "lg:w-64"}
+          ${isCollapsed ? "lg:w-16" : "lg:w-64"}
         `}
         style={{ 
           zIndex: 48,
@@ -81,9 +95,21 @@ export default function AdminSidebar() {
           overflowY: 'auto'
         }}
       >
-        <div className={`p-4 lg:p-6 h-full flex flex-col ${isCollapsed ? 'lg:hidden' : ''}`}>
-          <div className="mb-6 lg:mb-8">
+        <div className={`p-4 ${isCollapsed ? 'lg:p-2' : 'lg:p-6'} h-full flex flex-col`}>
+          <div className={`mb-6 lg:mb-8 ${isCollapsed ? 'lg:hidden' : ''}`}>
             <h1 className="font-bold text-lg lg:text-xl text-white flex items-center gap-2">
+              {logoUrl && (
+                <img 
+                  src={logoUrl} 
+                  alt="ElevenTrails Logo" 
+                  className="h-6 lg:h-7 w-auto object-contain"
+                  style={{ maxHeight: '28px' }}
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement
+                    target.style.display = 'none'
+                  }}
+                />
+              )}
               <span style={{color:'#EE6A28'}}>ElevenTrails</span>
               <span className="text-gray-400 text-xs lg:text-sm">Admin</span>
             </h1>
@@ -98,15 +124,16 @@ export default function AdminSidebar() {
                   href={item.href}
                   onClick={() => setMobileOpen(false)}
                   className={`
-                    flex items-center gap-3 px-3 lg:px-4 py-2.5 lg:py-3 rounded-lg transition-colors text-sm lg:text-base
+                    flex items-center ${isCollapsed ? 'lg:justify-center' : ''} ${isCollapsed ? 'lg:px-2 lg:gap-0' : 'lg:px-4'} px-3 gap-3 py-2.5 lg:py-3 rounded-lg transition-colors text-sm lg:text-base
                     ${item.active 
                       ? "bg-[#EE6A28] text-white" 
                       : "text-gray-300 hover:bg-slate-800 hover:text-white"
                     }
                   `}
+                  title={isCollapsed ? item.label : ''}
                 >
-                  <Icon size={18} className="lg:w-5 lg:h-5" />
-                  <span className="font-medium">{item.label}</span>
+                  <Icon size={18} className="lg:w-5 lg:h-5 flex-shrink-0" />
+                  {!isCollapsed && <span className="font-medium">{item.label}</span>}
                 </Link>
               )
             })}
@@ -114,10 +141,11 @@ export default function AdminSidebar() {
 
           <button
             onClick={handleLogout}
-            className="mt-4 lg:mt-8 w-full flex items-center gap-3 px-3 lg:px-4 py-2.5 lg:py-3 rounded-lg text-gray-300 hover:bg-slate-800 hover:text-white transition-colors text-sm lg:text-base"
+            className={`mt-4 lg:mt-8 w-full flex items-center ${isCollapsed ? 'lg:justify-center' : ''} ${isCollapsed ? 'lg:px-2 lg:gap-0' : 'lg:px-4'} px-3 gap-3 py-2.5 lg:py-3 rounded-lg text-gray-300 hover:bg-slate-800 hover:text-white transition-colors text-sm lg:text-base`}
+            title={isCollapsed ? 'Logout' : ''}
           >
-            <LogOut size={18} className="lg:w-5 lg:h-5" />
-            <span className="font-medium">Logout</span>
+            <LogOut size={18} className="lg:w-5 lg:h-5 flex-shrink-0" />
+            {!isCollapsed && <span className="font-medium">Logout</span>}
           </button>
         </div>
       </aside>

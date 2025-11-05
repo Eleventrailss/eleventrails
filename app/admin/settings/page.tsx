@@ -178,7 +178,7 @@ function AdminSettingsContent() {
       const timestamp = Date.now()
       const fileExt = file.name.split('.').pop()
       const storagePath = `general_setting/${settingId}_${key}_${timestamp}.${fileExt}`
-      
+
       // Upload via API route to bypass RLS (uses service role key)
       const formData = new FormData()
       formData.append('file', file)
@@ -672,121 +672,121 @@ function AdminSettingsContent() {
             ) : (
               <div className="bg-slate-900 rounded-lg overflow-hidden">
                 <div className="px-4 sm:px-6 pt-4 sm:pt-6">
-                  <Table key={`settings-table-${searchQuery}-${filteredSettings.length}`}>
-                    <TableHeader>
-                      <TableRow className="bg-slate-800 hover:bg-slate-800">
+                <Table key={`settings-table-${searchQuery}-${filteredSettings.length}`}>
+                  <TableHeader>
+                    <TableRow className="bg-slate-800 hover:bg-slate-800">
+                      {isDuplicateMode && (
+                        <TableHead className="text-white text-center w-16">
+                          <Checkbox
+                            checked={selectedSettings.size === filteredSettings.length && filteredSettings.length > 0}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                setSelectedSettings(new Set(filteredSettings.map(s => s.id)))
+                              } else {
+                                setSelectedSettings(new Set())
+                              }
+                            }}
+                          />
+                        </TableHead>
+                      )}
+                      <TableHead className="text-white">Key</TableHead>
+                      <TableHead className="text-white">Value</TableHead>
+                      <TableHead className="text-white hidden md:table-cell">Description</TableHead>
+                      <TableHead className="text-white hidden lg:table-cell">Updated</TableHead>
+                      <TableHead className="text-white text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody key={`table-body-${searchQuery}-${filteredSettings.length}`}>
+                    {(() => {
+                      const paginatedSettings = filteredSettings.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                      console.log('Rendering table with', paginatedSettings.length, 'items, searchQuery:', searchQuery, 'total filtered:', filteredSettings.length)
+                      return paginatedSettings.map((setting) => (
+                        <TableRow key={setting.id} className="hover:bg-slate-800/50">
                         {isDuplicateMode && (
-                          <TableHead className="text-white text-center w-16">
+                          <TableCell className="text-center">
                             <Checkbox
-                              checked={selectedSettings.size === filteredSettings.length && filteredSettings.length > 0}
-                              onCheckedChange={(checked) => {
-                                if (checked) {
-                                  setSelectedSettings(new Set(filteredSettings.map(s => s.id)))
-                                } else {
-                                  setSelectedSettings(new Set())
-                                }
-                              }}
+                              checked={selectedSettings.has(setting.id)}
+                              onCheckedChange={() => handleToggleSelectSetting(setting.id)}
                             />
-                          </TableHead>
+                          </TableCell>
                         )}
-                        <TableHead className="text-white">Key</TableHead>
-                        <TableHead className="text-white">Value</TableHead>
-                        <TableHead className="text-white hidden md:table-cell">Description</TableHead>
-                        <TableHead className="text-white hidden lg:table-cell">Updated</TableHead>
-                        <TableHead className="text-white text-right">Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody key={`table-body-${searchQuery}-${filteredSettings.length}`}>
-                      {(() => {
-                        const paginatedSettings = filteredSettings.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-                        console.log('Rendering table with', paginatedSettings.length, 'items, searchQuery:', searchQuery, 'total filtered:', filteredSettings.length)
-                        return paginatedSettings.map((setting) => (
-                          <TableRow key={setting.id} className="hover:bg-slate-800/50">
-                          {isDuplicateMode && (
-                            <TableCell className="text-center">
-                              <Checkbox
-                                checked={selectedSettings.has(setting.id)}
-                                onCheckedChange={() => handleToggleSelectSetting(setting.id)}
+                        <TableCell className="font-medium text-white">
+                          {setting.key}
+                        </TableCell>
+                        <TableCell className="text-gray-300">
+                          {setting.value && (setting.value.startsWith('http') || setting.value.startsWith('/')) ? (
+                            setting.value.match(/\.(mp4|webm|ogg|mov|avi|wmv|flv|mkv)$/i) ? (
+                              <video
+                                src={setting.value}
+                                controls
+                                className="w-32 h-20 object-cover rounded border border-slate-700"
+                                onError={(e) => {
+                                  const parent = e.currentTarget.parentElement
+                                  if (parent) {
+                                    parent.innerHTML = `<div class="max-w-xs truncate text-gray-300" title="${setting.value}">${setting.value || '-'}</div>`
+                                  }
+                                }}
                               />
-                            </TableCell>
-                          )}
-                          <TableCell className="font-medium text-white">
-                            {setting.key}
-                          </TableCell>
-                          <TableCell className="text-gray-300">
-                            {setting.value && (setting.value.startsWith('http') || setting.value.startsWith('/')) ? (
-                              setting.value.match(/\.(mp4|webm|ogg|mov|avi|wmv|flv|mkv)$/i) ? (
-                                <video
-                                  src={setting.value}
-                                  controls
-                                  className="w-32 h-20 object-cover rounded border border-slate-700"
-                                  onError={(e) => {
-                                    const parent = e.currentTarget.parentElement
-                                    if (parent) {
-                                      parent.innerHTML = `<div class="max-w-xs truncate text-gray-300" title="${setting.value}">${setting.value || '-'}</div>`
-                                    }
-                                  }}
-                                />
-                              ) : (
-                                <img
-                                  src={setting.value}
-                                  alt={setting.key}
-                                  className="w-16 h-16 object-cover rounded border border-slate-700"
-                                  onError={(e) => {
-                                    const parent = e.currentTarget.parentElement
-                                    if (parent) {
-                                      parent.innerHTML = `<div class="max-w-xs truncate text-gray-300" title="${setting.value}">${setting.value || '-'}</div>`
-                                    }
-                                  }}
-                                />
-                              )
                             ) : (
-                              <div className="max-w-xs truncate" title={setting.value}>
-                                {setting.value || '-'}
-                              </div>
-                            )}
-                          </TableCell>
-                          <TableCell className="text-gray-400 hidden md:table-cell">
-                            <div className="max-w-xs truncate" title={setting.description || ''}>
-                              {setting.description || '-'}
+                              <img
+                                src={setting.value}
+                                alt={setting.key}
+                                className="w-16 h-16 object-cover rounded border border-slate-700"
+                                onError={(e) => {
+                                  const parent = e.currentTarget.parentElement
+                                  if (parent) {
+                                    parent.innerHTML = `<div class="max-w-xs truncate text-gray-300" title="${setting.value}">${setting.value || '-'}</div>`
+                                  }
+                                }}
+                              />
+                            )
+                          ) : (
+                            <div className="max-w-xs truncate" title={setting.value}>
+                              {setting.value || '-'}
                             </div>
-                          </TableCell>
-                          <TableCell className="text-gray-400 hidden lg:table-cell text-sm">
-                            {formatDate(setting.updated_at)}
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <div className="flex items-center justify-end gap-2">
-                              <button
-                                onClick={() => handleStartEdit(setting)}
-                                className="p-1.5 text-blue-400 hover:text-blue-300 hover:bg-blue-500/20 rounded transition-colors"
-                                title="Edit"
-                              >
-                                <Edit size={16} />
-                              </button>
-                              <button
-                                onClick={() => handleDelete(setting.id)}
+                          )}
+                        </TableCell>
+                        <TableCell className="text-gray-400 hidden md:table-cell">
+                          <div className="max-w-xs truncate" title={setting.description || ''}>
+                            {setting.description || '-'}
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-gray-400 hidden lg:table-cell text-sm">
+                          {formatDate(setting.updated_at)}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <button
+                              onClick={() => handleStartEdit(setting)}
+                              className="p-1.5 text-blue-400 hover:text-blue-300 hover:bg-blue-500/20 rounded transition-colors"
+                              title="Edit"
+                            >
+                              <Edit size={16} />
+                            </button>
+                            <button
+                              onClick={() => handleDelete(setting.id)}
                                 disabled
                                 className="p-1.5 text-red-400/50 hover:text-red-300/50 hover:bg-red-500/10 rounded transition-colors cursor-not-allowed"
                                 title="Delete (Disabled)"
-                              >
-                                <X size={16} />
-                              </button>
-                            </div>
-                          </TableCell>
-                          </TableRow>
-                        ))
-                      })()}
-                    </TableBody>
-                  </Table>
+                            >
+                              <X size={16} />
+                            </button>
+                          </div>
+                        </TableCell>
+                        </TableRow>
+                      ))
+                    })()}
+                  </TableBody>
+                </Table>
                 </div>
                 <div className="px-4 sm:px-6 pb-4 sm:pb-6">
-                  <Pagination
-                    currentPage={currentPage}
-                    totalPages={Math.ceil(filteredSettings.length / itemsPerPage)}
-                    onPageChange={setCurrentPage}
-                    itemsPerPage={itemsPerPage}
-                    totalItems={filteredSettings.length}
-                  />
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={Math.ceil(filteredSettings.length / itemsPerPage)}
+                  onPageChange={setCurrentPage}
+                  itemsPerPage={itemsPerPage}
+                  totalItems={filteredSettings.length}
+                />
                 </div>
               </div>
             )}
