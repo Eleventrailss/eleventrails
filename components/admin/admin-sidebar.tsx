@@ -4,7 +4,6 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { 
   LayoutDashboard, 
-  PlusCircle, 
   BookOpen, 
   Settings,
   HelpCircle,
@@ -28,22 +27,16 @@ export default function AdminSidebar() {
       active: pathname === "/admin/rides"
     },
     {
-      href: "/admin/add-rides",
-      label: "Add Rides",
-      icon: PlusCircle,
-      active: pathname === "/admin/add-rides"
-    },
-    {
       href: "/admin/stories",
       label: "Stories",
       icon: BookOpen,
       active: pathname === "/admin/stories"
     },
     {
-      href: "/admin/settings",
-      label: "Settings",
-      icon: Settings,
-      active: pathname === "/admin/settings"
+      href: "/admin/testimonials",
+      label: "Testimonials",
+      icon: MessageSquare,
+      active: pathname === "/admin/testimonials"
     },
     {
       href: "/admin/faq",
@@ -52,10 +45,10 @@ export default function AdminSidebar() {
       active: pathname === "/admin/faq"
     },
     {
-      href: "/admin/testimonials",
-      label: "Testimonials",
-      icon: MessageSquare,
-      active: pathname === "/admin/testimonials"
+      href: "/admin/settings",
+      label: "Settings",
+      icon: Settings,
+      active: pathname === "/admin/settings"
     }
   ]
 

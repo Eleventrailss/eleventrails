@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { getGeneralSettings, getGeneralSetting } from "@/lib/general-settings"
+import { getSupabaseImageUrl } from "@/lib/supabase-storage"
 
 export default function Gear() {
   const [hasAnimated, setHasAnimated] = useState(false)
@@ -32,8 +33,8 @@ export default function Gear() {
     ])
     
     setImages(prev => ({
-      home_gear_pic_1: settings.home_gear_pic_1 || prev.home_gear_pic_1,
-      home_gear_pic_2: settings.home_gear_pic_2 || prev.home_gear_pic_2
+      home_gear_pic_1: getSupabaseImageUrl(settings.home_gear_pic_1) || prev.home_gear_pic_1,
+      home_gear_pic_2: getSupabaseImageUrl(settings.home_gear_pic_2) || prev.home_gear_pic_2
     }))
   }
 
@@ -96,14 +97,14 @@ export default function Gear() {
               <div className="text-slate-950 text-lg mb-6" dangerouslySetInnerHTML={{ __html: textParagraph }} />
             ) : (
               <>
-                <p className="text-slate-950 text-lg mb-6">
-                  We provide top-quality protective gear and equipment to ensure your safety and comfort on every ride. From
-                  helmets to protective suits, we've got everything you need.
-                </p>
-                <p className="text-slate-950 text-lg mb-6">
-                  Our gear is regularly maintained and meets international safety standards. We understand that quality equipment
-                  is essential for an enjoyable and safe adventure, which is why we never compromise on safety.
-                </p>
+            <p className="text-slate-950 text-lg mb-6">
+              We provide top-quality protective gear and equipment to ensure your safety and comfort on every ride. From
+              helmets to protective suits, we've got everything you need.
+            </p>
+            <p className="text-slate-950 text-lg mb-6">
+              Our gear is regularly maintained and meets international safety standards. We understand that quality equipment
+              is essential for an enjoyable and safe adventure, which is why we never compromise on safety.
+            </p>
               </>
             )}
           </div>

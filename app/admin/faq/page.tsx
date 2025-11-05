@@ -422,133 +422,134 @@ function AdminFAQContent() {
             </div>
           ) : (
             <div className="bg-slate-900 rounded-lg overflow-hidden">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-slate-800 hover:bg-slate-800">
-                    {isDuplicateMode && (
-                      <TableHead className="text-white text-center w-16">
-                        <Checkbox
-                          checked={selectedFaqs.size === faqs.length && faqs.length > 0}
-                          onCheckedChange={(checked) => {
-                            if (checked) {
-                              setSelectedFaqs(new Set(faqs.map(f => f.id)))
-                            } else {
-                              setSelectedFaqs(new Set())
-                            }
-                          }}
-                        />
-                      </TableHead>
-                    )}
-                    <TableHead className="text-white w-16">Order</TableHead>
-                    <TableHead className="text-white">Question</TableHead>
-                    <TableHead className="text-white hidden md:table-cell">Answer</TableHead>
-                    <TableHead className="text-white hidden lg:table-cell">Status</TableHead>
-                    <TableHead className="text-white hidden lg:table-cell">Updated</TableHead>
-                    <TableHead className="text-white text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {faqs.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((faq, index) => {
-                    const sortedFAQs = [...faqs].sort((a, b) => a.display_order - b.display_order)
-                    const currentIndex = sortedFAQs.findIndex(f => f.id === faq.id)
-                    const canMoveUp = currentIndex > 0
-                    const canMoveDown = currentIndex < sortedFAQs.length - 1
-                    
-                    return (
-                      <TableRow key={faq.id} className="hover:bg-slate-800/50">
-                        {isDuplicateMode && (
-                          <TableCell className="text-center">
-                            <Checkbox
-                              checked={selectedFaqs.has(faq.id)}
-                              onCheckedChange={() => handleToggleSelectFAQ(faq.id)}
-                            />
+              <div className="px-4 sm:px-6 pt-4 sm:pt-6">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-slate-800 hover:bg-slate-800">
+                      {isDuplicateMode && (
+                        <TableHead className="text-white text-center w-16">
+                          <Checkbox
+                            checked={selectedFaqs.size === faqs.length && faqs.length > 0}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                setSelectedFaqs(new Set(faqs.map(f => f.id)))
+                              } else {
+                                setSelectedFaqs(new Set())
+                              }
+                            }}
+                          />
+                        </TableHead>
+                      )}
+                      <TableHead className="text-white w-16">Order</TableHead>
+                      <TableHead className="text-white">Question</TableHead>
+                      <TableHead className="text-white hidden md:table-cell">Answer</TableHead>
+                      <TableHead className="text-white hidden lg:table-cell">Updated</TableHead>
+                      <TableHead className="text-white text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {faqs.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((faq, index) => {
+                      const sortedFAQs = [...faqs].sort((a, b) => a.display_order - b.display_order)
+                      const currentIndex = sortedFAQs.findIndex(f => f.id === faq.id)
+                      const canMoveUp = currentIndex > 0
+                      const canMoveDown = currentIndex < sortedFAQs.length - 1
+                      
+                      return (
+                        <TableRow key={faq.id} className="hover:bg-slate-800/50">
+                          {isDuplicateMode && (
+                            <TableCell className="text-center">
+                              <Checkbox
+                                checked={selectedFaqs.has(faq.id)}
+                                onCheckedChange={() => handleToggleSelectFAQ(faq.id)}
+                              />
+                            </TableCell>
+                          )}
+                          <TableCell className="text-gray-300">
+                            <div className="flex items-center gap-1">
+                              <button
+                                onClick={() => handleMoveOrder(faq.id, 'up')}
+                                disabled={!canMoveUp}
+                                className={`p-1 rounded transition-colors ${
+                                  canMoveUp 
+                                    ? 'text-gray-400 hover:text-white hover:bg-slate-700' 
+                                    : 'text-gray-600 cursor-not-allowed'
+                                }`}
+                                title="Move up"
+                              >
+                                <ArrowUp size={14} />
+                              </button>
+                              <span className="text-sm font-medium">{faq.display_order}</span>
+                              <button
+                                onClick={() => handleMoveOrder(faq.id, 'down')}
+                                disabled={!canMoveDown}
+                                className={`p-1 rounded transition-colors ${
+                                  canMoveDown 
+                                    ? 'text-gray-400 hover:text-white hover:bg-slate-700' 
+                                    : 'text-gray-600 cursor-not-allowed'
+                                }`}
+                                title="Move down"
+                              >
+                                <ArrowDown size={14} />
+                              </button>
+                            </div>
                           </TableCell>
-                        )}
-                        <TableCell className="text-gray-300">
-                          <div className="flex items-center gap-1">
-                            <button
-                              onClick={() => handleMoveOrder(faq.id, 'up')}
-                              disabled={!canMoveUp}
-                              className={`p-1 rounded transition-colors ${
-                                canMoveUp 
-                                  ? 'text-gray-400 hover:text-white hover:bg-slate-700' 
-                                  : 'text-gray-600 cursor-not-allowed'
-                              }`}
-                              title="Move up"
-                            >
-                              <ArrowUp size={14} />
-                            </button>
-                            <span className="text-sm font-medium">{faq.display_order}</span>
-                            <button
-                              onClick={() => handleMoveOrder(faq.id, 'down')}
-                              disabled={!canMoveDown}
-                              className={`p-1 rounded transition-colors ${
-                                canMoveDown 
-                                  ? 'text-gray-400 hover:text-white hover:bg-slate-700' 
-                                  : 'text-gray-600 cursor-not-allowed'
-                              }`}
-                              title="Move down"
-                            >
-                              <ArrowDown size={14} />
-                            </button>
-                          </div>
-                        </TableCell>
-                        <TableCell className="font-medium text-white">
-                          <div className="max-w-xs truncate" title={faq.question}>
-                            {truncateText(faq.question, 60)}
-                          </div>
-                        </TableCell>
-                        <TableCell className="text-gray-300 hidden md:table-cell">
-                          <div className="max-w-md truncate" title={faq.answer}>
-                            {truncateText(faq.answer, 100)}
-                          </div>
-                        </TableCell>
-                        <TableCell className="hidden lg:table-cell">
-                          <button
-                            onClick={() => handleToggleActive(faq.id, faq.is_active)}
-                            className={`p-1 sm:p-1.5 rounded transition-colors ${
-                              faq.is_active
-                                ? 'text-green-400 hover:text-green-300 hover:bg-green-500/20'
-                                : 'text-gray-400 hover:text-gray-300 hover:bg-gray-500/20'
-                            }`}
-                            title={faq.is_active ? 'Active - Click to deactivate' : 'Inactive - Click to activate'}
-                          >
-                            <Power size={16} className={faq.is_active ? '' : 'opacity-50'} />
-                          </button>
-                        </TableCell>
-                        <TableCell className="text-gray-400 hidden lg:table-cell text-sm">
-                          {formatDate(faq.updated_at)}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex items-center justify-end gap-2">
-                            <button
-                              onClick={() => handleStartEdit(faq)}
-                              className="p-1.5 text-blue-400 hover:text-blue-300 hover:bg-blue-500/20 rounded transition-colors"
-                              title="Edit"
-                            >
-                              <Edit size={16} />
-                            </button>
-                            <button
-                              onClick={() => handleDelete(faq.id)}
-                              className="p-1.5 text-red-400 hover:text-red-300 hover:bg-red-500/20 rounded transition-colors"
-                              title="Delete"
-                            >
-                              <X size={16} />
-                            </button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    )
-                  })}
-                </TableBody>
-              </Table>
-              <Pagination
-                currentPage={currentPage}
-                totalPages={Math.ceil(faqs.length / itemsPerPage)}
-                onPageChange={setCurrentPage}
-                itemsPerPage={itemsPerPage}
-                totalItems={faqs.length}
-              />
+                          <TableCell className="font-medium text-white">
+                            <div className="max-w-xs truncate" title={faq.question}>
+                              {truncateText(faq.question, 60)}
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-gray-300 hidden md:table-cell">
+                            <div className="max-w-md truncate" title={faq.answer}>
+                              {truncateText(faq.answer, 100)}
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-gray-400 hidden lg:table-cell text-sm">
+                            {formatDate(faq.updated_at)}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex items-center justify-end gap-2">
+                              <button
+                                onClick={() => handleToggleActive(faq.id, faq.is_active)}
+                                className={`p-1 sm:p-1.5 rounded transition-colors ${
+                                  faq.is_active
+                                    ? 'text-green-400 hover:text-green-300 hover:bg-green-500/20'
+                                    : 'text-gray-400 hover:text-gray-300 hover:bg-gray-500/20'
+                                }`}
+                                title={faq.is_active ? 'Active - Click to deactivate' : 'Inactive - Click to activate'}
+                              >
+                                <Power size={16} className={faq.is_active ? '' : 'opacity-50'} />
+                              </button>
+                              <button
+                                onClick={() => handleStartEdit(faq)}
+                                className="p-1.5 text-blue-400 hover:text-blue-300 hover:bg-blue-500/20 rounded transition-colors"
+                                title="Edit"
+                              >
+                                <Edit size={16} />
+                              </button>
+                              <button
+                                onClick={() => handleDelete(faq.id)}
+                                className="p-1.5 text-red-400 hover:text-red-300 hover:bg-red-500/20 rounded transition-colors"
+                                title="Delete"
+                              >
+                                <X size={16} />
+                              </button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      )
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
+              <div className="px-4 sm:px-6 pb-4 sm:pb-6">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={Math.ceil(faqs.length / itemsPerPage)}
+                  onPageChange={setCurrentPage}
+                  itemsPerPage={itemsPerPage}
+                  totalItems={faqs.length}
+                />
+              </div>
             </div>
           )}
         </main>

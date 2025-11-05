@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 import StructuredData from '@/components/structured-data'
+import FaviconUpdater from '@/components/favicon-updater'
 
 const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
@@ -94,6 +95,7 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
       </head>
       <body className={`font-plusjakarta antialiased`}>
+        <FaviconUpdater />
         <StructuredData />
         {children}
         <Analytics />

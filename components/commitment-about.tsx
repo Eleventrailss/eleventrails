@@ -126,16 +126,16 @@ export default function CommitmentAbout() {
               <div className="text-gray-300 text-lg mb-6" dangerouslySetInnerHTML={{ __html: commitmentText }} />
             ) : (
               <>
-                <p className="text-gray-300 text-lg mb-6">
-                  Our team consists of experienced riders and adventure guides with over 50 years of combined experience in
-                  extreme sports and trail riding. We're passionate about sharing the thrill of off-road adventures while
-                  ensuring safety and creating unforgettable memories.
-                </p>
-                <br />
-                <p className="text-gray-300 text-lg mb-6">
-                  Each team member is certified, trained, and dedicated to providing the best possible experience for our
-                  guests. We believe in pushing limits responsibly and helping riders of all levels achieve their goals.
-                </p>
+            <p className="text-gray-300 text-lg mb-6">
+              Our team consists of experienced riders and adventure guides with over 50 years of combined experience in
+              extreme sports and trail riding. We're passionate about sharing the thrill of off-road adventures while
+              ensuring safety and creating unforgettable memories.
+            </p>
+            <br />
+            <p className="text-gray-300 text-lg mb-6">
+              Each team member is certified, trained, and dedicated to providing the best possible experience for our
+              guests. We believe in pushing limits responsibly and helping riders of all levels achieve their goals.
+            </p>
               </>
             )}
           </div>
@@ -151,13 +151,13 @@ export default function CommitmentAbout() {
               <div className="text-gray-300 text-lg mb-6" dangerouslySetInnerHTML={{ __html: embarkText }} />
             ) : (
               <>
-                <p className="text-gray-300 text-lg mb-6">
-                  Join us for an unforgettable dirt bike adventure through Lombok's most spectacular landscapes. Our expert guides will lead you through challenging trails, breathtaking viewpoints, and hidden gems that showcase the natural beauty of this incredible island. Whether you're seeking adrenaline-pumping action or scenic exploration, we have the perfect trail for you.
-                </p>
-                <br />
-                <p className="text-gray-300 text-lg mb-6">
-                  Book your adventure today and experience the thrill of off-road riding with ElevenTrails. Our team is ready to help you create memories that will last a lifetime. Contact us via WhatsApp to reserve your spot and start planning your ultimate dirt bike adventure.
-                </p>
+            <p className="text-gray-300 text-lg mb-6">
+              Join us for an unforgettable dirt bike adventure through Lombok's most spectacular landscapes. Our expert guides will lead you through challenging trails, breathtaking viewpoints, and hidden gems that showcase the natural beauty of this incredible island. Whether you're seeking adrenaline-pumping action or scenic exploration, we have the perfect trail for you.
+            </p>
+            <br />
+            <p className="text-gray-300 text-lg mb-6">
+              Book your adventure today and experience the thrill of off-road riding with ElevenTrails. Our team is ready to help you create memories that will last a lifetime. Contact us via WhatsApp to reserve your spot and start planning your ultimate dirt bike adventure.
+            </p>
               </>
             )}
             <a

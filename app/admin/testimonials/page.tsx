@@ -572,157 +572,158 @@ function AdminTestimonialsContent() {
             </div>
           ) : (
             <div className="bg-slate-900 rounded-lg overflow-hidden">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-slate-800 hover:bg-slate-800">
-                    {isDuplicateMode && (
-                      <TableHead className="text-white text-center w-16">
-                        <Checkbox
-                          checked={selectedTestimonials.size === testimonials.length && testimonials.length > 0}
-                          onCheckedChange={(checked) => {
-                            if (checked) {
-                              setSelectedTestimonials(new Set(testimonials.map(t => t.id)))
-                            } else {
-                              setSelectedTestimonials(new Set())
-                            }
-                          }}
-                        />
-                      </TableHead>
-                    )}
-                    <TableHead className="text-white w-16">Order</TableHead>
-                    <TableHead className="text-white">Name</TableHead>
-                    <TableHead className="text-white hidden md:table-cell">Rating</TableHead>
-                    <TableHead className="text-white hidden md:table-cell">Content</TableHead>
-                    <TableHead className="text-white hidden lg:table-cell">Avatar</TableHead>
-                    <TableHead className="text-white hidden lg:table-cell">Status</TableHead>
-                    <TableHead className="text-white hidden lg:table-cell">Updated</TableHead>
-                    <TableHead className="text-white text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {testimonials.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((testimonial) => {
-                    const sortedTestimonials = [...testimonials].sort((a, b) => a.display_order - b.display_order)
-                    const currentIndex = sortedTestimonials.findIndex(t => t.id === testimonial.id)
-                    const canMoveUp = currentIndex > 0
-                    const canMoveDown = currentIndex < sortedTestimonials.length - 1
-                    
-                    return (
-                      <TableRow key={testimonial.id} className="hover:bg-slate-800/50">
-                        {isDuplicateMode && (
-                          <TableCell className="text-center">
-                            <Checkbox
-                              checked={selectedTestimonials.has(testimonial.id)}
-                              onCheckedChange={() => handleToggleSelectTestimonial(testimonial.id)}
-                            />
-                          </TableCell>
-                        )}
-                        <TableCell className="text-gray-300">
-                          <div className="flex items-center gap-1">
-                            <button
-                              onClick={() => handleMoveOrder(testimonial.id, 'up')}
-                              disabled={!canMoveUp}
-                              className={`p-1 rounded transition-colors ${
-                                canMoveUp 
-                                  ? 'text-gray-400 hover:text-white hover:bg-slate-700' 
-                                  : 'text-gray-600 cursor-not-allowed'
-                              }`}
-                              title="Move up"
-                            >
-                              <ArrowUp size={14} />
-                            </button>
-                            <span className="text-sm font-medium">{testimonial.display_order}</span>
-                            <button
-                              onClick={() => handleMoveOrder(testimonial.id, 'down')}
-                              disabled={!canMoveDown}
-                              className={`p-1 rounded transition-colors ${
-                                canMoveDown 
-                                  ? 'text-gray-400 hover:text-white hover:bg-slate-700' 
-                                  : 'text-gray-600 cursor-not-allowed'
-                              }`}
-                              title="Move down"
-                            >
-                              <ArrowDown size={14} />
-                            </button>
-                          </div>
-                        </TableCell>
-                        <TableCell className="font-medium text-white">
-                          <div className="max-w-xs truncate" title={testimonial.name}>
-                            {testimonial.name}
-                          </div>
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">
-                          <div className="flex items-center gap-1">
-                            {renderStars(testimonial.rating)}
-                          </div>
-                        </TableCell>
-                        <TableCell className="text-gray-300 hidden md:table-cell">
-                          <div className="max-w-md truncate" title={testimonial.content}>
-                            {truncateText(testimonial.content, 100)}
-                          </div>
-                        </TableCell>
-                        <TableCell className="hidden lg:table-cell">
-                          {testimonial.avatar_url ? (
-                            <img
-                              src={testimonial.avatar_url}
-                              alt={testimonial.name}
-                              className="w-10 h-10 rounded-full object-cover border border-slate-700"
-                              onError={(e) => {
-                                const target = e.target as HTMLImageElement
-                                target.src = '/placeholder-user.jpg'
-                              }}
-                            />
-                          ) : (
-                            <div className="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-gray-400 text-xs">
-                              No img
-                            </div>
+              <div className="px-4 sm:px-6 pt-4 sm:pt-6">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-slate-800 hover:bg-slate-800">
+                      {isDuplicateMode && (
+                        <TableHead className="text-white text-center w-16">
+                          <Checkbox
+                            checked={selectedTestimonials.size === testimonials.length && testimonials.length > 0}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                setSelectedTestimonials(new Set(testimonials.map(t => t.id)))
+                              } else {
+                                setSelectedTestimonials(new Set())
+                              }
+                            }}
+                          />
+                        </TableHead>
+                      )}
+                      <TableHead className="text-white w-16">Order</TableHead>
+                      <TableHead className="text-white">Name</TableHead>
+                      <TableHead className="text-white hidden md:table-cell">Rating</TableHead>
+                      <TableHead className="text-white hidden md:table-cell">Content</TableHead>
+                      <TableHead className="text-white hidden lg:table-cell">Avatar</TableHead>
+                      <TableHead className="text-white hidden lg:table-cell">Updated</TableHead>
+                      <TableHead className="text-white text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {testimonials.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((testimonial) => {
+                      const sortedTestimonials = [...testimonials].sort((a, b) => a.display_order - b.display_order)
+                      const currentIndex = sortedTestimonials.findIndex(t => t.id === testimonial.id)
+                      const canMoveUp = currentIndex > 0
+                      const canMoveDown = currentIndex < sortedTestimonials.length - 1
+                      
+                      return (
+                        <TableRow key={testimonial.id} className="hover:bg-slate-800/50">
+                          {isDuplicateMode && (
+                            <TableCell className="text-center">
+                              <Checkbox
+                                checked={selectedTestimonials.has(testimonial.id)}
+                                onCheckedChange={() => handleToggleSelectTestimonial(testimonial.id)}
+                              />
+                            </TableCell>
                           )}
-                        </TableCell>
-                        <TableCell className="hidden lg:table-cell">
-                          <button
-                            onClick={() => handleToggleActive(testimonial.id, testimonial.is_active)}
-                            className={`p-1 sm:p-1.5 rounded transition-colors ${
-                              testimonial.is_active
-                                ? 'text-green-400 hover:text-green-300 hover:bg-green-500/20'
-                                : 'text-gray-400 hover:text-gray-300 hover:bg-gray-500/20'
-                            }`}
-                            title={testimonial.is_active ? 'Active - Click to deactivate' : 'Inactive - Click to activate'}
-                          >
-                            <Power size={16} className={testimonial.is_active ? '' : 'opacity-50'} />
-                          </button>
-                        </TableCell>
-                        <TableCell className="text-gray-400 hidden lg:table-cell text-sm">
-                          {formatDate(testimonial.updated_at)}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex items-center justify-end gap-2">
-                            <button
-                              onClick={() => handleStartEdit(testimonial)}
-                              className="p-1.5 text-blue-400 hover:text-blue-300 hover:bg-blue-500/20 rounded transition-colors"
-                              title="Edit"
-                            >
-                              <Edit size={16} />
-                            </button>
-                            <button
-                              onClick={() => handleDelete(testimonial.id)}
-                              className="p-1.5 text-red-400 hover:text-red-300 hover:bg-red-500/20 rounded transition-colors"
-                              title="Delete"
-                            >
-                              <X size={16} />
-                            </button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    )
-                  })}
-                </TableBody>
-              </Table>
-              <Pagination
-                currentPage={currentPage}
-                totalPages={Math.ceil(testimonials.length / itemsPerPage)}
-                onPageChange={setCurrentPage}
-                itemsPerPage={itemsPerPage}
-                totalItems={testimonials.length}
-              />
+                          <TableCell className="text-gray-300">
+                            <div className="flex items-center gap-1">
+                              <button
+                                onClick={() => handleMoveOrder(testimonial.id, 'up')}
+                                disabled={!canMoveUp}
+                                className={`p-1 rounded transition-colors ${
+                                  canMoveUp 
+                                    ? 'text-gray-400 hover:text-white hover:bg-slate-700' 
+                                    : 'text-gray-600 cursor-not-allowed'
+                                }`}
+                                title="Move up"
+                              >
+                                <ArrowUp size={14} />
+                              </button>
+                              <span className="text-sm font-medium">{testimonial.display_order}</span>
+                              <button
+                                onClick={() => handleMoveOrder(testimonial.id, 'down')}
+                                disabled={!canMoveDown}
+                                className={`p-1 rounded transition-colors ${
+                                  canMoveDown 
+                                    ? 'text-gray-400 hover:text-white hover:bg-slate-700' 
+                                    : 'text-gray-600 cursor-not-allowed'
+                                }`}
+                                title="Move down"
+                              >
+                                <ArrowDown size={14} />
+                              </button>
+                            </div>
+                          </TableCell>
+                          <TableCell className="font-medium text-white">
+                            <div className="max-w-xs truncate" title={testimonial.name}>
+                              {testimonial.name}
+                            </div>
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell">
+                            <div className="flex items-center gap-1">
+                              {renderStars(testimonial.rating)}
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-gray-300 hidden md:table-cell">
+                            <div className="max-w-md truncate" title={testimonial.content}>
+                              {truncateText(testimonial.content, 100)}
+                            </div>
+                          </TableCell>
+                          <TableCell className="hidden lg:table-cell">
+                            {testimonial.avatar_url ? (
+                              <img
+                                src={testimonial.avatar_url}
+                                alt={testimonial.name}
+                                className="w-10 h-10 rounded-full object-cover border border-slate-700"
+                                onError={(e) => {
+                                  const target = e.target as HTMLImageElement
+                                  target.src = '/placeholder-user.jpg'
+                                }}
+                              />
+                            ) : (
+                              <div className="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-gray-400 text-xs">
+                                No img
+                              </div>
+                            )}
+                          </TableCell>
+                          <TableCell className="text-gray-400 hidden lg:table-cell text-sm">
+                            {formatDate(testimonial.updated_at)}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex items-center justify-end gap-2">
+                              <button
+                                onClick={() => handleToggleActive(testimonial.id, testimonial.is_active)}
+                                className={`p-1 sm:p-1.5 rounded transition-colors ${
+                                  testimonial.is_active
+                                    ? 'text-green-400 hover:text-green-300 hover:bg-green-500/20'
+                                    : 'text-gray-400 hover:text-gray-300 hover:bg-gray-500/20'
+                                }`}
+                                title={testimonial.is_active ? 'Active - Click to deactivate' : 'Inactive - Click to activate'}
+                              >
+                                <Power size={16} className={testimonial.is_active ? '' : 'opacity-50'} />
+                              </button>
+                              <button
+                                onClick={() => handleStartEdit(testimonial)}
+                                className="p-1.5 text-blue-400 hover:text-blue-300 hover:bg-blue-500/20 rounded transition-colors"
+                                title="Edit"
+                              >
+                                <Edit size={16} />
+                              </button>
+                              <button
+                                onClick={() => handleDelete(testimonial.id)}
+                                className="p-1.5 text-red-400 hover:text-red-300 hover:bg-red-500/20 rounded transition-colors"
+                                title="Delete"
+                              >
+                                <X size={16} />
+                              </button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      )
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
+              <div className="px-4 sm:px-6 pb-4 sm:pb-6">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={Math.ceil(testimonials.length / itemsPerPage)}
+                  onPageChange={setCurrentPage}
+                  itemsPerPage={itemsPerPage}
+                  totalItems={testimonials.length}
+                />
+              </div>
             </div>
           )}
         </main>

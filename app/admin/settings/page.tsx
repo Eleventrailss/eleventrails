@@ -13,6 +13,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Progress } from "@/components/ui/progress"
 import Pagination from "@/components/admin/pagination"
 import RichTextEditor from "@/components/admin/rich-text-editor"
+import { uploadToSupabaseStorage, deleteFromSupabaseStorage } from "@/lib/supabase-storage"
 import {
   Table,
   TableBody,
@@ -173,84 +174,41 @@ function AdminSettingsContent() {
         throw new Error('Ukuran file maksimal 50MB')
       }
 
-      // Get index based on existing files with same id_key pattern
-      const { data: existingSettings } = await supabase
-        .from('general_settings')
-        .select('value')
-        .eq('key', key)
-      
-      // Extract index from existing files with pattern id_key_*
-      const pattern = new RegExp(`^${settingId}_${key}_(\\d+)\\.`)
-      let maxIndex = 0
-      
-      if (existingSettings) {
-        for (const setting of existingSettings) {
-          if (setting.value && (setting.value.startsWith('http') || setting.value.startsWith('/'))) {
-            const fileName = setting.value.split('/').pop() || ''
-            const match = fileName.match(pattern)
-            if (match && match[1]) {
-              const fileIndex = parseInt(match[1], 10)
-              if (fileIndex > maxIndex) {
-                maxIndex = fileIndex
-              }
-            }
-          }
-        }
-      }
-      
-      const index = maxIndex + 1
-
+      // Generate unique filename: general_setting/id_key_timestamp.ext
+      const timestamp = Date.now()
       const fileExt = file.name.split('.').pop()
-      // Format: id_key_index.ext
-      const fileName = `${settingId}_${key}_${index}.${fileExt}`
-
+      const storagePath = `general_setting/${settingId}_${key}_${timestamp}.${fileExt}`
+      
+      // Upload via API route to bypass RLS (uses service role key)
       const formData = new FormData()
       formData.append('file', file)
-      formData.append('folder', 'general_setting')
-      formData.append('subfolder', '')
-      formData.append('customFileName', `${settingId}_${key}_${index}`)
+      formData.append('path', storagePath)
 
-      return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest()
+      // Simulate progress
+      if (onProgress) {
+        onProgress(10)
+      }
 
-        // Track upload progress
-        xhr.upload.addEventListener('progress', (e) => {
-          if (e.lengthComputable && onProgress) {
-            const progress = Math.round((e.loaded / e.total) * 100)
-            onProgress(progress)
-          }
-        })
-
-        xhr.addEventListener('load', () => {
-          if (xhr.status >= 200 && xhr.status < 300) {
-            try {
-              const data = JSON.parse(xhr.responseText)
-              if (onProgress) onProgress(100)
-              resolve(data.url || null)
-            } catch (err) {
-              reject(new Error('Gagal memparse respons'))
-            }
-          } else {
-            try {
-              const errorData = JSON.parse(xhr.responseText)
-              reject(new Error(errorData.error || 'Upload gagal'))
-            } catch (err) {
-              reject(new Error('Upload gagal'))
-            }
-          }
-        })
-
-        xhr.addEventListener('error', () => {
-          reject(new Error('Upload gagal'))
-        })
-
-        xhr.addEventListener('abort', () => {
-          reject(new Error('Upload dibatalkan'))
-        })
-
-        xhr.open('POST', '/api/upload')
-        xhr.send(formData)
+      const response = await fetch('/api/upload-file', {
+        method: 'POST',
+        body: formData
       })
+
+      if (onProgress) {
+        onProgress(50)
+      }
+
+      const data = await response.json()
+
+      if (onProgress) {
+        onProgress(100)
+      }
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || 'Gagal mengupload file')
+      }
+
+      return data.url
     } catch (err: any) {
       console.error('Error uploading file:', err)
       throw err
@@ -326,6 +284,23 @@ function AdminSettingsContent() {
       // If image mode and image uploaded
       if (editIsImageMode && editImage) {
         try {
+          // Delete old file from Supabase Storage if exists and is a Supabase URL
+          const currentSetting = settings.find(s => s.id === editingId)
+          if (currentSetting?.value && currentSetting.value.startsWith('http') && currentSetting.value.includes('supabase')) {
+            try {
+              // Extract storage path from Supabase URL
+              // URL format: https://xxx.supabase.co/storage/v1/object/public/uploads/path
+              const urlMatch = currentSetting.value.match(/\/storage\/v1\/object\/public\/uploads\/(.+)$/)
+              if (urlMatch && urlMatch[1]) {
+                const storagePath = decodeURIComponent(urlMatch[1])
+                await deleteFromSupabaseStorage(storagePath, true)
+              }
+            } catch (deleteErr) {
+              // Log error but don't fail the update if delete fails
+              console.warn('Failed to delete old file:', deleteErr)
+            }
+          }
+
           const uploadedUrl = await uploadImageToPublic(
             editImage, 
             editingId, 
@@ -383,6 +358,24 @@ function AdminSettingsContent() {
     }
 
     try {
+      // Find the setting to get its value
+      const settingToDelete = settings.find(s => s.id === id)
+      
+      // Delete file from Supabase Storage if value is a Supabase URL
+      if (settingToDelete?.value && settingToDelete.value.startsWith('http') && settingToDelete.value.includes('supabase')) {
+        try {
+          // Extract storage path from Supabase URL
+          const urlMatch = settingToDelete.value.match(/\/storage\/v1\/object\/public\/uploads\/(.+)$/)
+          if (urlMatch && urlMatch[1]) {
+            const storagePath = decodeURIComponent(urlMatch[1])
+            await deleteFromSupabaseStorage(storagePath, true)
+          }
+        } catch (deleteErr) {
+          // Log error but don't fail the delete if file deletion fails
+          console.warn('Failed to delete file from Supabase Storage:', deleteErr)
+        }
+      }
+
       const { error: deleteError } = await supabase
         .from('general_settings')
         .delete()
@@ -606,7 +599,8 @@ function AdminSettingsContent() {
                 {!isDuplicateMode && (
                   <button
                     onClick={handleToggleDuplicateMode}
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-2 sm:px-4 rounded transition-colors flex items-center gap-1 sm:gap-2 text-sm"
+                    disabled
+                    className="bg-blue-600/50 hover:bg-blue-700/50 text-white/50 font-bold py-2 px-2 sm:px-4 rounded transition-colors flex items-center gap-1 sm:gap-2 text-sm cursor-not-allowed"
                   >
                     <Copy size={16} />
                     <span className="hidden sm:inline">Duplikasi</span>
@@ -614,7 +608,8 @@ function AdminSettingsContent() {
                 )}
                 <button
                   onClick={() => setIsAddModalOpen(true)}
-                  className="bg-[#EE6A28] hover:bg-[#d85a20] text-white font-bold py-2 px-2 sm:px-4 rounded transition-colors flex items-center gap-1 sm:gap-2 text-sm"
+                  disabled
+                  className="bg-[#EE6A28]/50 hover:bg-[#d85a20]/50 text-white/50 font-bold py-2 px-2 sm:px-4 rounded transition-colors flex items-center gap-1 sm:gap-2 text-sm cursor-not-allowed"
                 >
                   <Plus size={16} />
                   <span className="hidden sm:inline">Tambah Setting</span>
@@ -676,118 +671,123 @@ function AdminSettingsContent() {
               </div>
             ) : (
               <div className="bg-slate-900 rounded-lg overflow-hidden">
-                <Table key={`settings-table-${searchQuery}-${filteredSettings.length}`}>
-                  <TableHeader>
-                    <TableRow className="bg-slate-800 hover:bg-slate-800">
-                      {isDuplicateMode && (
-                        <TableHead className="text-white text-center w-16">
-                          <Checkbox
-                            checked={selectedSettings.size === filteredSettings.length && filteredSettings.length > 0}
-                            onCheckedChange={(checked) => {
-                              if (checked) {
-                                setSelectedSettings(new Set(filteredSettings.map(s => s.id)))
-                              } else {
-                                setSelectedSettings(new Set())
-                              }
-                            }}
-                          />
-                        </TableHead>
-                      )}
-                      <TableHead className="text-white">Key</TableHead>
-                      <TableHead className="text-white">Value</TableHead>
-                      <TableHead className="text-white hidden md:table-cell">Description</TableHead>
-                      <TableHead className="text-white hidden lg:table-cell">Updated</TableHead>
-                      <TableHead className="text-white text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody key={`table-body-${searchQuery}-${filteredSettings.length}`}>
-                    {(() => {
-                      const paginatedSettings = filteredSettings.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-                      console.log('Rendering table with', paginatedSettings.length, 'items, searchQuery:', searchQuery, 'total filtered:', filteredSettings.length)
-                      return paginatedSettings.map((setting) => (
-                        <TableRow key={setting.id} className="hover:bg-slate-800/50">
+                <div className="px-4 sm:px-6 pt-4 sm:pt-6">
+                  <Table key={`settings-table-${searchQuery}-${filteredSettings.length}`}>
+                    <TableHeader>
+                      <TableRow className="bg-slate-800 hover:bg-slate-800">
                         {isDuplicateMode && (
-                          <TableCell className="text-center">
+                          <TableHead className="text-white text-center w-16">
                             <Checkbox
-                              checked={selectedSettings.has(setting.id)}
-                              onCheckedChange={() => handleToggleSelectSetting(setting.id)}
+                              checked={selectedSettings.size === filteredSettings.length && filteredSettings.length > 0}
+                              onCheckedChange={(checked) => {
+                                if (checked) {
+                                  setSelectedSettings(new Set(filteredSettings.map(s => s.id)))
+                                } else {
+                                  setSelectedSettings(new Set())
+                                }
+                              }}
                             />
-                          </TableCell>
+                          </TableHead>
                         )}
-                        <TableCell className="font-medium text-white">
-                          {setting.key}
-                        </TableCell>
-                        <TableCell className="text-gray-300">
-                          {setting.value && (setting.value.startsWith('http') || setting.value.startsWith('/')) ? (
-                            setting.value.match(/\.(mp4|webm|ogg|mov|avi|wmv|flv|mkv)$/i) ? (
-                              <video
-                                src={setting.value}
-                                controls
-                                className="w-32 h-20 object-cover rounded border border-slate-700"
-                                onError={(e) => {
-                                  const parent = e.currentTarget.parentElement
-                                  if (parent) {
-                                    parent.innerHTML = `<div class="max-w-xs truncate text-gray-300" title="${setting.value}">${setting.value || '-'}</div>`
-                                  }
-                                }}
+                        <TableHead className="text-white">Key</TableHead>
+                        <TableHead className="text-white">Value</TableHead>
+                        <TableHead className="text-white hidden md:table-cell">Description</TableHead>
+                        <TableHead className="text-white hidden lg:table-cell">Updated</TableHead>
+                        <TableHead className="text-white text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody key={`table-body-${searchQuery}-${filteredSettings.length}`}>
+                      {(() => {
+                        const paginatedSettings = filteredSettings.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                        console.log('Rendering table with', paginatedSettings.length, 'items, searchQuery:', searchQuery, 'total filtered:', filteredSettings.length)
+                        return paginatedSettings.map((setting) => (
+                          <TableRow key={setting.id} className="hover:bg-slate-800/50">
+                          {isDuplicateMode && (
+                            <TableCell className="text-center">
+                              <Checkbox
+                                checked={selectedSettings.has(setting.id)}
+                                onCheckedChange={() => handleToggleSelectSetting(setting.id)}
                               />
-                            ) : (
-                              <img
-                                src={setting.value}
-                                alt={setting.key}
-                                className="w-16 h-16 object-cover rounded border border-slate-700"
-                                onError={(e) => {
-                                  const parent = e.currentTarget.parentElement
-                                  if (parent) {
-                                    parent.innerHTML = `<div class="max-w-xs truncate text-gray-300" title="${setting.value}">${setting.value || '-'}</div>`
-                                  }
-                                }}
-                              />
-                            )
-                          ) : (
-                            <div className="max-w-xs truncate" title={setting.value}>
-                              {setting.value || '-'}
-                            </div>
+                            </TableCell>
                           )}
-                        </TableCell>
-                        <TableCell className="text-gray-400 hidden md:table-cell">
-                          <div className="max-w-xs truncate" title={setting.description || ''}>
-                            {setting.description || '-'}
-                          </div>
-                        </TableCell>
-                        <TableCell className="text-gray-400 hidden lg:table-cell text-sm">
-                          {formatDate(setting.updated_at)}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex items-center justify-end gap-2">
-                            <button
-                              onClick={() => handleStartEdit(setting)}
-                              className="p-1.5 text-blue-400 hover:text-blue-300 hover:bg-blue-500/20 rounded transition-colors"
-                              title="Edit"
-                            >
-                              <Edit size={16} />
-                            </button>
-                            <button
-                              onClick={() => handleDelete(setting.id)}
-                              className="p-1.5 text-red-400 hover:text-red-300 hover:bg-red-500/20 rounded transition-colors"
-                              title="Delete"
-                            >
-                              <X size={16} />
-                            </button>
-                          </div>
-                        </TableCell>
-                        </TableRow>
-                      ))
-                    })()}
-                  </TableBody>
-                </Table>
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={Math.ceil(filteredSettings.length / itemsPerPage)}
-                  onPageChange={setCurrentPage}
-                  itemsPerPage={itemsPerPage}
-                  totalItems={filteredSettings.length}
-                />
+                          <TableCell className="font-medium text-white">
+                            {setting.key}
+                          </TableCell>
+                          <TableCell className="text-gray-300">
+                            {setting.value && (setting.value.startsWith('http') || setting.value.startsWith('/')) ? (
+                              setting.value.match(/\.(mp4|webm|ogg|mov|avi|wmv|flv|mkv)$/i) ? (
+                                <video
+                                  src={setting.value}
+                                  controls
+                                  className="w-32 h-20 object-cover rounded border border-slate-700"
+                                  onError={(e) => {
+                                    const parent = e.currentTarget.parentElement
+                                    if (parent) {
+                                      parent.innerHTML = `<div class="max-w-xs truncate text-gray-300" title="${setting.value}">${setting.value || '-'}</div>`
+                                    }
+                                  }}
+                                />
+                              ) : (
+                                <img
+                                  src={setting.value}
+                                  alt={setting.key}
+                                  className="w-16 h-16 object-cover rounded border border-slate-700"
+                                  onError={(e) => {
+                                    const parent = e.currentTarget.parentElement
+                                    if (parent) {
+                                      parent.innerHTML = `<div class="max-w-xs truncate text-gray-300" title="${setting.value}">${setting.value || '-'}</div>`
+                                    }
+                                  }}
+                                />
+                              )
+                            ) : (
+                              <div className="max-w-xs truncate" title={setting.value}>
+                                {setting.value || '-'}
+                              </div>
+                            )}
+                          </TableCell>
+                          <TableCell className="text-gray-400 hidden md:table-cell">
+                            <div className="max-w-xs truncate" title={setting.description || ''}>
+                              {setting.description || '-'}
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-gray-400 hidden lg:table-cell text-sm">
+                            {formatDate(setting.updated_at)}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex items-center justify-end gap-2">
+                              <button
+                                onClick={() => handleStartEdit(setting)}
+                                className="p-1.5 text-blue-400 hover:text-blue-300 hover:bg-blue-500/20 rounded transition-colors"
+                                title="Edit"
+                              >
+                                <Edit size={16} />
+                              </button>
+                              <button
+                                onClick={() => handleDelete(setting.id)}
+                                disabled
+                                className="p-1.5 text-red-400/50 hover:text-red-300/50 hover:bg-red-500/10 rounded transition-colors cursor-not-allowed"
+                                title="Delete (Disabled)"
+                              >
+                                <X size={16} />
+                              </button>
+                            </div>
+                          </TableCell>
+                          </TableRow>
+                        ))
+                      })()}
+                    </TableBody>
+                  </Table>
+                </div>
+                <div className="px-4 sm:px-6 pb-4 sm:pb-6">
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={Math.ceil(filteredSettings.length / itemsPerPage)}
+                    onPageChange={setCurrentPage}
+                    itemsPerPage={itemsPerPage}
+                    totalItems={filteredSettings.length}
+                  />
+                </div>
               </div>
             )}
         </main>

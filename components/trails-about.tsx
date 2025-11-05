@@ -104,9 +104,9 @@ export default function TrailsAbout() {
             {aboutText ? (
               <div className="text-gray-600 text-lg mb-6" dangerouslySetInnerHTML={{ __html: aboutText }} />
             ) : (
-              <p className="text-gray-600 text-lg mb-6">
-                ElevenTrails is a premier destination for dirt bike enthusiasts and adventure seekers. We offer carefully curated trails that showcase the stunning natural beauty of Lombok while providing an exhilarating riding experience for all skill levels.
-              </p>
+            <p className="text-gray-600 text-lg mb-6">
+              ElevenTrails is a premier destination for dirt bike enthusiasts and adventure seekers. We offer carefully curated trails that showcase the stunning natural beauty of Lombok while providing an exhilarating riding experience for all skill levels.
+            </p>
             )}
             <h2 className="font-rubik-one text-4xl md:text-[52px] font-bold text-slate-950 mb-6 leading-tight w-full max-w-full md:w-[583px]">
               <span className="block text-black-500">OUR TRAILS</span>
@@ -114,9 +114,9 @@ export default function TrailsAbout() {
             {ourTrailsText ? (
               <div className="text-gray-600 text-lg mb-6" dangerouslySetInnerHTML={{ __html: ourTrailsText }} />
             ) : (
-              <p className="text-gray-600 text-lg mb-6">
-                Discover breathtaking landscapes and challenging trails that will test your skills and push your limits. Our carefully curated routes take you through the most scenic and thrilling terrain, from lush jungle paths to rugged mountain ridges. Each trail is designed to provide an unforgettable adventure while maintaining the highest safety standards. Whether you're a beginner looking for your first off-road experience or an experienced rider seeking new challenges, our diverse trail network offers something for everyone.
-              </p>
+            <p className="text-gray-600 text-lg mb-6">
+              Discover breathtaking landscapes and challenging trails that will test your skills and push your limits. Our carefully curated routes take you through the most scenic and thrilling terrain, from lush jungle paths to rugged mountain ridges. Each trail is designed to provide an unforgettable adventure while maintaining the highest safety standards. Whether you're a beginner looking for your first off-road experience or an experienced rider seeking new challenges, our diverse trail network offers something for everyone.
+            </p>
             )}
             <div>
                 <img 

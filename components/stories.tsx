@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { getGeneralSetting, getGeneralSettings } from "@/lib/general-settings"
+import { getSupabaseImageUrl } from "@/lib/supabase-storage"
 
 export default function Stories() {
   const [hasAnimated, setHasAnimated] = useState(false)
@@ -41,7 +42,7 @@ export default function Stories() {
       if (video && video.trim()) {
         const trimmedVideo = video.trim()
         console.log('Setting video source to:', trimmedVideo)
-        setVideoSrc(trimmedVideo)
+        setVideoSrc(getSupabaseImageUrl(trimmedVideo) || trimmedVideo)
         setVideoError(false)
       } else {
         console.warn('No video found in general settings with key home_stories_vid')
@@ -50,7 +51,7 @@ export default function Stories() {
       }
 
       if (thumbnail && thumbnail.trim()) {
-        setThumbnailSrc(thumbnail.trim())
+        setThumbnailSrc(getSupabaseImageUrl(thumbnail.trim()) || thumbnail.trim())
       } else {
         console.warn('No thumbnail found in general settings with key home_stories_thumbnail')
         setThumbnailSrc(null)
@@ -135,15 +136,15 @@ export default function Stories() {
               <div className="text-white text-lg leading-relaxed mb-6" dangerouslySetInnerHTML={{ __html: textParagraph }} />
             ) : (
               <>
-                <p className="text-white text-lg leading-relaxed mb-6">
-                  Experience the legendary trails of Lombok, where adventure meets natural beauty. Our riders have conquered
-                  some of the most challenging and scenic routes in the region, creating stories that will inspire your next
-                  adventure.
-                </p>
-                <p className="text-white text-lg leading-relaxed mb-6">
-                  From conquering steep mountain passes to navigating through dense jungles, these stories showcase the spirit
-                  of exploration and the beauty of Lombok's untamed wilderness. Let their experiences guide your journey.
-                </p>
+            <p className="text-white text-lg leading-relaxed mb-6">
+              Experience the legendary trails of Lombok, where adventure meets natural beauty. Our riders have conquered
+              some of the most challenging and scenic routes in the region, creating stories that will inspire your next
+              adventure.
+            </p>
+            <p className="text-white text-lg leading-relaxed mb-6">
+              From conquering steep mountain passes to navigating through dense jungles, these stories showcase the spirit
+              of exploration and the beauty of Lombok's untamed wilderness. Let their experiences guide your journey.
+            </p>
               </>
             )}
           </div>

@@ -342,138 +342,142 @@ function AdminRidesContent() {
               </div>
             ) : (
               <div className="bg-slate-900 rounded-lg overflow-hidden">
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead className="bg-slate-800">
-                      <tr>
-                        {isDuplicateMode && (
-                          <th className="px-2 sm:px-4 py-3 text-center text-sm font-semibold text-white w-16">
-                            <Checkbox
-                              checked={selectedRides.size === rides.length && rides.length > 0}
-                              onCheckedChange={(checked) => {
-                                if (checked) {
-                                  setSelectedRides(new Set(rides.map(r => r.id)))
-                                } else {
-                                  setSelectedRides(new Set())
-                                }
-                              }}
-                            />
-                          </th>
-                        )}
-                        <th className="px-2 sm:px-4 py-3 text-left text-sm font-semibold text-white">Title</th>
-                        <th className="px-2 sm:px-4 py-3 text-left text-sm font-semibold text-white hidden lg:table-cell">Tags</th>
-                        <th className="px-2 sm:px-4 py-3 text-left text-sm font-semibold text-white">Price</th>
-                        <th className="px-2 sm:px-4 py-3 text-left text-sm font-semibold text-white hidden md:table-cell">Type</th>
-                        <th className="px-2 sm:px-4 py-3 text-left text-sm font-semibold text-white hidden xl:table-cell">Difficulty</th>
-                        <th className="px-2 sm:px-4 py-3 text-left text-sm font-semibold text-white hidden xl:table-cell">Location</th>
-                        <th className="px-2 sm:px-4 py-3 text-left text-sm font-semibold text-white hidden md:table-cell">Created</th>
-                        <th className="px-2 sm:px-4 py-3 text-left text-sm font-semibold text-white">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-700">
-                      {rides.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((ride) => (
-                        <tr key={ride.id} className="hover:bg-slate-800/50 transition-colors">
+                <div className="px-4 sm:px-6 pt-4 sm:pt-6">
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead className="bg-slate-800">
+                        <tr>
                           {isDuplicateMode && (
-                            <td className="px-2 sm:px-4 py-3 text-center">
+                            <th className="px-2 sm:px-4 py-3 text-center text-sm font-semibold text-white w-16">
                               <Checkbox
-                                checked={selectedRides.has(ride.id)}
-                                onCheckedChange={() => handleToggleSelectRide(ride.id)}
+                                checked={selectedRides.size === rides.length && rides.length > 0}
+                                onCheckedChange={(checked) => {
+                                  if (checked) {
+                                    setSelectedRides(new Set(rides.map(r => r.id)))
+                                  } else {
+                                    setSelectedRides(new Set())
+                                  }
+                                }}
                               />
-                            </td>
+                            </th>
                           )}
-                          <td className="px-2 sm:px-4 py-3 text-sm text-white font-medium">
-                            {ride.title}
-                          </td>
-                          <td className="px-2 sm:px-4 py-3 text-sm hidden lg:table-cell">
-                            <div className="flex flex-wrap gap-1">
-                              {ride.tags && ride.tags.length > 0 ? (
-                                ride.tags.slice(0, 3).map((tag, idx) => (
-                                  <span
-                                    key={idx}
-                                    className="px-2 py-1 text-xs rounded bg-[#EE6A28]/20 text-[#EE6A28]"
-                                  >
-                                    {tag}
-                                  </span>
-                                ))
-                              ) : (
-                                <span className="text-gray-400 text-xs">-</span>
-                              )}
-                              {ride.tags && ride.tags.length > 3 && (
-                                <span className="text-gray-400 text-xs">+{ride.tags.length - 3}</span>
-                              )}
-                            </div>
-                          </td>
-                          <td className="px-2 sm:px-4 py-3 text-sm text-white">
-                            <div className="flex flex-col">
-                              <span className="text-[#EE6A28] font-semibold">
-                                {formatPrice(ride.final_price)}
-                              </span>
-                              {ride.original_price > ride.final_price && (
-                                <span className="text-gray-400 text-xs line-through">
-                                  {formatPrice(ride.original_price)}
-                                </span>
-                              )}
-                            </div>
-                          </td>
-                          <td className="px-2 sm:px-4 py-3 text-sm hidden md:table-cell">
-                            <span className={`px-2 py-1 text-xs rounded ${
-                              ride.type === 'group' 
-                                ? 'bg-blue-500/20 text-blue-300' 
-                                : 'bg-purple-500/20 text-purple-300'
-                            }`}>
-                              {ride.type}
-                            </span>
-                          </td>
-                          <td className="px-2 sm:px-4 py-3 text-sm text-gray-300 hidden xl:table-cell">
-                            {ride.difficulty_level || '-'}
-                          </td>
-                          <td className="px-2 sm:px-4 py-3 text-sm text-gray-300 hidden xl:table-cell">
-                            {ride.location || '-'}
-                          </td>
-                          <td className="px-2 sm:px-4 py-3 text-sm text-gray-400 hidden md:table-cell">
-                            {formatDate(ride.created_at)}
-                          </td>
-                          <td className="px-2 sm:px-4 py-3 text-sm">
-                            <div className="flex items-center gap-1 sm:gap-2">
-                              <button
-                                onClick={() => handleToggleActive(ride.id, ride.is_active)}
-                                className={`p-1 sm:p-1.5 rounded transition-colors ${
-                                  ride.is_active
-                                    ? 'text-green-400 hover:text-green-300 hover:bg-green-500/20'
-                                    : 'text-gray-400 hover:text-gray-300 hover:bg-gray-500/20'
-                                }`}
-                                title={ride.is_active ? 'Active - Click to deactivate' : 'Inactive - Click to activate'}
-                              >
-                                <Power size={16} className={ride.is_active ? '' : 'opacity-50'} />
-                              </button>
-                              <button
-                                onClick={() => window.location.href = `/admin/edit-rides/${ride.id}`}
-                                className="p-1 sm:p-1.5 text-blue-400 hover:text-blue-300 hover:bg-blue-500/20 rounded transition-colors"
-                                title="Edit"
-                              >
-                                <Edit size={16} />
-                              </button>
-                              <button
-                                onClick={() => handleDelete(ride.id)}
-                                className="p-1 sm:p-1.5 text-red-400 hover:text-red-300 hover:bg-red-500/20 rounded transition-colors"
-                                title="Delete"
-                              >
-                                <Trash2 size={16} />
-                              </button>
-                            </div>
-                          </td>
+                          <th className="px-2 sm:px-4 py-3 text-left text-sm font-semibold text-white">Title</th>
+                          <th className="px-2 sm:px-4 py-3 text-left text-sm font-semibold text-white hidden lg:table-cell">Tags</th>
+                          <th className="px-2 sm:px-4 py-3 text-left text-sm font-semibold text-white">Price</th>
+                          <th className="px-2 sm:px-4 py-3 text-left text-sm font-semibold text-white hidden md:table-cell">Type</th>
+                          <th className="px-2 sm:px-4 py-3 text-left text-sm font-semibold text-white hidden xl:table-cell">Difficulty</th>
+                          <th className="px-2 sm:px-4 py-3 text-left text-sm font-semibold text-white hidden xl:table-cell">Location</th>
+                          <th className="px-2 sm:px-4 py-3 text-left text-sm font-semibold text-white hidden md:table-cell">Created</th>
+                          <th className="px-2 sm:px-4 py-3 text-left text-sm font-semibold text-white">Actions</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody className="divide-y divide-slate-700">
+                        {rides.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((ride) => (
+                          <tr key={ride.id} className="hover:bg-slate-800/50 transition-colors">
+                            {isDuplicateMode && (
+                              <td className="px-2 sm:px-4 py-3 text-center">
+                                <Checkbox
+                                  checked={selectedRides.has(ride.id)}
+                                  onCheckedChange={() => handleToggleSelectRide(ride.id)}
+                                />
+                              </td>
+                            )}
+                            <td className="px-2 sm:px-4 py-3 text-sm text-white font-medium">
+                              {ride.title}
+                            </td>
+                            <td className="px-2 sm:px-4 py-3 text-sm hidden lg:table-cell">
+                              <div className="flex flex-wrap gap-1">
+                                {ride.tags && ride.tags.length > 0 ? (
+                                  ride.tags.slice(0, 3).map((tag, idx) => (
+                                    <span
+                                      key={idx}
+                                      className="px-2 py-1 text-xs rounded bg-[#EE6A28]/20 text-[#EE6A28]"
+                                    >
+                                      {tag}
+                                    </span>
+                                  ))
+                                ) : (
+                                  <span className="text-gray-400 text-xs">-</span>
+                                )}
+                                {ride.tags && ride.tags.length > 3 && (
+                                  <span className="text-gray-400 text-xs">+{ride.tags.length - 3}</span>
+                                )}
+                              </div>
+                            </td>
+                            <td className="px-2 sm:px-4 py-3 text-sm text-white">
+                              <div className="flex flex-col">
+                                <span className="text-[#EE6A28] font-semibold">
+                                  {formatPrice(ride.final_price)}
+                                </span>
+                                {ride.original_price > ride.final_price && (
+                                  <span className="text-gray-400 text-xs line-through">
+                                    {formatPrice(ride.original_price)}
+                                  </span>
+                                )}
+                              </div>
+                            </td>
+                            <td className="px-2 sm:px-4 py-3 text-sm hidden md:table-cell">
+                              <span className={`px-2 py-1 text-xs rounded ${
+                                ride.type === 'group' 
+                                  ? 'bg-blue-500/20 text-blue-300' 
+                                  : 'bg-purple-500/20 text-purple-300'
+                              }`}>
+                                {ride.type}
+                              </span>
+                            </td>
+                            <td className="px-2 sm:px-4 py-3 text-sm text-gray-300 hidden xl:table-cell">
+                              {ride.difficulty_level || '-'}
+                            </td>
+                            <td className="px-2 sm:px-4 py-3 text-sm text-gray-300 hidden xl:table-cell">
+                              {ride.location || '-'}
+                            </td>
+                            <td className="px-2 sm:px-4 py-3 text-sm text-gray-400 hidden md:table-cell">
+                              {formatDate(ride.created_at)}
+                            </td>
+                            <td className="px-2 sm:px-4 py-3 text-sm">
+                              <div className="flex items-center gap-1 sm:gap-2">
+                                <button
+                                  onClick={() => handleToggleActive(ride.id, ride.is_active)}
+                                  className={`p-1 sm:p-1.5 rounded transition-colors ${
+                                    ride.is_active
+                                      ? 'text-green-400 hover:text-green-300 hover:bg-green-500/20'
+                                      : 'text-gray-400 hover:text-gray-300 hover:bg-gray-500/20'
+                                  }`}
+                                  title={ride.is_active ? 'Active - Click to deactivate' : 'Inactive - Click to activate'}
+                                >
+                                  <Power size={16} className={ride.is_active ? '' : 'opacity-50'} />
+                                </button>
+                                <button
+                                  onClick={() => window.location.href = `/admin/edit-rides/${ride.id}`}
+                                  className="p-1 sm:p-1.5 text-blue-400 hover:text-blue-300 hover:bg-blue-500/20 rounded transition-colors"
+                                  title="Edit"
+                                >
+                                  <Edit size={16} />
+                                </button>
+                                <button
+                                  onClick={() => handleDelete(ride.id)}
+                                  className="p-1 sm:p-1.5 text-red-400 hover:text-red-300 hover:bg-red-500/20 rounded transition-colors"
+                                  title="Delete"
+                                >
+                                  <Trash2 size={16} />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={Math.ceil(rides.length / itemsPerPage)}
-                  onPageChange={setCurrentPage}
-                  itemsPerPage={itemsPerPage}
-                  totalItems={rides.length}
-                />
+                <div className="px-4 sm:px-6 pb-4 sm:pb-6">
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={Math.ceil(rides.length / itemsPerPage)}
+                    onPageChange={setCurrentPage}
+                    itemsPerPage={itemsPerPage}
+                    totalItems={rides.length}
+                  />
+                </div>
               </div>
             )}
         </main>

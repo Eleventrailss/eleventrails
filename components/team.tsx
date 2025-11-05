@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { getGeneralSettings, getGeneralSetting } from "@/lib/general-settings"
+import { getSupabaseImageUrl } from "@/lib/supabase-storage"
 
 export default function Team() {
   const [hasAnimated, setHasAnimated] = useState(false)
@@ -32,8 +33,8 @@ export default function Team() {
     ])
     
     setImages(prev => ({
-      home_team_pic_1: settings.home_team_pic_1 || prev.home_team_pic_1,
-      home_team_pic_2: settings.home_team_pic_2 || prev.home_team_pic_2
+      home_team_pic_1: getSupabaseImageUrl(settings.home_team_pic_1) || prev.home_team_pic_1,
+      home_team_pic_2: getSupabaseImageUrl(settings.home_team_pic_2) || prev.home_team_pic_2
     }))
   }
 
@@ -126,15 +127,15 @@ export default function Team() {
               <div className="text-gray-600 text-lg mb-6" dangerouslySetInnerHTML={{ __html: textParagraph }} />
             ) : (
               <>
-                <p className="text-gray-600 text-lg mb-6">
-                  Our team consists of experienced riders and adventure guides with over 50 years of combined experience in
-                  extreme sports and trail riding. We're passionate about sharing the thrill of off-road adventures while
-                  ensuring safety and creating unforgettable memories.
-                </p>
-                <p className="text-gray-600 text-lg mb-6">
-                  Each team member is certified, trained, and dedicated to providing the best possible experience for our
-                  guests. We believe in pushing limits responsibly and helping riders of all levels achieve their goals.
-                </p>
+            <p className="text-gray-600 text-lg mb-6">
+              Our team consists of experienced riders and adventure guides with over 50 years of combined experience in
+              extreme sports and trail riding. We're passionate about sharing the thrill of off-road adventures while
+              ensuring safety and creating unforgettable memories.
+            </p>
+            <p className="text-gray-600 text-lg mb-6">
+              Each team member is certified, trained, and dedicated to providing the best possible experience for our
+              guests. We believe in pushing limits responsibly and helping riders of all levels achieve their goals.
+            </p>
               </>
             )}
           </div>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { getGeneralSettings, getGeneralSetting } from "@/lib/general-settings"
+import { getSupabaseImageUrl } from "@/lib/supabase-storage"
 
 export default function Explore() {
   const [hasAnimated, setHasAnimated] = useState(false)
@@ -34,9 +35,9 @@ export default function Explore() {
     ])
     
     setImages(prev => ({
-      home_explore_pic_1: settings.home_explore_pic_1 || prev.home_explore_pic_1,
-      home_explore_pic_2: settings.home_explore_pic_2 || prev.home_explore_pic_2,
-      home_explore_pic_3: settings.home_explore_pic_3 || prev.home_explore_pic_3
+      home_explore_pic_1: getSupabaseImageUrl(settings.home_explore_pic_1) || prev.home_explore_pic_1,
+      home_explore_pic_2: getSupabaseImageUrl(settings.home_explore_pic_2) || prev.home_explore_pic_2,
+      home_explore_pic_3: getSupabaseImageUrl(settings.home_explore_pic_3) || prev.home_explore_pic_3
     }))
   }
 
@@ -88,17 +89,17 @@ export default function Explore() {
             {/* Mobile: Layout sama seperti desktop - 1 gambar lebar di atas, 2 gambar kecil di bawah */}
             <div className="grid grid-rows-2 gap-2 md:hidden" style={{ maxWidth: '100%' }}>
               <div className="w-full">
-                <img 
-                  data-explore-img
-                  src={images.home_explore_pic_1} 
-                  alt="/placeholder.svg" 
+              <img 
+                data-explore-img
+                src={images.home_explore_pic_1} 
+                alt="/placeholder.svg" 
                   className="w-full h-auto object-cover" 
-                  style={{
-                    width: '100%',
+                style={{
+                  width: '100%',
                     maxWidth: '100%',
                     height:'auto',
                     aspectRatio:'501/249',
-                    borderRadius:'0',
+                  borderRadius:'0',
                     transform: hasAnimated ? 'scale(1)' : 'scale(1)',
                     opacity: '1',
                     transition: 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.8s ease-out',
@@ -107,21 +108,21 @@ export default function Explore() {
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
                     target.src = "/off-road-motorcycle.jpg";
-                  }}
-                />
+                }} 
+              />
               </div>
               <div className="flex flex-row gap-2 justify-center" style={{ width: '100%', maxWidth: '100%' }}>
-                <img 
-                  data-explore-img
-                  src={images.home_explore_pic_2} 
-                  alt="/placeholder.svg" 
+              <img 
+                data-explore-img
+                src={images.home_explore_pic_2} 
+                alt="/placeholder.svg" 
                   className="h-auto object-cover" 
-                  style={{
+                style={{
                     width: 'calc(50% - 4px)',
                     maxWidth: 'calc(50% - 4px)',
                     height:'auto',
                     aspectRatio:'241/249',
-                    borderRadius:'0',
+                  borderRadius:'0',
                     transform: hasAnimated ? 'scale(1)' : 'scale(1)',
                     opacity: '1',
                     transition: 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.8s ease-out',
@@ -130,19 +131,19 @@ export default function Explore() {
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
                     target.src = "/off-road-motorcycle.jpg";
-                  }}
-                />
-                <img 
-                  data-explore-img
-                  src={images.home_explore_pic_3} 
-                  alt="/placeholder.svg" 
+                }} 
+              />
+              <img 
+                data-explore-img
+                src={images.home_explore_pic_3} 
+                alt="/placeholder.svg" 
                   className="h-auto object-cover" 
-                  style={{
+                style={{
                     width: 'calc(50% - 4px)',
                     maxWidth: 'calc(50% - 4px)',
                     height:'auto',
                     aspectRatio:'241/249',
-                    borderRadius:'0',
+                  borderRadius:'0',
                     transform: hasAnimated ? 'scale(1)' : 'scale(1)',
                     opacity: '1',
                     transition: 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.8s ease-out',
@@ -151,8 +152,8 @@ export default function Explore() {
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
                     target.src = "/off-road-motorcycle.jpg";
-                  }}
-                />
+                }} 
+              />
               </div>
             </div>
             {/* Desktop: Layout asli dengan 2 rows */}
@@ -223,14 +224,14 @@ export default function Explore() {
               <div className="text-gray-600 text-lg mb-6" dangerouslySetInnerHTML={{ __html: textParagraph }} />
             ) : (
               <>
-                <p className="text-gray-600 text-lg mb-6">
-                  Discover breathtaking landscapes and challenging trails that will test your skills and push your limits.
-                  Our carefully curated routes take you through the most scenic and thrilling terrain.
-                </p>
-                <p className="text-gray-600 text-lg mb-6">
-                  Whether you're seeking adrenaline-pumping adventures or peaceful rides through nature, our diverse trail network
-                  offers something for every rider. Join us as we explore hidden gems and conquer challenging paths together.
-                </p>
+            <p className="text-gray-600 text-lg mb-6">
+              Discover breathtaking landscapes and challenging trails that will test your skills and push your limits.
+              Our carefully curated routes take you through the most scenic and thrilling terrain.
+            </p>
+            <p className="text-gray-600 text-lg mb-6">
+              Whether you're seeking adrenaline-pumping adventures or peaceful rides through nature, our diverse trail network
+              offers something for every rider. Join us as we explore hidden gems and conquer challenging paths together.
+            </p>
               </>
             )}
             <a 

@@ -4,12 +4,15 @@ import { Menu } from "lucide-react"
 import { useSidebar } from "./sidebar-context"
 import { useEffect, useRef, useState } from "react"
 import { getCookie } from "@/lib/cookies"
+import { getGeneralSetting } from "@/lib/general-settings"
+import { getSupabaseImageUrl } from "@/lib/supabase-storage"
 
 export default function AdminNavbar() {
   const { isCollapsed, toggleSidebar, toggleMobileSidebar } = useSidebar()
   const navRef = useRef<HTMLElement>(null)
   const [isMobile, setIsMobile] = useState(false)
   const [email, setEmail] = useState<string>("")
+  const [logoUrl, setLogoUrl] = useState<string | null>(null)
 
   useEffect(() => {
     const checkMobile = () => {
@@ -25,7 +28,15 @@ export default function AdminNavbar() {
     if (adminEmail) {
       setEmail(adminEmail)
     }
+    fetchLogo()
   }, [])
+
+  const fetchLogo = async () => {
+    const logo = await getGeneralSetting('apps_logo')
+    if (logo) {
+      setLogoUrl(getSupabaseImageUrl(logo))
+    }
+  }
 
   useEffect(() => {
     const updateNavbarWidth = () => {
@@ -69,13 +80,27 @@ export default function AdminNavbar() {
     >
       <div className="flex items-center justify-between h-full w-full">
         <div className="flex items-center gap-1.5 sm:gap-2 lg:gap-4">
-          <button
-            onClick={toggleSidebar}
-            className="p-1.5 sm:p-2 hover:bg-slate-700 rounded transition-colors lg:block hidden"
-            title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-          >
-            <Menu size={18} className="sm:w-5 sm:h-5 text-white" />
-          </button>
+          {logoUrl && (
+            <a href="/" className="flex items-center mr-2 sm:mr-4">
+              <img 
+                src={logoUrl} 
+                alt="ElevenTrails Logo" 
+                className="h-6 sm:h-7 w-auto object-contain"
+                style={{ maxHeight: '28px' }}
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement
+                  target.style.display = 'none'
+                }}
+              />
+            </a>
+          )}
+        <button
+          onClick={toggleSidebar}
+          className="p-1.5 sm:p-2 hover:bg-slate-700 rounded transition-colors lg:block hidden"
+          title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+        >
+          <Menu size={18} className="sm:w-5 sm:h-5 text-white" />
+        </button>
           <button
             onClick={toggleMobileSidebar}
             className="p-1.5 sm:p-2 hover:bg-slate-700 rounded transition-colors lg:hidden"

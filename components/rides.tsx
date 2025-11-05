@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { ArrowRight } from "lucide-react"
 import { supabase } from "@/lib/supabase"
+import { getSupabaseImageUrl } from "@/lib/supabase-storage"
 
 interface Ride {
   id: string
@@ -36,7 +37,13 @@ export default function Rides() {
         throw error
       }
 
-      setRides(data || [])
+      // Process images to use Supabase Storage URLs
+      const processedRides = (data || []).map(ride => ({
+        ...ride,
+        primary_picture: getSupabaseImageUrl(ride.primary_picture) || "/placeholder.svg"
+      }))
+
+      setRides(processedRides)
     } catch (error) {
       console.error('Error fetching rides:', error)
     } finally {

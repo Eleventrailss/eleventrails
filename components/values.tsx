@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { getGeneralSettings } from "@/lib/general-settings"
+import { getSupabaseImageUrl } from "@/lib/supabase-storage"
 
 export default function Values() {
   const values = [
@@ -25,7 +26,11 @@ export default function Values() {
       'core_value_pic_4'
     ])
     
-    setImages(settings)
+    const processedImages: Record<string, string> = {}
+    for (const [key, value] of Object.entries(settings)) {
+      processedImages[key] = getSupabaseImageUrl(value) || `/off-road-motorcycle.jpg`
+    }
+    setImages(processedImages)
   }
 
   return (
@@ -100,8 +105,8 @@ export default function Values() {
                       position: 'relative',
                       zIndex: 10,
                       textShadow: '0 2px 4px rgba(0,0,0,0.5)'
-                    }}
-                  >
+              }}
+            >
                     {value.description}
                   </p>
                 </div>

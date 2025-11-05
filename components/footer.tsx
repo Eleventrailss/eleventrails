@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { MapPin, Phone, Mail, ArrowRight } from "lucide-react"
 import { getGeneralSettings } from "@/lib/general-settings"
+import { getSupabaseImageUrl } from "@/lib/supabase-storage"
 
 export default function Footer() {
   const [socialUrls, setSocialUrls] = useState({
@@ -14,6 +15,8 @@ export default function Footer() {
   const [footerDescription, setFooterDescription] = useState("")
   const [address, setAddress] = useState("Central Lombok")
   const [email, setEmail] = useState("eleventrailss@gmail.com")
+  const [logoUrl, setLogoUrl] = useState<string | null>(null)
+  const [logoError, setLogoError] = useState(false)
 
   useEffect(() => {
     fetchSettings()
@@ -27,7 +30,8 @@ export default function Footer() {
       'social_youtube_url',
       'social_email',
       'footer_description',
-      'address'
+      'address',
+      'apps_logo'
     ])
     
     setSocialUrls(prev => ({
@@ -46,6 +50,9 @@ export default function Footer() {
     if (settings.address) {
       setAddress(settings.address)
     }
+    if (settings.apps_logo) {
+      setLogoUrl(getSupabaseImageUrl(settings.apps_logo))
+    }
   }
   return (
     <footer className="border-t border-slate-800 py-12 sm:py-16" style={{ backgroundColor: '#373737' }}>
@@ -53,15 +60,25 @@ export default function Footer() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mb-8 sm:mb-12">
           <div>
             <a href="/" className="flex items-center gap-2 mb-4">
-              <div className="w-6 h-6 bg-orange-500 rounded-full"></div>
+              {logoUrl && !logoError ? (
+                <img 
+                  src={logoUrl} 
+                  alt="ElevenTrails Logo" 
+                  className="h-8 w-auto object-contain"
+                  style={{ maxHeight: '32px' }}
+                  onError={() => setLogoError(true)}
+                />
+              ) : (
+                <div className="w-6 h-6 bg-orange-500 rounded-full"></div>
+              )}
               <span className="text-white font-bold">ElevenTrails</span>
             </a>
             {footerDescription ? (
               <p className="text-gray-400 text-sm mb-4" dangerouslySetInnerHTML={{ __html: footerDescription }} />
             ) : (
-              <p className="text-gray-400 text-sm mb-4">
-                Your ultimate adventure destination for dirt bike trails and extreme sports.
-              </p>
+            <p className="text-gray-400 text-sm mb-4">
+              Your ultimate adventure destination for dirt bike trails and extreme sports.
+            </p>
             )}
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-3">

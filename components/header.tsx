@@ -4,23 +4,34 @@ import { useState, useEffect } from "react"
 import { Menu, X, MessageCircle } from "lucide-react"
 import Link from "next/link"
 import { getGeneralSetting } from "@/lib/general-settings"
+import { getSupabaseImageUrl } from "@/lib/supabase-storage"
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [whatsappMessage, setWhatsappMessage] = useState("Hi%2C%20I%20would%20like%20to%20book%20a%20ride%20with%20ElevenTrails%21")
+  const [logoUrl, setLogoUrl] = useState<string | null>(null)
+  const [logoError, setLogoError] = useState(false)
   
   const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "6282266007272"
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`
   
   useEffect(() => {
     fetchWhatsappMessage()
+    fetchLogo()
   }, [])
 
   const fetchWhatsappMessage = async () => {
     const message = await getGeneralSetting('whatsapp_message_booknow')
     if (message) {
       setWhatsappMessage(encodeURIComponent(message))
+    }
+  }
+
+  const fetchLogo = async () => {
+    const logo = await getGeneralSetting('apps_logo')
+    if (logo) {
+      setLogoUrl(getSupabaseImageUrl(logo))
     }
   }
 
@@ -62,7 +73,18 @@ export default function Header() {
       <div className="max-w-full mx-auto px-4 sm:px-6 lg:pr-[70px] lg:pl-[70px]">
         <div className="flex justify-between items-center h-[66px]">
           <div className="flex items-center gap-2">
-            <a href="/" className="font-bold text-lg sm:text-xl" style={{color:'#EE6A28'}}>ElevenTrails</a>
+            <a href="/" className="flex items-center gap-2">
+              {logoUrl && !logoError ? (
+                <img 
+                  src={logoUrl} 
+                  alt="ElevenTrails Logo" 
+                  className="h-8 sm:h-10 w-auto object-contain"
+                  style={{ maxHeight: '40px' }}
+                  onError={() => setLogoError(true)}
+                />
+              ) : null}
+              <span className="font-bold text-lg sm:text-xl" style={{color:'#EE6A28'}}>ElevenTrails</span>
+            </a>
           </div>
 
           {/* Desktop Navigation + CTA */}
