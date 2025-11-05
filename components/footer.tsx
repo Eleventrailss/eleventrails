@@ -22,6 +22,42 @@ export default function Footer() {
     fetchSettings()
   }, [])
 
+  const normalizeUrl = (url: string | null | undefined): string => {
+    if (!url || url === '#') return '#'
+    
+    // Hapus whitespace di awal dan akhir
+    url = url.trim()
+    
+    // Hapus prepend domain yang tidak perlu (eleventrails.com atau www.eleventrails.com)
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || ''
+    const siteDomain = siteUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')
+    
+    // Pattern untuk menghapus prepend domain dengan berbagai variasi
+    // Gunakan regex untuk match yang lebih akurat
+    const domainRegex = new RegExp(`^https?://(www\\.)?${siteDomain.replace(/\./g, '\\.')}/?`, 'i')
+    const domainRegexNoProtocol = new RegExp(`^(www\\.)?${siteDomain.replace(/\./g, '\\.')}/?`, 'i')
+    
+    // Hapus prepend domain dengan protocol
+    url = url.replace(domainRegex, '')
+    
+    // Hapus prepend domain tanpa protocol
+    url = url.replace(domainRegexNoProtocol, '')
+    
+    // Hapus leading slash jika ada
+    url = url.replace(/^\//, '')
+    
+    // Jika URL kosong setelah pembersihan, return '#'
+    if (!url || url === '') return '#'
+    
+    // Jika URL sudah lengkap dengan protocol, gunakan langsung
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url
+    }
+    
+    // Jika tidak ada protocol, tambahkan https://
+    return `https://${url}`
+  }
+
   const fetchSettings = async () => {
     const settings = await getGeneralSettings([
       'social_facebook_url',
@@ -35,10 +71,10 @@ export default function Footer() {
     ])
     
     setSocialUrls(prev => ({
-      facebook: settings.social_facebook_url || prev.facebook,
-      instagram: settings.social_instagram_url || prev.instagram,
-      tiktok: settings.social_tiktok_url || prev.tiktok,
-      youtube: settings.social_youtube_url || prev.youtube
+      facebook: normalizeUrl(settings.social_facebook_url) || prev.facebook,
+      instagram: normalizeUrl(settings.social_instagram_url) || prev.instagram,
+      tiktok: normalizeUrl(settings.social_tiktok_url) || prev.tiktok,
+      youtube: normalizeUrl(settings.social_youtube_url) || prev.youtube
     }))
     
     if (settings.social_email) {
