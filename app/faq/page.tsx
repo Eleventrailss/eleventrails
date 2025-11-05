@@ -7,8 +7,8 @@ import CTA from "@/components/cta"
 import Footer from "@/components/footer"
 
 export const metadata: Metadata = {
-  title: 'FAQ - Frequently Asked Questions About Dirt Bike Tours, Enduro Tours & Travel - ElevenTrails',
-  description: 'Everything you need to know about ElevenTrails dirt bike adventures, enduro tours, and travel tours. Find answers to common questions about trail riding tours, booking, safety, gear, and more.',
+  title: 'FAQ - Answers to Common Questions About Dirt Bike Tours, Enduro Tours & Travel | ElevenTrails',
+  description: 'Got questions about dirt bike tours, enduro tours, or travel adventures? Find answers here! Topics covered: Booking | Safety | Equipment | Tour Packages | Pricing | Requirements | Cancellation Policy | What to Bring | Skill Levels | Group vs Personal Tours. Get all your questions answered before booking your Lombok adventure!',
   keywords: [
     // FAQ Categories
     'dirt bike tour FAQ',
@@ -62,8 +62,8 @@ export const metadata: Metadata = {
     'tour information guide'
   ],
   openGraph: {
-    title: 'FAQ - Frequently Asked Questions About Dirt Bike Tours, Enduro Tours & Travel - ElevenTrails',
-    description: 'Everything you need to know about ElevenTrails dirt bike adventures, enduro tours, and travel tours.',
+    title: 'FAQ - Answers to Common Questions About Dirt Bike Tours, Enduro Tours & Travel | ElevenTrails',
+    description: 'Got questions about dirt bike tours, enduro tours, or travel adventures? Find answers here! Topics covered: Booking | Safety | Equipment | Tour Packages | Pricing | Requirements.',
     images: ['/hero-bg.png'],
   },
 }

@@ -7,8 +7,8 @@ import Cta from "@/components/cta"
 import Footer from "@/components/footer"
 
 export const metadata: Metadata = {
-  title: 'Adventure Stories & Travel Tales - ElevenTrails Dirt Bike & Enduro Tours',
-  description: 'Read amazing stories from our riders - Tales from the Lombok trails. Real adventure stories, travel experiences, enduro adventures, and dirt bike tour testimonials from ElevenTrails adventurers.',
+  title: 'Adventure Stories & Travel Blog - Real Rider Experiences from Lombok Trails | ElevenTrails',
+  description: 'Read real adventure stories and travel tales from ElevenTrails riders! Discover amazing dirt bike tour experiences, enduro adventures, and trail riding stories from Lombok. Get inspired by rider testimonials, travel blogs, and adventure experiences. Categories: Adventure Stories | Travel Tales | Rider Testimonials | Tour Reviews | Enduro Experiences.',
   keywords: [
     // Stories & Blog
     'dirt bike tour stories',
@@ -59,8 +59,8 @@ export const metadata: Metadata = {
     'adventure travel blog Indonesia'
   ],
   openGraph: {
-    title: 'Adventure Stories & Travel Tales - ElevenTrails Dirt Bike & Enduro Tours',
-    description: 'Read amazing stories from our riders - Tales from the Lombok trails. Real adventure stories, travel experiences, and enduro adventures.',
+    title: 'Adventure Stories & Travel Blog - Real Rider Experiences from Lombok Trails | ElevenTrails',
+    description: 'Read real adventure stories and travel tales from ElevenTrails riders! Discover amazing dirt bike tour experiences, enduro adventures, and trail riding stories from Lombok.',
     images: ['/hero-bg.png'],
   },
 }

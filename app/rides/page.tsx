@@ -8,8 +8,8 @@ import CTA from "@/components/cta"
 import Footer from "@/components/footer"
 
 export const metadata: Metadata = {
-  title: 'Dirt Bike Tours, Enduro Tours & Trail Riding Packages - ElevenTrails',
-  description: 'Choose your perfect dirt bike adventure tour package, enduro tour, or trail riding experience. Explore our range of tour packages for all skill levels - from beginner-friendly tours to extreme off-road adventures in Lombok.',
+  title: 'Dirt Bike Tour Packages & Enduro Tours - Book Your Adventure in Lombok | ElevenTrails',
+  description: 'Browse and book dirt bike tour packages, enduro tours, and trail riding adventures in Lombok. Prices start from IDR. Professional guides, safety equipment included. Choose from beginner-friendly tours to extreme off-road experiences. Group tours and personal tours available. Book now via WhatsApp!',
   keywords: [
     // Tour Packages
     'tour package',
@@ -94,8 +94,8 @@ export const metadata: Metadata = {
     'adventure guide'
   ],
   openGraph: {
-    title: 'Dirt Bike Tours, Enduro Tours & Trail Riding Packages - ElevenTrails',
-    description: 'Choose your perfect dirt bike adventure tour package, enduro tour, or trail riding experience. Explore our range of tour packages for all skill levels.',
+    title: 'Dirt Bike Tour Packages & Enduro Tours - Book Your Adventure in Lombok | ElevenTrails',
+    description: 'Browse and book dirt bike tour packages, enduro tours, and trail riding adventures in Lombok. Professional guides, safety equipment included. Choose from beginner-friendly tours to extreme off-road experiences.',
     images: ['/hero-bg.png'],
   },
 }

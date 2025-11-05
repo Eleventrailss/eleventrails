@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     default: 'ElevenTrails - Dirt Bike Adventure Tours & Trail Riding in Lombok',
     template: '%s | ElevenTrails'
   },
-  description: 'Experience the ultimate dirt bike adventure tours in Lombok with ElevenTrails. Professional off-road trail riding, enduro tours, mountain biking tours, and extreme sports adventures. Book your dirt bike tour, travel adventure, or enduro experience today!',
+  description: 'ElevenTrails - Lombok\'s premier adventure tour operator. Book dirt bike tours, enduro tours, trail riding, and travel adventures. Professional guides, top-quality equipment, unforgettable experiences. Browse tour packages, read rider stories, and discover why we\'re Lombok\'s #1 adventure tour operator.',
   keywords: [
     // Tour & Travel
     'tour Lombok',
@@ -159,8 +159,8 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: process.env.NEXT_PUBLIC_SITE_URL || 'https://eleventrails.com',
     siteName: 'ElevenTrails',
-    title: 'ElevenTrails - Dirt Bike Adventure Tours, Enduro Tours & Trail Riding in Lombok',
-    description: 'Experience the ultimate dirt bike adventure tours, enduro tours, and trail riding in Lombok with ElevenTrails. Professional off-road tours, travel adventures, and extreme sports experiences. Book your tour today!',
+    title: 'ElevenTrails - Dirt Bike Adventure Tours, Enduro Tours & Trail Riding in Lombok Indonesia',
+    description: 'ElevenTrails - Lombok\'s premier adventure tour operator. Book dirt bike tours, enduro tours, trail riding, and travel adventures. Professional guides, top-quality equipment, unforgettable experiences.',
     images: [
       {
         url: '/hero-bg.png',

@@ -8,8 +8,8 @@ import CTA from "@/components/cta"
 import Footer from "@/components/footer"
 
 export const metadata: Metadata = {
-  title: 'About ElevenTrails - Professional Dirt Bike, Enduro & Adventure Tour Operator in Lombok',
-  description: 'Learn about ElevenTrails - Your trusted partner for professional dirt bike adventure tours, enduro tours, and travel adventures in Lombok. Experienced guides, top-quality gear, and unforgettable trail riding experiences.',
+  title: 'About ElevenTrails - Lombok\'s Premier Dirt Bike & Enduro Tour Operator | Our Story',
+  description: 'Learn about ElevenTrails - Lombok\'s trusted adventure tour operator since [year]. We offer professional dirt bike tours, enduro tours, and trail riding experiences. Meet our experienced guides, discover our commitment to safety, and explore our adventure trails. Why choose us: Expert guides | Top-quality gear | Safety first | Unforgettable experiences.',
   keywords: [
     // Company & Operator
     'dirt bike tour company',
