@@ -7,23 +7,63 @@ import CTA from "@/components/cta"
 import Footer from "@/components/footer"
 
 export const metadata: Metadata = {
-  title: 'FAQ - Frequently Asked Questions About Dirt Bike Tours - ElevenTrails',
-  description: 'Everything you need to know about ElevenTrails dirt bike adventures. Find answers to common questions about trail riding tours, booking, safety, gear, and more.',
+  title: 'FAQ - Frequently Asked Questions About Dirt Bike Tours, Enduro Tours & Travel - ElevenTrails',
+  description: 'Everything you need to know about ElevenTrails dirt bike adventures, enduro tours, and travel tours. Find answers to common questions about trail riding tours, booking, safety, gear, and more.',
   keywords: [
+    // FAQ Categories
     'dirt bike tour FAQ',
-    'trail riding questions',
+    'enduro tour FAQ',
+    'tour FAQ',
+    'travel FAQ',
     'adventure tour FAQ',
+    'trail riding questions',
+    'tour questions',
+    'travel questions',
+    'adventure questions',
+    
+    // Information
     'dirt bike tour information',
+    'tour information',
+    'travel information',
+    'adventure tour information',
+    'enduro tour information',
+    'trail riding information',
+    
+    // Booking
     'tour booking FAQ',
-    'off-road tour questions',
-    'adventure travel FAQ',
-    'dirt bike tour guide',
+    'travel booking FAQ',
+    'tour booking questions',
+    'travel booking questions',
+    'how to book tour',
+    'how to book travel',
+    
+    // Safety & Gear
     'tour safety questions',
-    'bike tour FAQ'
+    'travel safety FAQ',
+    'tour gear FAQ',
+    'travel gear questions',
+    'tour safety information',
+    'travel safety information',
+    
+    // Tour Types
+    'off-road tour questions',
+    'enduro tour questions',
+    'dirt bike tour questions',
+    'trail riding FAQ',
+    'motorcycle tour FAQ',
+    'bike tour FAQ',
+    'adventure travel FAQ',
+    
+    // Guides
+    'dirt bike tour guide',
+    'tour guide',
+    'travel guide',
+    'adventure guide',
+    'tour information guide'
   ],
   openGraph: {
-    title: 'FAQ - Frequently Asked Questions About Dirt Bike Tours - ElevenTrails',
-    description: 'Everything you need to know about ElevenTrails dirt bike adventures.',
+    title: 'FAQ - Frequently Asked Questions About Dirt Bike Tours, Enduro Tours & Travel - ElevenTrails',
+    description: 'Everything you need to know about ElevenTrails dirt bike adventures, enduro tours, and travel tours.',
     images: ['/hero-bg.png'],
   },
 }

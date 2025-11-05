@@ -5,7 +5,7 @@ export default function StructuredData() {
     "@context": "https://schema.org",
     "@type": "TouristTrip",
     "name": "ElevenTrails",
-    "description": "Professional dirt bike adventure tours and trail riding experiences in Lombok, Indonesia",
+    "description": "Professional dirt bike adventure tours, enduro tours, trail riding experiences, and travel adventures in Lombok, Indonesia. Offering off-road tours, motorcycle tours, and extreme sports adventures.",
     "url": siteUrl,
     "logo": `${siteUrl}/hero-bg.png`,
     "image": `${siteUrl}/hero-bg.png`,
@@ -33,7 +33,22 @@ export default function StructuredData() {
       "availability": "https://schema.org/InStock",
       "validFrom": new Date().toISOString()
     },
-    "tourBookingPage": `${siteUrl}/rides`
+    "tourBookingPage": `${siteUrl}/rides`,
+    "keywords": [
+      "dirt bike tour",
+      "enduro tour",
+      "trail riding",
+      "off-road tour",
+      "motorcycle tour",
+      "adventure tour",
+      "travel tour",
+      "tour Lombok",
+      "travel Lombok",
+      "adventure travel",
+      "extreme sports",
+      "tour operator",
+      "travel agency"
+    ]
   }
 
   const localBusinessSchema = {
@@ -41,7 +56,7 @@ export default function StructuredData() {
     "@type": "LocalBusiness",
     "@id": `${siteUrl}#organization`,
     "name": "ElevenTrails",
-    "description": "Professional dirt bike adventure tours and trail riding experiences in Lombok",
+    "description": "Professional dirt bike adventure tours, enduro tours, trail riding experiences, and travel adventures in Lombok, Indonesia. Specializing in off-road tours, motorcycle tours, and extreme sports adventures.",
     "url": siteUrl,
     "logo": `${siteUrl}/hero-bg.png`,
     "image": `${siteUrl}/hero-bg.png`,
@@ -77,18 +92,60 @@ export default function StructuredData() {
     "servesCuisine": "Adventure Tours",
     "hasOfferCatalog": {
       "@type": "OfferCatalog",
-      "name": "Dirt Bike Adventure Tours",
+      "name": "Dirt Bike Adventure Tours, Enduro Tours & Travel Packages",
       "itemListElement": [
         {
           "@type": "OfferCatalog",
-          "name": "Trail Riding Tours",
+          "name": "Dirt Bike Tours",
           "itemListElement": [
             {
               "@type": "Offer",
               "itemOffered": {
                 "@type": "Service",
-                "name": "Dirt Bike Trail Riding",
-                "description": "Professional dirt bike trail riding tours"
+                "name": "Dirt Bike Trail Riding Tours",
+                "description": "Professional dirt bike trail riding tours and adventures"
+              }
+            }
+          ]
+        },
+        {
+          "@type": "OfferCatalog",
+          "name": "Enduro Tours",
+          "itemListElement": [
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Enduro Motorcycle Tours",
+                "description": "Enduro racing and off-road enduro tours"
+              }
+            }
+          ]
+        },
+        {
+          "@type": "OfferCatalog",
+          "name": "Adventure Travel Tours",
+          "itemListElement": [
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Adventure Travel Packages",
+                "description": "Travel adventure tours and packages"
+              }
+            }
+          ]
+        },
+        {
+          "@type": "OfferCatalog",
+          "name": "Off-Road Tours",
+          "itemListElement": [
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Off-Road Motorcycle Tours",
+                "description": "Off-road adventure tours and trail riding"
               }
             }
           ]

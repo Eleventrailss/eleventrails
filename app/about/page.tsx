@@ -8,23 +8,51 @@ import CTA from "@/components/cta"
 import Footer from "@/components/footer"
 
 export const metadata: Metadata = {
-  title: 'About ElevenTrails - Professional Dirt Bike Adventure Tours in Lombok',
-  description: 'Learn about ElevenTrails - Your trusted partner for professional dirt bike adventure tours in Lombok. Experienced guides, top-quality gear, and unforgettable trail riding experiences.',
+  title: 'About ElevenTrails - Professional Dirt Bike, Enduro & Adventure Tour Operator in Lombok',
+  description: 'Learn about ElevenTrails - Your trusted partner for professional dirt bike adventure tours, enduro tours, and travel adventures in Lombok. Experienced guides, top-quality gear, and unforgettable trail riding experiences.',
   keywords: [
+    // Company & Operator
     'dirt bike tour company',
     'adventure tour operator Lombok',
+    'tour operator Lombok',
+    'travel agency Lombok',
+    'tour company Indonesia',
+    'adventure tour company',
+    'travel tour operator',
+    'professional tour operator',
+    
+    // Guides & Services
     'professional dirt bike guides',
-    'Lombok tour operator',
+    'tour guide Lombok',
+    'travel guide Lombok',
+    'adventure guide',
+    'professional guides',
+    'experienced tour guides',
+    
+    // Services
     'trail riding company',
     'adventure travel company',
     'dirt bike tour Lombok',
+    'enduro tour Lombok',
     'off-road adventure company',
     'extreme sports tour',
-    'mountain biking tour Lombok'
+    'mountain biking tour Lombok',
+    'motorcycle tour operator',
+    'bike tour company',
+    
+    // Tour Types
+    'tour operator',
+    'travel agency',
+    'adventure tour operator',
+    'tour company',
+    'travel company',
+    'adventure company',
+    'tour service',
+    'travel service'
   ],
   openGraph: {
-    title: 'About ElevenTrails - Professional Dirt Bike Adventure Tours in Lombok',
-    description: 'Learn about ElevenTrails - Your trusted partner for professional dirt bike adventure tours in Lombok.',
+    title: 'About ElevenTrails - Professional Dirt Bike, Enduro & Adventure Tour Operator in Lombok',
+    description: 'Learn about ElevenTrails - Your trusted partner for professional dirt bike adventure tours, enduro tours, and travel adventures in Lombok.',
     images: ['/hero-bg.png'],
   },
 }

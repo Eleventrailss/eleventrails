@@ -7,23 +7,60 @@ import Cta from "@/components/cta"
 import Footer from "@/components/footer"
 
 export const metadata: Metadata = {
-  title: 'Adventure Stories & Travel Tales - ElevenTrails Dirt Bike Tours',
-  description: 'Read amazing stories from our riders - Tales from the Lombok trails. Real adventure stories, travel experiences, and dirt bike tour testimonials from ElevenTrails adventurers.',
+  title: 'Adventure Stories & Travel Tales - ElevenTrails Dirt Bike & Enduro Tours',
+  description: 'Read amazing stories from our riders - Tales from the Lombok trails. Real adventure stories, travel experiences, enduro adventures, and dirt bike tour testimonials from ElevenTrails adventurers.',
   keywords: [
+    // Stories & Blog
     'dirt bike tour stories',
     'adventure travel stories',
-    'trail riding experiences',
-    'travel stories Lombok',
+    'travel stories',
+    'tour stories',
+    'travel blog',
+    'adventure blog',
+    'tour blog',
+    'travel tales',
     'adventure tales',
-    'dirt bike tour testimonials',
+    
+    // Experiences
+    'trail riding experiences',
+    'enduro experiences',
+    'off-road experiences',
+    'adventure experiences',
+    'tour experiences',
+    'travel experiences',
+    'dirt bike experiences',
+    'motorcycle experiences',
+    
+    // Location Stories
+    'travel stories Lombok',
+    'adventure stories Lombok',
     'Lombok adventure stories',
+    'travel stories Indonesia',
+    'adventure stories Indonesia',
+    'Indonesia travel stories',
+    
+    // Testimonials
+    'dirt bike tour testimonials',
+    'tour testimonials',
+    'travel testimonials',
+    'adventure testimonials',
+    'tour reviews',
+    'travel reviews',
+    'adventure reviews',
+    
+    // Content Types
     'off-road adventure tales',
+    'enduro adventure stories',
+    'trail riding stories',
+    'bike tour stories',
+    'motorcycle tour stories',
+    'adventure travel blog',
     'travel blog Lombok',
-    'adventure travel blog'
+    'adventure travel blog Indonesia'
   ],
   openGraph: {
-    title: 'Adventure Stories & Travel Tales - ElevenTrails Dirt Bike Tours',
-    description: 'Read amazing stories from our riders - Tales from the Lombok trails.',
+    title: 'Adventure Stories & Travel Tales - ElevenTrails Dirt Bike & Enduro Tours',
+    description: 'Read amazing stories from our riders - Tales from the Lombok trails. Real adventure stories, travel experiences, and enduro adventures.',
     images: ['/hero-bg.png'],
   },
 }
