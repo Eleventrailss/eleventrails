@@ -77,7 +77,7 @@ export const metadata: Metadata = {
     canonical: process.env.NEXT_PUBLIC_SITE_URL || 'https://eleventrails.com',
   },
   verification: {
-    google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION,
+    google: process.env.GOOGLE_SITE_VERIFICATION || process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
   },
 }
 
