@@ -10,7 +10,8 @@ import {
   MessageSquare,
   LogOut,
   Menu,
-  X
+  X,
+  Users
 } from "lucide-react"
 import { useState, useEffect } from "react"
 import { useSidebar } from "./sidebar-context"
@@ -45,6 +46,12 @@ export default function AdminSidebar() {
       label: "Stories",
       icon: BookOpen,
       active: pathname === "/admin/stories"
+    },
+    {
+      href: "/admin/customers",
+      label: "Prospect Customer",
+      icon: Users,
+      active: pathname === "/admin/customers"
     },
     {
       href: "/admin/testimonials",

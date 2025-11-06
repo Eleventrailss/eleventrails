@@ -7,6 +7,7 @@ import AdminNavbar from "@/components/admin/admin-navbar"
 import AdminAuthCheck from "@/components/admin/admin-auth-check"
 import { SidebarProvider, useSidebar } from "@/components/admin/sidebar-context"
 import { supabase } from "@/lib/supabase"
+import RichTextEditor from "@/components/admin/rich-text-editor"
 import { 
   ChevronLeft, 
   ChevronRight, 
@@ -14,6 +15,7 @@ import {
   X, 
   Upload, 
   Image as ImageIcon,
+  Search,
   Clock,
   MapPin,
   Users,
@@ -67,6 +69,61 @@ import {
   Compass,
   Flag,
   Sparkles,
+  HelpCircle,
+  ChevronDown,
+  ChevronUp,
+  ArrowRight,
+  ArrowLeft,
+  ArrowUp,
+  ArrowDown,
+  Download,
+  Upload as UploadIcon,
+  FileText,
+  File,
+  Folder,
+  FolderOpen,
+  Image,
+  Music,
+  Film,
+  Book,
+  BookOpen,
+  GraduationCap,
+  Briefcase,
+  Coffee,
+  Utensils,
+  ShoppingCart,
+  CreditCard,
+  Banknote,
+  Wallet,
+  PiggyBank,
+  Coins,
+  TrendingDown,
+  Minus,
+  Plus as PlusIcon,
+  Check,
+  XCircle,
+  AlertTriangle,
+  Wifi,
+  Bluetooth,
+  Radio,
+  Tv,
+  Monitor,
+  Smartphone,
+  Laptop,
+  Tablet,
+  Headphones,
+  Speaker,
+  Mic,
+  MicOff,
+  Volume2,
+  VolumeX,
+  Volume1,
+  Play,
+  Pause,
+  SkipForward,
+  SkipBack,
+  Shuffle,
+  Repeat,
   type LucideIcon
 } from "lucide-react"
 
@@ -105,6 +162,7 @@ function EditRidesContent() {
   
   // Icon dropdown state
   const [openIconDropdowns, setOpenIconDropdowns] = useState<Record<string, boolean>>({})
+  const [iconSearchQueries, setIconSearchQueries] = useState<Record<string, string>>({})
   const dropdownRefs = useRef<Record<string, HTMLDivElement | null>>({})
   
   // Close dropdown when clicking outside
@@ -337,6 +395,63 @@ function EditRidesContent() {
     { name: 'Compass', component: Compass },
     { name: 'Flag', component: Flag },
     { name: 'Sparkles', component: Sparkles },
+    { name: 'HelpCircle', component: HelpCircle },
+    { name: 'ChevronDown', component: ChevronDown },
+    { name: 'ChevronUp', component: ChevronUp },
+    { name: 'ChevronLeft', component: ChevronLeft },
+    { name: 'ChevronRight', component: ChevronRight },
+    { name: 'ArrowRight', component: ArrowRight },
+    { name: 'ArrowLeft', component: ArrowLeft },
+    { name: 'ArrowUp', component: ArrowUp },
+    { name: 'ArrowDown', component: ArrowDown },
+    { name: 'Download', component: Download },
+    { name: 'Upload', component: UploadIcon },
+    { name: 'FileText', component: FileText },
+    { name: 'File', component: File },
+    { name: 'Folder', component: Folder },
+    { name: 'FolderOpen', component: FolderOpen },
+    { name: 'Image', component: Image },
+    { name: 'Music', component: Music },
+    { name: 'Film', component: Film },
+    { name: 'Book', component: Book },
+    { name: 'BookOpen', component: BookOpen },
+    { name: 'GraduationCap', component: GraduationCap },
+    { name: 'Briefcase', component: Briefcase },
+    { name: 'Coffee', component: Coffee },
+    { name: 'Utensils', component: Utensils },
+    { name: 'ShoppingCart', component: ShoppingCart },
+    { name: 'CreditCard', component: CreditCard },
+    { name: 'Banknote', component: Banknote },
+    { name: 'Wallet', component: Wallet },
+    { name: 'PiggyBank', component: PiggyBank },
+    { name: 'Coins', component: Coins },
+    { name: 'TrendingDown', component: TrendingDown },
+    { name: 'Minus', component: Minus },
+    { name: 'Plus', component: PlusIcon },
+    { name: 'Check', component: Check },
+    { name: 'XCircle', component: XCircle },
+    { name: 'AlertTriangle', component: AlertTriangle },
+    { name: 'Wifi', component: Wifi },
+    { name: 'Bluetooth', component: Bluetooth },
+    { name: 'Radio', component: Radio },
+    { name: 'Tv', component: Tv },
+    { name: 'Monitor', component: Monitor },
+    { name: 'Smartphone', component: Smartphone },
+    { name: 'Laptop', component: Laptop },
+    { name: 'Tablet', component: Tablet },
+    { name: 'Headphones', component: Headphones },
+    { name: 'Speaker', component: Speaker },
+    { name: 'Mic', component: Mic },
+    { name: 'MicOff', component: MicOff },
+    { name: 'Volume2', component: Volume2 },
+    { name: 'VolumeX', component: VolumeX },
+    { name: 'Volume1', component: Volume1 },
+    { name: 'Play', component: Play },
+    { name: 'Pause', component: Pause },
+    { name: 'SkipForward', component: SkipForward },
+    { name: 'SkipBack', component: SkipBack },
+    { name: 'Shuffle', component: Shuffle },
+    { name: 'Repeat', component: Repeat },
   ]
 
   const handleAddRideInfo = () => {
@@ -1006,33 +1121,55 @@ function EditRidesContent() {
                                 />
                               </button>
                               {openIconDropdowns[info.id] && (
-                                <div className="absolute z-10 mt-1 w-full bg-slate-800 border border-slate-600 rounded shadow-lg max-h-60 overflow-y-auto">
-                                  <div className="grid grid-cols-4 gap-2 p-2">
-                                    {iconOptions.map((iconOption) => {
-                                      const IconComponent = iconOption.component
-                                      const isSelected = info.icon === iconOption.name
-                                      return (
-                                        <button
-                                          key={iconOption.name}
-                                          type="button"
-                                          onClick={() => {
-                                            handleRideInfoChange(info.id, 'icon', iconOption.name)
-                                            setOpenIconDropdowns(prev => ({ ...prev, [info.id]: false }))
-                                          }}
-                                          className={`p-2 rounded border transition-colors ${
-                                            isSelected
-                                              ? 'bg-[#EE6A28]/20 border-[#EE6A28]'
-                                              : 'bg-slate-700 border-slate-600 hover:bg-slate-600'
-                                          }`}
-                                          title={iconOption.name}
-                                        >
-                                          <IconComponent 
-                                            size={24} 
-                                            className={`mx-auto ${isSelected ? 'text-[#EE6A28]' : 'text-white'}`}
-                                          />
-                                        </button>
-                                      )
-                                    })}
+                                <div className="absolute z-10 mt-1 w-full bg-slate-800 border border-slate-600 rounded shadow-lg max-h-80 overflow-hidden flex flex-col">
+                                  <div className="p-2 border-b border-slate-600">
+                                    <div className="relative">
+                                      <Search size={16} className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                                      <input
+                                        type="text"
+                                        value={iconSearchQueries[info.id] || ''}
+                                        onChange={(e) => setIconSearchQueries(prev => ({ ...prev, [info.id]: e.target.value }))}
+                                        placeholder="Cari icon..."
+                                        className="w-full pl-8 pr-3 py-2 bg-slate-700 border border-slate-600 rounded text-white text-sm focus:outline-none focus:border-[#EE6A28]"
+                                        onClick={(e) => e.stopPropagation()}
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="overflow-y-auto max-h-60 p-2">
+                                    <div className="grid grid-cols-4 gap-2">
+                                      {iconOptions
+                                        .filter(iconOption => 
+                                          iconSearchQueries[info.id] 
+                                            ? iconOption.name.toLowerCase().includes(iconSearchQueries[info.id].toLowerCase())
+                                            : true
+                                        )
+                                        .map((iconOption) => {
+                                          const IconComponent = iconOption.component
+                                          const isSelected = info.icon === iconOption.name
+                                          return (
+                                            <button
+                                              key={iconOption.name}
+                                              type="button"
+                                              onClick={() => {
+                                                handleRideInfoChange(info.id, 'icon', iconOption.name)
+                                                setOpenIconDropdowns(prev => ({ ...prev, [info.id]: false }))
+                                                setIconSearchQueries(prev => ({ ...prev, [info.id]: '' }))
+                                              }}
+                                              className={`p-2 rounded border transition-colors ${
+                                                isSelected
+                                                  ? 'bg-[#EE6A28]/20 border-[#EE6A28]'
+                                                  : 'bg-slate-700 border-slate-600 hover:bg-slate-600'
+                                              }`}
+                                              title={iconOption.name}
+                                            >
+                                              <IconComponent 
+                                                size={24} 
+                                                className={`mx-auto ${isSelected ? 'text-[#EE6A28]' : 'text-white'}`}
+                                              />
+                                            </button>
+                                          )
+                                        })}
+                                    </div>
                                   </div>
                                 </div>
                               )}
@@ -1050,11 +1187,9 @@ function EditRidesContent() {
                           </div>
                           <div>
                             <label className="block text-gray-300 text-sm mb-1">Answer</label>
-                            <textarea
-                              value={info.answer}
-                              onChange={(e) => handleRideInfoChange(info.id, 'answer', e.target.value)}
-                              className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded text-white text-sm focus:outline-none focus:border-[#EE6A28]"
-                              rows={2}
+                            <RichTextEditor
+                              content={info.answer}
+                              onChange={(content) => handleRideInfoChange(info.id, 'answer', content)}
                               placeholder="Masukkan jawaban"
                             />
                           </div>
@@ -1140,36 +1275,47 @@ function EditRidesContent() {
               )}
 
               {/* Navigation Buttons */}
-              <div className="flex justify-between items-center mt-8 pt-6 border-t border-slate-700">
-                <button
-                  type="button"
-                  onClick={prevStep}
-                  disabled={currentStep === 1}
-                  className="flex items-center gap-2 px-6 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <ChevronLeft size={18} />
-                  Previous
-                </button>
-
-                {currentStep < totalSteps ? (
+              <div className="flex justify-between items-center mt-8 pt-6 border-t border-slate-700 gap-2 sm:gap-3">
+                <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3">
                   <button
                     type="button"
-                    onClick={nextStep}
-                    className="flex items-center gap-2 px-6 py-2 bg-[#EE6A28] hover:bg-[#d85a20] text-white rounded transition-colors"
+                    onClick={prevStep}
+                    disabled={currentStep === 1}
+                    className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4 md:px-6 py-1.5 sm:py-2 bg-slate-800 hover:bg-slate-700 text-white rounded text-xs sm:text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Next
-                    <ChevronRight size={18} />
+                    <ChevronLeft size={14} className="sm:w-[18px] sm:h-[18px]" />
+                    <span className="hidden sm:inline">Previous</span>
+                    <span className="sm:hidden">Prev</span>
                   </button>
-                ) : (
+                  {currentStep < totalSteps && (
+                    <button
+                      type="button"
+                      onClick={nextStep}
+                      className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4 md:px-6 py-1.5 sm:py-2 bg-[#EE6A28] hover:bg-[#d85a20] text-white rounded text-xs sm:text-sm transition-colors whitespace-nowrap"
+                    >
+                      <span className="text-xs sm:text-sm">Next</span>
+                      <ChevronRight size={14} className="sm:w-[18px] sm:h-[18px]" />
+                    </button>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3">
+                  <button
+                    type="button"
+                    onClick={() => router.push('/admin/rides')}
+                    className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4 md:px-6 py-1.5 sm:py-2 bg-red-600 hover:bg-red-700 text-white rounded text-xs sm:text-sm transition-colors whitespace-nowrap"
+                  >
+                    Cancel
+                  </button>
                   <button
                     type="button"
                     onClick={handleSubmit}
                     disabled={loading}
-                    className="flex items-center gap-2 px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4 md:px-6 py-1.5 sm:py-2 bg-green-600 hover:bg-green-700 text-white rounded text-xs sm:text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                   >
-                    {loading ? 'Menyimpan...' : 'Update Ride'}
+                    {loading ? <span className="text-xs sm:text-sm">Menyimpan...</span> : <span className="text-xs sm:text-sm">Submit</span>}
                   </button>
-                )}
+                </div>
               </div>
             </div>
         </main>

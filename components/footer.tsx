@@ -199,7 +199,7 @@ export default function Footer() {
                 </svg>
               </a>
             </div>
-            <div className="flex items-center gap-2">
+            {/* <div className="flex items-center gap-2">
               <input 
                 type="email" 
                 placeholder="Your email"
@@ -208,7 +208,7 @@ export default function Footer() {
               <button className="bg-orange-500 hover:bg-orange-600 text-white p-2 rounded-none transition flex items-center justify-center">
                 <ArrowRight size={20} />
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
 
