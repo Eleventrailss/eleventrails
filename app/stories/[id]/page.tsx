@@ -214,7 +214,7 @@ export default function StoriesDetailPage() {
               )}
             </div>
             
-            <div className="mb-6" style={{ paddingBottom: '20px' }}>
+            <div className="mb-6" style={{ paddingBottom: '100px' }}>
               <img 
                 src={story.pic || "/placeholder.svg"} 
                 alt={story.title}
@@ -232,7 +232,7 @@ export default function StoriesDetailPage() {
             </div>
             
             {paragraphs.length > 0 && (
-              <div className="space-y-4" style={{ marginTop: '-15px' }}>
+              <div className="space-y-4">
                 {paragraphs.map((paragraph, index) => (
                   <p 
                     key={index}
@@ -250,7 +250,7 @@ export default function StoriesDetailPage() {
             )}
             
             {!paragraphs.length && story.stories_detail && (
-              <div className="space-y-4" style={{ marginTop: '-15px' }}>
+              <div className="space-y-4">
                 <p 
                   className="text-gray-600 leading-relaxed"
                   style={{

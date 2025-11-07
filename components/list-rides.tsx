@@ -61,22 +61,20 @@ export default function ListRides() {
         </div>
         <div className="relative z-10">
           <h2 
-            className="text-slate-950 text-center mb-4 mx-auto break-words"
+            className="text-slate-950 text-center mb-4 mx-auto whitespace-nowrap"
             style={{
               fontFamily: 'Rubik One, sans-serif',
               fontSize: 'clamp(32px, 6vw, 64px)',
               fontWeight: 400,
               width: '100%',
               maxWidth: '100%',
-              lineHeight: '1.2',
-              wordBreak: 'break-word',
-              overflowWrap: 'break-word'
+              lineHeight: '1.2'
             }}
           >
             THE RIDES OF YOUR LIFE
           </h2>
-          <p className="text-gray-600 text-lg text-center mb-12 sm:mb-16 max-w-3xl mx-auto px-4 break-words" style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>
-            Explore our curated selection of dirt bike tours, enduro adventures, and trail riding experiences designed to give you the ultimate off-road adventure in Lombok, Indonesia.
+          <p className="text-gray-600 text-lg text-center mb-12 sm:mb-16 max-w-3xl mx-auto px-4">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis aute irure dolor in reprehenderit voluptate velit.
           </p>
 
           {loading ? (

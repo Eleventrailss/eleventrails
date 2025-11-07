@@ -124,7 +124,7 @@ export default function RidesDetailPage() {
   const [rideInfos, setRideInfos] = useState<RideInfo[]>([])
   const [galleryPhotos, setGalleryPhotos] = useState<GalleryPhoto[]>([])
   const [relatedRides, setRelatedRides] = useState<RelatedRide[]>([])
-  const [openIndex, setOpenIndex] = useState<Set<number>>(new Set())
+  const [openIndex, setOpenIndex] = useState<number | null>(null)
 
   useEffect(() => {
     if (rideId) {
@@ -221,15 +221,7 @@ export default function RidesDetailPage() {
   }
 
   const toggleItem = (index: number) => {
-    setOpenIndex(prev => {
-      const newSet = new Set(prev)
-      if (newSet.has(index)) {
-        newSet.delete(index)
-      } else {
-        newSet.add(index)
-      }
-      return newSet
-    })
+    setOpenIndex(openIndex === index ? null : index)
   }
 
   if (loading) {
@@ -311,16 +303,14 @@ export default function RidesDetailPage() {
           </div>
           <div className="relative z-10">
             <h2 
-              className="text-slate-950 text-left mb-4 break-words"
+              className="text-slate-950 text-left mb-4 whitespace-nowrap"
               style={{
                 fontFamily: 'Rubik One, sans-serif',
                 fontSize: 'clamp(32px, 6vw, 64px)',
                 fontWeight: 400,
                 width: '100%',
                 maxWidth: '100%',
-                lineHeight: '1.2',
-                wordBreak: 'break-word',
-                overflowWrap: 'break-word'
+                lineHeight: '1.2'
               }}
             >
               {ride.title.toUpperCase()}
@@ -496,77 +486,77 @@ export default function RidesDetailPage() {
             </div>
           </div>
             <div 
-              className="w-full sm:w-[435px]"
               style={{
-                minHeight: 'auto',
-                height: 'auto',
+                width: '435px',
+                height: '447px',
+                maxWidth: '100%',
                 backgroundColor: '#EE6A28',
                 borderRadius: '0',
                 flexShrink: 0,
-                padding: 'clamp(16px, 4vw, 30px)',
+                padding: '30px',
                 boxSizing: 'border-box',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'center',
-                gap: 'clamp(16px, 4vw, 24px)'
+                gap: '24px'
               }}
             >
               {ride.duration && (
-                <div style={{ display: 'flex', gap: 'clamp(8px, 2vw, 16px)', alignItems: 'center', width: '100%' }}>
-                  <div style={{ width: 'clamp(40px, 8vw, 60px)', height: 'clamp(40px, 8vw, 60px)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Clock color="#ffffff" style={{ width: 'clamp(40px, 8vw, 60px)', height: 'clamp(40px, 8vw, 60px)' }} />
+                <div style={{ display: 'flex', gap: '16px', alignItems: 'center', width: '100%' }}>
+                  <div style={{ width: '60px', height: '60px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Clock size={60} color="#ffffff" />
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginLeft: 'clamp(8px, 2vw, 20px)', flex: 1, minWidth: 0 }}>
-                    <p style={{ fontFamily: 'Rubik One, sans-serif', fontWeight: 400, fontSize: 'clamp(14px, 3vw, 24px)', color: '#ffffff', margin: 0, wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginLeft: '20px' }}>
+                    <p style={{ fontFamily: 'Rubik One, sans-serif', fontWeight: 400, fontSize: '24px', color: '#ffffff', margin: 0 }}>
                       Duration
                     </p>
-                    <p style={{ fontFamily: 'Plus Jakarta Sans, sans-serif', fontWeight: 400, fontSize: 'clamp(12px, 2.5vw, 18px)', color: '#ffffff', margin: 0, wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+                    <p style={{ fontFamily: 'Plus Jakarta Sans, sans-serif', fontWeight: 400, fontSize: '18px', color: '#ffffff', margin: 0 }}>
                       {ride.duration}
                     </p>
                   </div>
                 </div>
               )}
               {ride.location && (
-                <div style={{ display: 'flex', gap: 'clamp(8px, 2vw, 16px)', alignItems: 'center', width: '100%' }}>
-                  <div style={{ width: 'clamp(40px, 8vw, 60px)', height: 'clamp(40px, 8vw, 60px)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <MapPin color="#ffffff" style={{ width: 'clamp(40px, 8vw, 60px)', height: 'clamp(40px, 8vw, 60px)' }} />
+                <div style={{ display: 'flex', gap: '16px', alignItems: 'center', width: '100%' }}>
+                  <div style={{ width: '60px', height: '60px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <MapPin size={60} color="#ffffff" />
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginLeft: 'clamp(8px, 2vw, 20px)', flex: 1, minWidth: 0 }}>
-                    <p style={{ fontFamily: 'Rubik One, sans-serif', fontWeight: 400, fontSize: 'clamp(14px, 3vw, 24px)', color: '#ffffff', margin: 0, wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginLeft: '20px' }}>
+                    <p style={{ fontFamily: 'Rubik One, sans-serif', fontWeight: 400, fontSize: '24px', color: '#ffffff', margin: 0 }}>
                       Location
                     </p>
-                    <p style={{ fontFamily: 'Plus Jakarta Sans, sans-serif', fontWeight: 400, fontSize: 'clamp(12px, 2.5vw, 18px)', color: '#ffffff', margin: 0, wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+                    <p style={{ fontFamily: 'Plus Jakarta Sans, sans-serif', fontWeight: 400, fontSize: '18px', color: '#ffffff', margin: 0 }}>
                       {ride.location}
                     </p>
                   </div>
                 </div>
               )}
               {ride.meeting_point && (
-                <div style={{ display: 'flex', gap: 'clamp(8px, 2vw, 16px)', alignItems: 'center', width: '100%' }}>
-                  <div style={{ width: 'clamp(40px, 8vw, 60px)', height: 'clamp(40px, 8vw, 60px)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Navigation color="#ffffff" style={{ width: 'clamp(40px, 8vw, 60px)', height: 'clamp(40px, 8vw, 60px)' }} />
+                <div style={{ display: 'flex', gap: '16px', alignItems: 'center', width: '100%' }}>
+                  <div style={{ width: '60px', height: '60px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Navigation size={60} color="#ffffff" />
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginLeft: 'clamp(8px, 2vw, 20px)', flex: 1, minWidth: 0 }}>
-                    <p style={{ fontFamily: 'Rubik One, sans-serif', fontWeight: 400, fontSize: 'clamp(14px, 3vw, 24px)', color: '#ffffff', margin: 0, wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginLeft: '20px' }}>
+                    <p style={{ fontFamily: 'Rubik One, sans-serif', fontWeight: 400, fontSize: '24px', color: '#ffffff', margin: 0 }}>
                       Meeting Point
                     </p>
-                    <p style={{ fontFamily: 'Plus Jakarta Sans, sans-serif', fontWeight: 400, fontSize: 'clamp(12px, 2.5vw, 18px)', color: '#ffffff', margin: 0, wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+                    <p style={{ fontFamily: 'Plus Jakarta Sans, sans-serif', fontWeight: 400, fontSize: '18px', color: '#ffffff', margin: 0 }}>
                       {ride.meeting_point}
                     </p>
                   </div>
                 </div>
               )}
               {ride.difficulty_level && (
-                <div style={{ display: 'flex', gap: 'clamp(8px, 2vw, 16px)', alignItems: 'center', width: '100%' }}>
-                  <div style={{ width: 'clamp(40px, 8vw, 60px)', height: 'clamp(40px, 8vw, 60px)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <TrendingUp color="#ffffff" style={{ width: 'clamp(40px, 8vw, 60px)', height: 'clamp(40px, 8vw, 60px)' }} />
+                <div style={{ display: 'flex', gap: '16px', alignItems: 'center', width: '100%' }}>
+                  <div style={{ width: '60px', height: '60px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <TrendingUp size={60} color="#ffffff" />
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginLeft: 'clamp(8px, 2vw, 20px)', flex: 1, minWidth: 0 }}>
-                    <p style={{ fontFamily: 'Rubik One, sans-serif', fontWeight: 400, fontSize: 'clamp(14px, 3vw, 24px)', color: '#ffffff', margin: 0, wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginLeft: '20px' }}>
+                    <p style={{ fontFamily: 'Rubik One, sans-serif', fontWeight: 400, fontSize: '24px', color: '#ffffff', margin: 0 }}>
                       Difficulty Level
                     </p>
-                    <p style={{ fontFamily: 'Plus Jakarta Sans, sans-serif', fontWeight: 400, fontSize: 'clamp(12px, 2.5vw, 18px)', color: '#ffffff', margin: 0, wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+                    <p style={{ fontFamily: 'Plus Jakarta Sans, sans-serif', fontWeight: 400, fontSize: '18px', color: '#ffffff', margin: 0 }}>
                       {ride.difficulty_level}
                     </p>
                   </div>
@@ -599,7 +589,7 @@ export default function RidesDetailPage() {
                       <button
                         type="button"
                         onClick={() => toggleItem(index)}
-                        className="w-full flex items-center gap-2 sm:gap-4 p-2 sm:p-4 hover:bg-gray-50 transition-colors"
+                        className="w-full flex items-center gap-4 p-4 hover:bg-gray-50 transition-colors scale-90 sm:scale-100"
                         style={{
                           textAlign: 'left',
                           border: 'none',
@@ -609,65 +599,57 @@ export default function RidesDetailPage() {
                       >
                         <div
                           style={{
-                            width: 'clamp(40px, 8vw, 60px)',
-                            height: 'clamp(40px, 8vw, 60px)',
+                            width: '60px',
+                            height: '60px',
                             flexShrink: 0,
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center'
                           }}
                         >
-                          <IconComponent style={{ width: 'clamp(40px, 8vw, 60px)', height: 'clamp(40px, 8vw, 60px)', color: '#0A88B7' }} />
+                          <IconComponent size={60} color="#0A88B7" />
                         </div>
-                        <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ flex: 1 }}>
                           <p
                             style={{
                               fontFamily: 'Rubik One, sans-serif',
                               fontWeight: 400,
-                              fontSize: 'clamp(16px, 3vw, 32px)',
+                              fontSize: '32px',
                               color: '#1f2937',
-                              margin: 0,
-                              wordBreak: 'break-word',
-                              overflowWrap: 'break-word'
+                              margin: 0
                             }}
                           >
                             {info.question}
                           </p>
                         </div>
                         <div style={{ flexShrink: 0 }}>
-                          {openIndex.has(index) ? (
-                            <ChevronUp size={20} color="#1f2937" style={{ width: 'clamp(20px, 4vw, 24px)', height: 'clamp(20px, 4vw, 24px)' }} />
+                          {openIndex === index ? (
+                            <ChevronUp size={24} color="#1f2937" />
                           ) : (
-                            <ChevronDown size={20} color="#1f2937" style={{ width: 'clamp(20px, 4vw, 24px)', height: 'clamp(20px, 4vw, 24px)' }} />
+                            <ChevronDown size={24} color="#1f2937" />
                           )}
                         </div>
                       </button>
-                      {openIndex.has(index) && (
+                      {openIndex === index && (
                         <div
-                          className="pb-4 pl-14 sm:pl-20 md:pl-24"
+                          className="px-4 pb-4"
                           style={{
-                            paddingTop: '0',
-                            paddingRight: 'clamp(8px, 2vw, 16px)',
-                            width: '100%',
-                            boxSizing: 'border-box',
-                            maxWidth: '100%'
+                            paddingLeft: 'calc(60px + 16px + 16px)',
+                            paddingTop: '0'
                           }}
                         >
-                          <div
-                            className="rich-text-content"
-                            dangerouslySetInnerHTML={{ __html: info.answer }}
+                          <p
                             style={{
                               fontFamily: 'Plus Jakarta Sans, sans-serif',
                               fontWeight: 400,
-                              fontSize: 'clamp(14px, 2.5vw, 18px)',
+                              fontSize: '18px',
                               color: '#4b5563',
                               margin: 0,
-                              lineHeight: '1.6',
-                              wordBreak: 'break-word',
-                              overflowWrap: 'break-word',
-                              maxWidth: '100%'
+                              lineHeight: '1.6'
                             }}
-                          />
+                          >
+                            {info.answer}
+                          </p>
                         </div>
                       )}
                     </div>
@@ -928,67 +910,6 @@ export default function RidesDetailPage() {
       <Values />
       <CTA />
       <Footer />
-      
-      <style jsx global>{`
-        .rich-text-content {
-          color: #4b5563;
-        }
-        .rich-text-content p {
-          margin: 0.5em 0;
-          color: #4b5563;
-        }
-        .rich-text-content p:first-child {
-          margin-top: 0;
-        }
-        .rich-text-content p:last-child {
-          margin-bottom: 0;
-        }
-        .rich-text-content strong {
-          font-weight: 600;
-          color: #4b5563;
-        }
-        .rich-text-content em {
-          font-style: italic;
-          color: #4b5563;
-        }
-        .rich-text-content u {
-          text-decoration: underline;
-          color: #4b5563;
-        }
-        .rich-text-content ul,
-        .rich-text-content ol {
-          padding-left: 1.5em;
-          margin: 0.5em 0;
-          color: #4b5563;
-        }
-        .rich-text-content li {
-          margin: 0.25em 0;
-          color: #4b5563;
-        }
-        .rich-text-content h1 {
-          font-size: 1.5em;
-          font-weight: 600;
-          margin: 0.75em 0 0.5em 0;
-          color: #4b5563;
-        }
-        .rich-text-content h2 {
-          font-size: 1.3em;
-          font-weight: 600;
-          margin: 0.75em 0 0.5em 0;
-          color: #4b5563;
-        }
-        .rich-text-content h3 {
-          font-size: 1.1em;
-          font-weight: 600;
-          margin: 0.75em 0 0.5em 0;
-          color: #4b5563;
-        }
-        .rich-text-content h1:first-child,
-        .rich-text-content h2:first-child,
-        .rich-text-content h3:first-child {
-          margin-top: 0;
-        }
-      `}</style>
     </main>
   )
 }
