@@ -4,6 +4,7 @@ import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 import StructuredData from '@/components/structured-data'
 import FaviconUpdater from '@/components/favicon-updater'
+import PlanYourRideButton from '@/components/plan-your-ride-button'
 
 const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
@@ -201,6 +202,7 @@ export default function RootLayout({
         <FaviconUpdater />
         <StructuredData />
         {children}
+        <PlanYourRideButton />
         <Analytics />
       </body>
     </html>
