@@ -110,14 +110,13 @@ export default function AdminSidebar() {
                   src={logoUrl} 
                   alt="ElevenTrails Logo" 
                   className="h-6 lg:h-7 w-auto object-contain"
-                  style={{ maxHeight: '28px' }}
+                  style={{ width: '120px', height: '55px', objectFit: 'contain' }}
                   onError={(e) => {
                     const target = e.target as HTMLImageElement
                     target.style.display = 'none'
                   }}
                 />
               )}
-              <span style={{color:'#EE6A28'}}>ElevenTrails</span>
               <span className="text-gray-400 text-xs lg:text-sm">Admin</span>
             </h1>
           </div>
