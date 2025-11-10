@@ -72,18 +72,25 @@ export default function Header() {
     >
       <div className="max-w-full mx-auto px-4 sm:px-6 lg:pr-[70px] lg:pl-[70px]">
         <div className="flex justify-between items-center h-[66px]">
-          <div className="flex items-center gap-2">
-            <a href="/" className="flex items-center gap-2">
+          <div className="flex items-center">
+            <a href="/" className="flex items-center" style={{ width: '120px', height: '55px' }}>
               {logoUrl && !logoError ? (
                 <img 
                   src={logoUrl} 
                   alt="ElevenTrails Logo" 
-                  className="h-8 sm:h-10 w-auto object-contain"
-                  style={{ maxHeight: '40px' }}
+                  style={{ width: '120px', height: '55px', objectFit: 'contain' }}
                   onError={() => setLogoError(true)}
                 />
-              ) : null}
-              <span className="font-bold text-lg sm:text-xl" style={{color:'#EE6A28'}}>ElevenTrails</span>
+              ) : (
+                <div
+                  aria-hidden="true"
+                  style={{
+                    width: '120px',
+                    height: '55px',
+                    backgroundColor: '#EE6A28',
+                  }}
+                />
+              )}
             </a>
           </div>
 

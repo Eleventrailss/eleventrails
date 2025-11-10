@@ -95,19 +95,28 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-[30px]">
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mb-8 sm:mb-12">
           <div>
-            <a href="/" className="flex items-center gap-2 mb-4">
+            <a
+              href="/"
+              className="flex items-center mb-4"
+              style={{ width: '120px', height: '55px' }}
+            >
               {logoUrl && !logoError ? (
                 <img 
                   src={logoUrl} 
                   alt="ElevenTrails Logo" 
-                  className="h-8 w-auto object-contain"
-                  style={{ maxHeight: '32px' }}
+                  style={{ width: '120px', height: '55px', objectFit: 'contain' }}
                   onError={() => setLogoError(true)}
                 />
               ) : (
-                <div className="w-6 h-6 bg-orange-500 rounded-full"></div>
+                <div
+                  aria-hidden="true"
+                  style={{
+                    width: '120px',
+                    height: '55px',
+                    backgroundColor: '#EE6A28',
+                  }}
+                />
               )}
-              <span className="text-white font-bold">ElevenTrails</span>
             </a>
             {footerDescription ? (
               <p className="text-gray-400 text-sm mb-4" dangerouslySetInnerHTML={{ __html: footerDescription }} />
