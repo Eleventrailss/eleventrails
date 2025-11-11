@@ -1,3 +1,4 @@
+import { Suspense } from "react"
 import type { Metadata } from 'next'
 import Header from "@/components/header"
 import HeroFaq from "@/components/hero-faq"
@@ -75,7 +76,9 @@ export default function FaqPage() {
       <HeroFaq />
       <DetailsFaq />
       <Values />
-      <CTA />
+      <Suspense fallback={null}>
+        <CTA />
+      </Suspense>
       <Footer />
     </main>
   )

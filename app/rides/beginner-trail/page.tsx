@@ -1,3 +1,4 @@
+import { Suspense } from "react"
 import type { Metadata } from 'next'
 import Header from "@/components/header"
 import HeroRidesDetail from "@/components/hero-rides-detail"
@@ -27,7 +28,9 @@ export default function BeginnerTrailPage() {
       <YouMayAlsoLikeRidesDetail />
       <Testimonials />
       <Values />
-      <CTA />
+      <Suspense fallback={null}>
+        <CTA />
+      </Suspense>
       <Footer />
     </main>
   )

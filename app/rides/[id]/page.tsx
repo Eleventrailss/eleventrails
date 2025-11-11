@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { Suspense, useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Header from "@/components/header"
 import Testimonials from "@/components/testimonials"
@@ -928,7 +928,9 @@ export default function RidesDetailPage() {
 
       <Testimonials />
       <Values />
-      <CTA />
+      <Suspense fallback={null}>
+        <CTA />
+      </Suspense>
       <Footer />
       
       <style jsx global>{`

@@ -1,3 +1,4 @@
+import { Suspense } from "react"
 import type { Metadata } from 'next'
 import Header from "@/components/header"
 import HeroAbout from "@/components/hero-about"
@@ -65,7 +66,9 @@ export default function About() {
       <TrailsAbout />
       <CommitmentAbout />
       <Values />
-      <CTA />
+      <Suspense fallback={null}>
+        <CTA />
+      </Suspense>
       <Footer />
     </main>
   )

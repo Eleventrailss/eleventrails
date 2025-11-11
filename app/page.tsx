@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Suspense } from "react"
 import Header from "@/components/header"
 import Hero from "@/components/hero"
 import Explore from "@/components/explore"
@@ -164,7 +165,9 @@ export default function Home() {
       <Testimonials />
       <Stories />
       <Values />
-      <CTA />
+      <Suspense fallback={null}>
+        <CTA />
+      </Suspense>
       <Footer />
     </main>
   )

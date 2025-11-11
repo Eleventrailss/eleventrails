@@ -4,13 +4,6 @@ import { supabaseAdmin } from '@/lib/supabase'
 const BUCKET_NAME = 'uploads'
 
 export const runtime = 'nodejs'
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: '60mb',
-    },
-  },
-}
 export const maxDuration = 60
 
 /**

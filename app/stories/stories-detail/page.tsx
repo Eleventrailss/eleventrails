@@ -1,3 +1,4 @@
+import { Suspense } from "react"
 import type { Metadata } from 'next'
 import Header from "@/components/header"
 import HeroStoriesDetail from "@/components/hero-stories-detail"
@@ -18,7 +19,9 @@ export default function StoriesDetailPage() {
       <HeroStoriesDetail />
       <DetailsStoryDetail />
       <Values />
-      <CTA />
+      <Suspense fallback={null}>
+        <CTA />
+      </Suspense>
       <Footer />
     </main>
   )

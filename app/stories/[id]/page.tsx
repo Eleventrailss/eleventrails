@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { Suspense, useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Header from "@/components/header"
 import Values from "@/components/values"
@@ -268,7 +268,9 @@ export default function StoriesDetailPage() {
       </section>
 
       <Values />
-      <CTA />
+      <Suspense fallback={null}>
+        <CTA />
+      </Suspense>
       <Footer />
     </main>
   )
