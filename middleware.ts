@@ -15,8 +15,29 @@ function setAffiliateCookie(response: NextResponse, value: string) {
   })
 }
 
+function clearAffiliateCookie(response: NextResponse) {
+  response.cookies.set({
+    name: AFFILIATE_COOKIE,
+    value: '',
+    maxAge: 0,
+    path: '/',
+    httpOnly: false,
+    sameSite: 'lax',
+  })
+}
+
 export function middleware(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl
+
+  if (pathname === '/@' || pathname === '/@/') {
+    const targetUrl = request.nextUrl.clone()
+    targetUrl.pathname = '/'
+    targetUrl.searchParams.set('affiliate', 'clear')
+
+    const response = NextResponse.redirect(targetUrl)
+    clearAffiliateCookie(response)
+    return response
+  }
 
   const affiliatePathMatch = pathname.match(/^\/@([^\/]+)(\/.*)?$/)
 
@@ -35,7 +56,11 @@ export function middleware(request: NextRequest) {
   const affiliateQuery = searchParams.get('affiliate')
   if (affiliateQuery) {
     const response = NextResponse.next()
-    setAffiliateCookie(response, affiliateQuery)
+    if (affiliateQuery === 'clear') {
+      clearAffiliateCookie(response)
+    } else {
+      setAffiliateCookie(response, affiliateQuery)
+    }
     return response
   }
 

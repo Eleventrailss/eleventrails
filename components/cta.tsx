@@ -49,6 +49,28 @@ export default function CTA() {
   const recaptchaWidgetId = useRef<number | null>(null)
   const [affiliateRef, setAffiliateRef] = useState<string | null>(null)
 
+  const clearAffiliateRef = useCallback(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.removeItem(AFFILIATE_STORAGE_KEY)
+      } catch (storageError) {
+        console.warn('Unable to clear affiliate in localStorage', storageError)
+      }
+      try {
+        document.cookie = `${AFFILIATE_COOKIE_NAME}=;path=/;max-age=0;samesite=lax`
+      } catch (cookieError) {
+        console.warn('Unable to clear affiliate cookie', cookieError)
+      }
+    }
+    setAffiliateRef(null)
+    setFormData(prev => {
+      if (prev.informationFrom && isAffiliateValue(prev.informationFrom)) {
+        return { ...prev, informationFrom: '' }
+      }
+      return prev
+    })
+  }, [])
+
   const persistAffiliateRef = useCallback((rawValue: string | null | undefined) => {
     if (typeof window === 'undefined') return
     if (!rawValue) return
@@ -75,6 +97,10 @@ export default function CTA() {
     if (typeof window === 'undefined') return
 
     const affiliateFromParams = searchParams?.get('affiliate')
+    if (affiliateFromParams === 'clear') {
+      clearAffiliateRef()
+      return
+    }
     if (affiliateFromParams) {
       persistAffiliateRef(affiliateFromParams)
       return
@@ -96,7 +122,7 @@ export default function CTA() {
     } catch (storageError) {
       console.warn('Unable to read affiliate from localStorage', storageError)
     }
-  }, [searchParams, pathname, affiliateRef, persistAffiliateRef])
+  }, [searchParams, pathname, affiliateRef, persistAffiliateRef, clearAffiliateRef])
 
   useEffect(() => {
     if (affiliateRef) {

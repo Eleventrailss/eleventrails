@@ -49,14 +49,14 @@ export default function TravelStories() {
   return (
     <section
       className="relative pt-12 sm:pt-16 lg:pt-20 pb-6 sm:pb-8 -mb-[-20px]"
-      style={{ backgroundColor: '#081E4C' }}
+      style={{ backgroundColor: '#FFFFFF' }}
     >
       <div className="max-w-7xl mx-auto px-[30px] relative">
         <div className="absolute left-0 right-0 -top-[50px] -translate-y-1/2 z-0 pointer-events-none">
           <img src="/explore-top.png" alt="Explore separator" className="w-full h-auto object-cover" />
         </div>
         <div className="relative z-10 mb-12 sm:mb-16">
-          <h2 className="font-rubik-one text-4xl md:text-[64px] font-bold text-white mb-6 leading-tight w-full text-center">
+          <h2 className="font-rubik-one text-4xl md:text-[64px] font-bold text-slate-950 mb-6 leading-tight w-full text-center">
             <span className="block">TRAVEL TO LOMBOK VIA OUR</span>
             <span className="block">STORIES FROM THE TRIALS</span>
           </h2>
@@ -64,13 +64,13 @@ export default function TravelStories() {
         {loading ? (
           <div className="relative z-10 space-y-8 md:space-y-12">
             <div className="text-center py-12">
-              <p className="text-white/80 text-lg">Memuat stories...</p>
+              <p className="text-gray-600 text-lg">Memuat stories...</p>
             </div>
           </div>
         ) : blogPosts.length === 0 ? (
           <div className="relative z-10 space-y-8 md:space-y-12">
             <div className="text-center py-12">
-              <p className="text-white/80 text-lg">Belum ada stories tersedia</p>
+              <p className="text-gray-600 text-lg">Belum ada stories tersedia</p>
             </div>
           </div>
         ) : (
@@ -94,10 +94,10 @@ export default function TravelStories() {
                   />
                 </div>
                 <div className="w-full">
-                  <h2 className="font-rubik-one text-3xl md:text-[32px] font-bold text-white mb-4 leading-tight">
+                  <h2 className="font-rubik-one text-3xl md:text-[32px] font-bold text-slate-950 mb-4 leading-tight">
                     {post.title}
                   </h2>
-                  <p className="text-white/80 text-lg mb-6 leading-relaxed">
+                  <p className="text-gray-600 text-lg mb-6 leading-relaxed">
                     {truncateDescription(post.stories_detail)}
                   </p>
                   <a 
