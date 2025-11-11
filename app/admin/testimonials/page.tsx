@@ -7,7 +7,7 @@ import AdminNavbar from "@/components/admin/admin-navbar"
 import AdminAuthCheck from "@/components/admin/admin-auth-check"
 import { SidebarProvider, useSidebar } from "@/components/admin/sidebar-context"
 import { supabase } from "@/lib/supabase"
-import { Edit, X, Plus, Copy, Check, ArrowUp, ArrowDown, Power, Upload, Star } from "lucide-react"
+import { Edit, X, Plus, Copy, Check, ArrowUp, ArrowDown, Power, Upload, Star, Trash2 } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -164,52 +164,26 @@ function AdminTestimonialsContent() {
       // Format: id_nama_index.ext
       const fileName = `${testimonialId}_${sanitizedName}_${index}.${fileExt}`
 
+      const storagePath = `testimonials/${fileName}`
+
       const formData = new FormData()
       formData.append('file', file)
-      formData.append('folder', 'testimonials')
-      formData.append('subfolder', '')
-      formData.append('customFileName', `${testimonialId}_${sanitizedName}_${index}`)
+      formData.append('path', storagePath)
 
-      return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest()
-
-        xhr.upload.addEventListener('progress', (e) => {
-          if (e.lengthComputable && onProgress) {
-            const progress = Math.round((e.loaded / e.total) * 100)
-            onProgress(progress)
-          }
-        })
-
-        xhr.addEventListener('load', () => {
-          if (xhr.status >= 200 && xhr.status < 300) {
-            try {
-              const data = JSON.parse(xhr.responseText)
-              if (onProgress) onProgress(100)
-              resolve(data.url || null)
-            } catch (err) {
-              reject(new Error('Gagal memparse respons'))
-            }
-          } else {
-            try {
-              const errorData = JSON.parse(xhr.responseText)
-              reject(new Error(errorData.error || 'Upload gagal'))
-            } catch (err) {
-              reject(new Error('Upload gagal'))
-            }
-          }
-        })
-
-        xhr.addEventListener('error', () => {
-          reject(new Error('Upload gagal'))
-        })
-
-        xhr.addEventListener('abort', () => {
-          reject(new Error('Upload dibatalkan'))
-        })
-
-        xhr.open('POST', '/api/upload')
-        xhr.send(formData)
+      const response = await fetch('/api/upload-file', {
+        method: 'POST',
+        body: formData,
       })
+
+      const data = await response.json()
+
+      if (!response.ok || !data?.success) {
+        throw new Error(data?.error || data?.message || 'Upload gagal')
+      }
+
+      if (onProgress) onProgress(100)
+
+      return data.url || null
     } catch (err: any) {
       console.error('Error uploading file:', err)
       throw err
