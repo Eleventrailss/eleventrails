@@ -113,7 +113,7 @@ export default function Stories() {
   }, [hasAnimated])
 
   return (
-    <section className="relative bg-cyan-600 py-12 sm:py-16 lg:py-20">
+    <section className="relative py-12 sm:py-16 lg:py-20" style={{ backgroundColor: '#081E4C' }}>
       <div className="max-w-7xl mx-auto px-[30px]">
         <div className="grid md:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center">
           <div className="w-full max-w-full">
@@ -152,7 +152,7 @@ export default function Stories() {
             {isLoading ? (
               <div 
                 data-stories-video
-                className="w-full h-auto bg-slate-800 flex items-center justify-center"
+                className="w-full h-auto bg-[#091A3A] flex items-center justify-center"
                 style={{
                   height:'auto',
                   minHeight:'240px',
@@ -259,7 +259,7 @@ export default function Stories() {
             ) : (
               <div 
                 data-stories-video
-                className="w-full h-auto bg-slate-800 flex items-center justify-center"
+                className="w-full h-auto bg-[#091A3A] flex items-center justify-center"
                 style={{
                   height:'auto',
                   minHeight:'240px',

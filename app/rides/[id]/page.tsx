@@ -334,12 +334,14 @@ export default function RidesDetailPage() {
               <img 
                 src={ride.primary_picture || "/placeholder.svg"} 
                 alt={ride.title}
-                className="w-full h-auto object-cover"
+                className="w-full object-cover"
                 style={{
-                  width: '1120px',
-                  height: '371px',
+                  width: '80%',
+                  height: 'auto',
+                  aspectRatio: '352 / 265',
                   maxWidth: '100%',
-                  borderRadius: '0'
+                  borderRadius: '0',
+                  margin: '0 auto'
                 }}
                 onError={(e) => {
                   e.currentTarget.src = '/placeholder.svg'

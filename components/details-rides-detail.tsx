@@ -41,8 +41,8 @@ export default function GalleryRidesDetail({ title, description }: { title: stri
               alt={title}
               className="w-full h-auto object-cover"
               style={{
-                width: '1120px',
-                height: '371px',
+                width: '100%',
+                aspectRatio: '352/265',
                 maxWidth: '100%',
                 borderRadius: '0'
               }}

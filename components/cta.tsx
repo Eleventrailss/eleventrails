@@ -1,10 +1,11 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Loader2 } from "lucide-react"
+import { usePathname, useSearchParams } from "next/navigation"
 
 declare global {
   interface Window {
@@ -17,7 +18,20 @@ declare global {
   }
 }
 
+const AFFILIATE_STORAGE_KEY = 'eleventrailsAffiliateRef'
+const AFFILIATE_COOKIE_NAME = 'affiliate'
+const AFFILIATE_PREFIX = 'affiliate:'
+const COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 30
+
+const normalizeAffiliateSlug = (value: string) =>
+  value.trim().replace(/[^a-zA-Z0-9-_]/g, '').toLowerCase()
+
+const formatAffiliateValue = (slug: string) => `${AFFILIATE_PREFIX}${slug}`
+const isAffiliateValue = (value: string) => value.startsWith(AFFILIATE_PREFIX)
+
 export default function CTA() {
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
   const [recaptchaSiteKey] = useState<string | null>(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || null)
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
@@ -33,6 +47,76 @@ export default function CTA() {
   const [recaptchaError, setRecaptchaError] = useState<string | null>(null)
   const recaptchaRef = useRef<HTMLDivElement>(null)
   const recaptchaWidgetId = useRef<number | null>(null)
+  const [affiliateRef, setAffiliateRef] = useState<string | null>(null)
+
+  const persistAffiliateRef = useCallback((rawValue: string | null | undefined) => {
+    if (typeof window === 'undefined') return
+    if (!rawValue) return
+
+    const normalized = normalizeAffiliateSlug(rawValue)
+    if (!normalized) return
+
+    setAffiliateRef(prev => (prev === normalized ? prev : normalized))
+
+    try {
+      localStorage.setItem(AFFILIATE_STORAGE_KEY, normalized)
+    } catch (storageError) {
+      console.warn('Unable to persist affiliate in localStorage', storageError)
+    }
+
+    try {
+      document.cookie = `${AFFILIATE_COOKIE_NAME}=${encodeURIComponent(normalized)};path=/;max-age=${COOKIE_MAX_AGE_SECONDS};samesite=lax`
+    } catch (cookieError) {
+      console.warn('Unable to persist affiliate in cookie', cookieError)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const affiliateFromParams = searchParams?.get('affiliate')
+    if (affiliateFromParams) {
+      persistAffiliateRef(affiliateFromParams)
+      return
+    }
+
+    if (affiliateRef) return
+
+    const cookieMatch = document.cookie.match(new RegExp(`(?:^|; )${AFFILIATE_COOKIE_NAME}=([^;]*)`))
+    if (cookieMatch && cookieMatch[1]) {
+      persistAffiliateRef(decodeURIComponent(cookieMatch[1]))
+      return
+    }
+
+    try {
+      const storedAffiliate = localStorage.getItem(AFFILIATE_STORAGE_KEY)
+      if (storedAffiliate) {
+        persistAffiliateRef(storedAffiliate)
+      }
+    } catch (storageError) {
+      console.warn('Unable to read affiliate from localStorage', storageError)
+    }
+  }, [searchParams, pathname, affiliateRef, persistAffiliateRef])
+
+  useEffect(() => {
+    if (affiliateRef) {
+      setFormData(prev => {
+        const formatted = formatAffiliateValue(affiliateRef)
+        if (prev.informationFrom === formatted) {
+          return prev
+        }
+        return { ...prev, informationFrom: formatted }
+      })
+      setError(prev => (prev && prev.includes('information') ? null : prev))
+    } else {
+      setFormData(prev => {
+        if (prev.informationFrom && isAffiliateValue(prev.informationFrom)) {
+          return { ...prev, informationFrom: '' }
+        }
+        return prev
+      })
+    }
+  }, [affiliateRef])
 
   const fetchRecaptchaKey = async () => {
     // Key sudah diambil dari env variable, tidak perlu fetch dari general settings
@@ -192,6 +276,7 @@ export default function CTA() {
   }
 
   const handleSelectChange = (value: string) => {
+    if (affiliateRef) return
     setFormData(prev => ({ ...prev, informationFrom: value }))
     setError(null)
   }
@@ -201,8 +286,10 @@ export default function CTA() {
     setError(null)
     setSuccess(false)
 
+    const informationFromValue = formData.informationFrom.trim()
+
     // Form validation
-    if (!formData.name || !formData.email || !formData.phone || !formData.message || !formData.informationFrom) {
+    if (!formData.name || !formData.email || !formData.phone || !formData.message || !informationFromValue) {
       setError('All fields are required')
       return
     }
@@ -230,6 +317,7 @@ export default function CTA() {
         },
         body: JSON.stringify({
           ...formData,
+          informationFrom: informationFromValue,
           recaptchaToken,
         }),
       })
@@ -246,7 +334,7 @@ export default function CTA() {
         email: '',
         phone: '',
         message: '',
-        informationFrom: '',
+        informationFrom: affiliateRef ? formatAffiliateValue(affiliateRef) : '',
       })
       setRecaptchaToken(null)
       if (recaptchaWidgetId.current !== null && window.grecaptcha) {
@@ -356,18 +444,29 @@ export default function CTA() {
                   <label htmlFor="informationFrom" className="block text-sm font-medium text-gray-700 mb-2">
                     How did you hear about us? *
                   </label>
-                  <Select value={formData.informationFrom} onValueChange={handleSelectChange} required>
-                    <SelectTrigger className="w-full rounded border-2 border-gray-300 text-gray-900 placeholder:text-gray-400">
-                      <SelectValue placeholder="Select information source" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {informationFromOptions.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  {affiliateRef ? (
+                    <div className="space-y-2">
+                      <Input
+                      value={affiliateRef}
+                        disabled
+                        readOnly
+                        className="w-full rounded border-2 border-gray-300 text-gray-900 placeholder:text-gray-400 bg-gray-100 cursor-not-allowed"
+                      />
+                    </div>
+                  ) : (
+                    <Select value={formData.informationFrom} onValueChange={handleSelectChange}>
+                      <SelectTrigger className="w-full rounded border-2 border-gray-300 text-gray-900 placeholder:text-gray-400">
+                        <SelectValue placeholder="Select information source" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {informationFromOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
                 </div>
 
                 {/* Message */}

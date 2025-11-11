@@ -55,6 +55,7 @@ function AdminSettingsContent() {
   const [editValue, setEditValue] = useState("")
   const [editDescription, setEditDescription] = useState("")
   const [editIsImageMode, setEditIsImageMode] = useState(false)
+  const [editUseRichText, setEditUseRichText] = useState(false)
   const [editImage, setEditImage] = useState<File | null>(null)
   const [editImagePreview, setEditImagePreview] = useState<string>("")
   const [editLoading, setEditLoading] = useState(false)
@@ -67,6 +68,7 @@ function AdminSettingsContent() {
   const [newValue, setNewValue] = useState("")
   const [newDescription, setNewDescription] = useState("")
   const [newIsImageMode, setNewIsImageMode] = useState(false)
+  const [newUseRichText, setNewUseRichText] = useState(false)
   const [newImage, setNewImage] = useState<File | null>(null)
   const [newImagePreview, setNewImagePreview] = useState<string>("")
   const [addLoading, setAddLoading] = useState(false)
@@ -81,6 +83,11 @@ function AdminSettingsContent() {
   const stripHtml = (html: string) => {
     if (!html) return ""
     return html.replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, ' ').trim()
+  }
+
+  const containsHtmlTags = (value: string) => {
+    if (!value) return false
+    return /<\/?[a-z][\s\S]*>/i.test(value.trim())
   }
 
   // Filter settings based on search query
@@ -198,14 +205,38 @@ function AdminSettingsContent() {
         onProgress(50)
       }
 
-      const data = await response.json()
+      const contentType = response.headers.get('content-type') || ''
+      const isJson = contentType.includes('application/json')
+      const rawBody = await response.text()
+      let data: any = null
+
+      if (isJson && rawBody) {
+        try {
+          data = JSON.parse(rawBody)
+        } catch (parseError) {
+          console.error('Gagal parse respons upload sebagai JSON:', parseError)
+        }
+      }
+
+      if (!isJson) {
+        const message = rawBody?.trim() || 'Server mengembalikan respons tidak dikenal'
+        throw new Error(message)
+      }
+
+      if (!data) {
+        throw new Error('Server tidak mengembalikan data JSON yang valid')
+      }
 
       if (onProgress) {
         onProgress(100)
       }
 
-      if (!response.ok || !data.success) {
-        throw new Error(data.error || 'Gagal mengupload file')
+      if (!response.ok || !data?.success) {
+        const errorMessage =
+          (data && (data.error || data.message)) ||
+          rawBody?.trim() ||
+          `Gagal mengupload file (status ${response.status})`
+        throw new Error(errorMessage)
       }
 
       return data.url
@@ -218,17 +249,26 @@ function AdminSettingsContent() {
   const handleStartEdit = (setting: GeneralSetting) => {
     setEditingId(setting.id)
     setEditKey(setting.key)
-    setEditValue(setting.value)
     setEditDescription(setting.description || "")
-    setEditIsImageMode(false)
     setEditImage(null)
     setEditImagePreview("")
     setEditError(null)
-    // Check if value is an image URL
-    if (setting.value && (setting.value.startsWith('http') || setting.value.startsWith('/'))) {
+
+    const rawValue = setting.value || ""
+    const isMedia = rawValue.startsWith('http') || rawValue.startsWith('/')
+
+    if (isMedia) {
       setEditIsImageMode(true)
-      setEditImagePreview(setting.value)
+      setEditUseRichText(false)
+      setEditValue(rawValue)
+      setEditImagePreview(rawValue)
+    } else {
+      const hasHtml = containsHtmlTags(rawValue)
+      setEditIsImageMode(false)
+      setEditUseRichText(hasHtml)
+      setEditValue(hasHtml ? rawValue : stripHtml(rawValue))
     }
+
     setIsEditModalOpen(true)
   }
 
@@ -321,6 +361,10 @@ function AdminSettingsContent() {
         }
       }
 
+      if (!editIsImageMode) {
+        finalValue = editUseRichText ? (finalValue || "") : stripHtml(finalValue || "")
+      }
+
       const { error: updateError } = await supabase
         .from('general_settings')
         .update({
@@ -342,6 +386,7 @@ function AdminSettingsContent() {
       setEditValue("")
       setEditDescription("")
       setEditIsImageMode(false)
+      setEditUseRichText(false)
       setEditImage(null)
       setEditImagePreview("")
     } catch (err: any) {
@@ -403,12 +448,18 @@ function AdminSettingsContent() {
       setAddLoading(true)
       setAddError(null)
 
+      const preparedValue = newIsImageMode
+        ? ""
+        : newUseRichText
+          ? (newValue || "")
+          : stripHtml(newValue || "")
+
       // Insert record first to get the ID
       const { data: insertedData, error: insertError } = await supabase
         .from('general_settings')
         .insert({
           key: newKey.trim(),
-          value: newIsImageMode ? "" : newValue || "",
+          value: preparedValue,
           description: newDescription || null
         })
         .select()
@@ -461,6 +512,7 @@ function AdminSettingsContent() {
       setNewValue("")
       setNewDescription("")
       setNewIsImageMode(false)
+      setNewUseRichText(false)
       setNewImage(null)
       setNewImagePreview("")
     } catch (err: any) {
@@ -798,12 +850,13 @@ function AdminSettingsContent() {
              setIsAddModalOpen(false)
              setNewKey("")
              setNewValue("")
-            setNewDescription("")
-            setNewIsImageMode(false)
-            setNewImage(null)
-            setNewImagePreview("")
-            setAddError(null)
-            setNewUploadProgress(0)
+             setNewDescription("")
+             setNewIsImageMode(false)
+             setNewUseRichText(false)
+             setNewImage(null)
+             setNewImagePreview("")
+             setAddError(null)
+             setNewUploadProgress(0)
            }
          }}>
            <DialogContent className="max-w-2xl max-h-[90vh] bg-slate-900 border-slate-700 text-white overflow-y-auto">
@@ -844,6 +897,11 @@ function AdminSettingsContent() {
                         setNewIsImageMode(false)
                         setNewImage(null)
                         setNewImagePreview("")
+                        const hasHtml = containsHtmlTags(newValue)
+                        setNewUseRichText(hasHtml)
+                        if (!hasHtml) {
+                          setNewValue(stripHtml(newValue))
+                        }
                       }}
                       className={`flex items-center gap-1 px-3 py-1.5 text-sm rounded transition-colors flex-1 ${
                         !newIsImageMode 
@@ -858,6 +916,7 @@ function AdminSettingsContent() {
                       type="button"
                       onClick={() => {
                         setNewIsImageMode(true)
+                        setNewUseRichText(false)
                         setNewValue("")
                       }}
                       className={`flex items-center gap-1 px-3 py-1.5 text-sm rounded transition-colors flex-1 ${
@@ -926,12 +985,43 @@ function AdminSettingsContent() {
                       )}
                     </div>
                   ) : (
-                    <RichTextEditor
-                      value={newValue || ""}
-                      onChange={(value) => setNewValue(value)}
-                      placeholder="Ketik teks di sini... Gunakan toolbar untuk memformat teks (bold, italic, dll)"
-                      className="w-full"
-                    />
+                    <>
+                      <div className="flex items-center justify-between mb-2">
+                        <label className="text-white text-sm font-semibold">Gunakan Rich Text</label>
+                        <label className="flex items-center gap-2 text-xs text-gray-300">
+                          <input
+                            type="checkbox"
+                            checked={newUseRichText}
+                            onChange={(e) => {
+                              const checked = e.target.checked
+                              if (checked) {
+                                if (newValue && !containsHtmlTags(newValue)) {
+                                  setNewValue(`<p>${newValue.replace(/\n/g, '<br />')}</p>`)
+                                }
+                              } else {
+                                setNewValue(stripHtml(newValue))
+                              }
+                              setNewUseRichText(checked)
+                            }}
+                          />
+                          Format Rich Text
+                        </label>
+                      </div>
+                      {newUseRichText ? (
+                        <RichTextEditor
+                          content={newValue || ""}
+                          onChange={(value) => setNewValue(value)}
+                          placeholder="Ketik teks di sini... Gunakan toolbar untuk memformat teks (bold, italic, dll)"
+                        />
+                      ) : (
+                        <textarea
+                          value={newValue}
+                          onChange={(e) => setNewValue(e.target.value)}
+                          className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded text-white focus:outline-none focus:border-[#EE6A28] min-h-[120px]"
+                          placeholder="Masukkan teks"
+                        />
+                      )}
+                    </>
                   )}
                 </div>
               </div>
@@ -958,6 +1048,7 @@ function AdminSettingsContent() {
                   setNewKey("")
                   setNewValue("")
                   setNewDescription("")
+                  setNewUseRichText(false)
                   setAddError(null)
                 }}
                 disabled={addLoading}
@@ -986,6 +1077,7 @@ function AdminSettingsContent() {
             setEditValue("")
             setEditDescription("")
             setEditIsImageMode(false)
+            setEditUseRichText(false)
             setEditImage(null)
             setEditImagePreview("")
             setEditError(null)
@@ -1011,11 +1103,13 @@ function AdminSettingsContent() {
                   type="text"
                   value={editKey}
                   onChange={(e) => setEditKey(e.target.value)}
-                  className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded text-white focus:outline-none focus:border-[#EE6A28]"
+                  className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded text-white focus:outline-none focus:border-[#EE6A28] disabled:cursor-not-allowed disabled:bg-slate-800/70 disabled:text-gray-500"
                   placeholder="site_name"
                   required
+                  disabled
+                  readOnly
                 />
-                <p className="text-gray-400 text-xs mt-1">Key unik untuk setting (contoh: site_name, contact_email)</p>
+                <p className="text-gray-500 text-xs mt-1">Key tidak dapat diubah setelah dibuat</p>
               </div>
 
               {/* Value */}
@@ -1030,6 +1124,11 @@ function AdminSettingsContent() {
                         setEditIsImageMode(false)
                         setEditImage(null)
                         setEditImagePreview("")
+                        const hasHtml = containsHtmlTags(editValue || "")
+                        setEditUseRichText(hasHtml)
+                        if (!hasHtml) {
+                          setEditValue(stripHtml(editValue || ""))
+                        }
                       }}
                       className={`flex items-center gap-1 px-3 py-1.5 text-sm rounded transition-colors flex-1 ${
                         !editIsImageMode 
@@ -1045,6 +1144,8 @@ function AdminSettingsContent() {
                       onClick={() => {
                         setEditIsImageMode(true)
                         setEditValue("")
+                        setEditUseRichText(false)
+                        setEditImagePreview("")
                       }}
                       className={`flex items-center gap-1 px-3 py-1.5 text-sm rounded transition-colors flex-1 ${
                         editIsImageMode 
@@ -1112,12 +1213,46 @@ function AdminSettingsContent() {
                       )}
                     </div>
                   ) : (
-                    <RichTextEditor
-                      value={editValue || ""}
-                      onChange={(value) => setEditValue(value)}
-                      placeholder="Ketik teks di sini... Gunakan toolbar untuk memformat teks (bold, italic, dll)"
-                      className="w-full"
-                    />
+                    <>
+                      <div className="flex items-center justify-between mb-2">
+                        <label className="text-white text-sm font-semibold">Gunakan Rich Text</label>
+                        <label className="flex items-center gap-2 text-xs text-gray-300">
+                          <input
+                            type="checkbox"
+                            checked={editUseRichText}
+                            onChange={(e) => {
+                              const checked = e.target.checked
+                              if (checked) {
+                                if (editValue && !containsHtmlTags(editValue)) {
+                                  const prepared = editValue
+                                    ? `<p>${editValue.replace(/\n/g, '<br />')}</p>`
+                                    : ''
+                                  setEditValue(prepared)
+                                }
+                              } else {
+                                setEditValue(stripHtml(editValue || ""))
+                              }
+                              setEditUseRichText(checked)
+                            }}
+                          />
+                          Format Rich Text
+                        </label>
+                      </div>
+                      {editUseRichText ? (
+                        <RichTextEditor
+                          content={editValue || ""}
+                          onChange={(value) => setEditValue(value)}
+                          placeholder="Ketik teks di sini... Gunakan toolbar untuk memformat teks (bold, italic, dll)"
+                        />
+                      ) : (
+                        <textarea
+                          value={editValue || ""}
+                          onChange={(e) => setEditValue(e.target.value)}
+                          className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded text-white focus:outline-none focus:border-[#EE6A28] min-h-[120px]"
+                          placeholder="Masukkan teks"
+                        />
+                      )}
+                    </>
                   )}
                 </div>
               </div>
@@ -1146,6 +1281,7 @@ function AdminSettingsContent() {
                   setEditValue("")
                   setEditDescription("")
                   setEditIsImageMode(false)
+                  setEditUseRichText(false)
                   setEditImage(null)
                   setEditImagePreview("")
                   setEditError(null)

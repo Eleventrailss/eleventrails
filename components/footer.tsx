@@ -14,6 +14,7 @@ export default function Footer() {
   })
   const [footerDescription, setFooterDescription] = useState("")
   const [address, setAddress] = useState("Central Lombok")
+  const [coordinateUrl, setCoordinateUrl] = useState<string | null>(null)
   const [email, setEmail] = useState("eleventrailss@gmail.com")
   const [logoUrl, setLogoUrl] = useState<string | null>(null)
   const [logoError, setLogoError] = useState(false)
@@ -67,6 +68,7 @@ export default function Footer() {
       'social_email',
       'footer_description',
       'address',
+      'coordinate_location',
       'apps_logo'
     ])
     
@@ -85,6 +87,9 @@ export default function Footer() {
     }
     if (settings.address) {
       setAddress(settings.address)
+    }
+    if (settings.coordinate_location) {
+      setCoordinateUrl(normalizeUrl(settings.coordinate_location))
     }
     if (settings.apps_logo) {
       setLogoUrl(getSupabaseImageUrl(settings.apps_logo))
@@ -130,7 +135,18 @@ export default function Footer() {
                 <div className="flex items-center justify-center rounded-full bg-white" style={{width:'24px', height:'24px', flexShrink: 0}}>
                   <MapPin size={14} style={{ color: '#EE6A28' }} />
                 </div>
-                <span className="text-gray-400 text-sm">{address}</span>
+                {coordinateUrl ? (
+                  <a
+                    href={coordinateUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-gray-400 text-sm hover:text-white transition"
+                  >
+                    {address}
+                  </a>
+                ) : (
+                  <span className="text-gray-400 text-sm">{address}</span>
+                )}
               </div>
               <div className="flex items-center gap-3">
                 <div className="flex items-center justify-center rounded-full bg-white" style={{width:'24px', height:'24px', flexShrink: 0}}>

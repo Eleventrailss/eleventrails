@@ -48,7 +48,7 @@ export default function Hero() {
                 className="flex-shrink-0" 
                 style={{ 
                   width: '15%',
-                  backgroundColor: '#0A88B7'
+                  backgroundColor: '#081E4C'
                 }}
               />
               <span 

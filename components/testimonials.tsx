@@ -76,7 +76,7 @@ export default function Testimonials() {
   }, [])
 
   return (
-    <section ref={sectionRef} className="bg-[#272727] pt-[50px] pb-[50px] sm:pb-16 lg:pb-20 overflow-hidden">
+    <section ref={sectionRef} className="pt-[50px] pb-[50px] sm:pb-16 lg:pb-20 overflow-hidden" style={{ backgroundColor: '#272727' }}>
       <div className="max-w-7xl mx-auto px-[30px] mb-12">
         <h2 
           className="text-white text-center mb-12 sm:mb-16 mx-auto"
@@ -96,11 +96,11 @@ export default function Testimonials() {
       {/* Animated Running Testimonials */}
       {loading ? (
         <div className="text-center py-12">
-          <p className="text-gray-400">Memuat testimonials...</p>
+          <p className="text-white/80">Memuat testimonials...</p>
         </div>
       ) : testimonials.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-gray-400">Belum ada testimonials</p>
+          <p className="text-white/80">Belum ada testimonials</p>
         </div>
       ) : (
         <div className="relative" style={{ width: '100%', overflow: 'hidden' }}>
@@ -114,7 +114,8 @@ export default function Testimonials() {
             {[...testimonials, ...testimonials].map((testimonial, index) => (
               <div 
                 key={`${testimonial.id}-${index}`} 
-                className="w-[352px] flex-shrink-0 flex flex-col items-center overflow-hidden shadow-md"
+                className="w-[352px] flex-shrink-0 flex flex-col items-center overflow-hidden shadow-md border border-white/10"
+                style={{ backgroundColor: '#081E4C' }}
               >
                 <div className="w-full" style={{height:'auto',aspectRatio:'352/265',display:'flex',alignItems:'center',justifyContent:'center'}}>
                   <img
@@ -127,7 +128,7 @@ export default function Testimonials() {
                     }}
                   />
                 </div>
-                <div className="w-full flex-1 bg-[#155e75] flex flex-col justify-start items-center p-4 sm:p-8 pt-6 sm:pt-8" style={{minHeight:'300px',borderRadius:'0',position:'relative'}}>
+                <div className="w-full flex-1 flex flex-col justify-start items-center p-4 sm:p-8 pt-6 sm:pt-8" style={{minHeight:'300px',borderRadius:'0',position:'relative', backgroundColor:'#081E4C'}}>
                   {/* Rating Stars */}
                   <div className="flex items-center gap-1 mb-4">
                     {Array.from({ length: 5 }, (_, i) => (

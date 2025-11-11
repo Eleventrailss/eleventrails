@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { ArrowRight } from "lucide-react"
 import { supabase } from "@/lib/supabase"
 import { getSupabaseImageUrl } from "@/lib/supabase-storage"
@@ -18,9 +18,38 @@ interface Ride {
 export default function Rides() {
   const [rides, setRides] = useState<Ride[]>([])
   const [loading, setLoading] = useState(true)
+  const [isMarqueeActive, setIsMarqueeActive] = useState(false)
+  const sectionRef = useRef<HTMLElement>(null)
+  const observerRef = useRef<IntersectionObserver | null>(null)
 
   useEffect(() => {
     fetchRides()
+
+    if (typeof window === 'undefined') return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsMarqueeActive(true)
+          }
+        })
+      },
+      { threshold: 0.1 }
+    )
+
+    observerRef.current = observer
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current)
+    }
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect()
+        observerRef.current = null
+      }
+    }
   }, [])
 
   const fetchRides = async () => {
@@ -63,7 +92,11 @@ export default function Rides() {
   }
 
   return (
-    <section className="pt-12 sm:pt-16 lg:pt-20 pb-16 sm:pb-24 lg:pb-[200px]" style={{ backgroundColor: '#272727' }}>
+    <section
+      ref={sectionRef}
+      className="pt-12 sm:pt-16 lg:pt-20 pb-16 sm:pb-24 lg:pb-[200px] overflow-hidden"
+      style={{ backgroundColor: '#272727' }}
+    >
       <div className="max-w-7xl mx-auto px-[30px]">
         <h2 
           className="text-white text-center mb-12 sm:mb-16 mx-auto"
@@ -89,83 +122,82 @@ export default function Rides() {
           </div>
         ) : (
           <>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-8 mb-8 sm:mb-12">
-              {rides.map((ride) => (
-                <div
-                  key={ride.id}
-                  className="overflow-hidden md:hover:transform md:hover:scale-105 transition scale-[0.85] md:scale-100 origin-center"
-                >
-                  {/* 1. Gambar */}
-                  <img 
-                    src={ride.primary_picture || "/placeholder.svg"} 
-                    alt={ride.title} 
-                    className="w-full h-auto object-cover" 
-                    style={{aspectRatio:'352/265', borderRadius:'0'}}
-                    onError={(e) => {
-                      e.currentTarget.src = '/placeholder.svg'
-                    }}
-                  />
-                  <div className="w-full">
-                    {/* 2. Category - background oranye, text putih, font Rubik One */}
-                    <div className="flex gap-2 mt-4 mb-2">
-                      {ride.tags && ride.tags.map((cat, idx) => (
-                        <span 
-                          key={idx} 
-                          style={{
-                            fontFamily: 'Rubik One, sans-serif',
-                            backgroundColor: '#EE6A28',
-                            color: '#ffffff'
-                          }}
-                          className="px-3 py-1 text-xs uppercase"
-                        >
-                          {cat}
-                        </span>
-                      ))}
-                    </div>
-                    {/* 3. Judul */}
-                    <h3 className="text-white font-bold text-lg mb-2">{ride.title}</h3>
-                    {/* 4. Harga */}
-                    <p className="text-gray-400 mb-4">{formatPrice(ride.final_price, ride.type)}</p>
-                    {/* 5. Short description */}
-                    <p className="text-slate-200 text-sm mb-3">{ride.short_description || ''}</p>
-                    {/* 6. Readmore - label biru, panah oranye dengan background lingkaran transparan */}
-                    <a 
-                      href={`/rides/${ride.id}`}
-                      className="inline-flex items-center gap-2 no-underline hover:opacity-80 transition"
-                      style={{
-                        width: '93px',
-                        height: '30px',
-                        fontFamily: 'Plus Jakarta Sans, sans-serif',
-                        fontWeight: 500,
-                        fontSize: '18px',
-                        color: '#3b82f6'
+            <div className="relative w-full overflow-hidden mb-8 sm:mb-12">
+              <div
+                className="flex gap-6"
+                style={{
+                  animation: isMarqueeActive ? 'marquee 90s linear infinite' : 'none',
+                  width: 'fit-content'
+                }}
+              >
+                {[...rides, ...rides].map((ride, index) => (
+                  <div
+                    key={`${ride.id}-${index}`}
+                    className="w-[320px] sm:w-[352px] flex-shrink-0 overflow-hidden md:hover:transform md:hover:scale-105 transition origin-center bg-[#1f1f1f]"
+                  >
+                    <img 
+                      src={ride.primary_picture || "/placeholder.svg"} 
+                      alt={ride.title} 
+                      className="w-full h-auto object-cover" 
+                      style={{aspectRatio:'352/265', borderRadius:'0'}}
+                      onError={(e) => {
+                        e.currentTarget.src = '/placeholder.svg'
                       }}
-                    >
-                      Readmore
-                      <span 
-                        className="flex items-center justify-center rounded-full border-2 border-orange-500 flex-shrink-0"
+                    />
+                    <div className="w-full px-4 py-5 sm:px-6 sm:py-6">
+                      <div className="flex gap-2 mt-1 mb-3 flex-wrap">
+                        {ride.tags && ride.tags.map((cat, idx) => (
+                          <span 
+                            key={`${cat}-${idx}`} 
+                            style={{
+                              fontFamily: 'Rubik One, sans-serif',
+                              backgroundColor: '#EE6A28',
+                              color: '#ffffff'
+                            }}
+                            className="px-3 py-1 text-xs uppercase"
+                          >
+                            {cat}
+                          </span>
+                        ))}
+                      </div>
+                      <h3 className="text-white font-bold text-lg mb-2 line-clamp-2">{ride.title}</h3>
+                      <p className="text-gray-400 mb-3">{formatPrice(ride.final_price, ride.type)}</p>
+                      <p className="text-slate-200 text-sm mb-4 line-clamp-3">{ride.short_description || ''}</p>
+                      <a 
+                        href={`/rides/${ride.id}`}
+                        className="inline-flex items-center gap-2 no-underline hover:opacity-80 transition"
                         style={{
-                          width: '24px',
-                          height: '24px',
-                          minWidth: '24px',
-                          minHeight: '24px',
-                          maxWidth: '24px',
-                          maxHeight: '24px',
-                          borderRadius: '50%',
-                          backgroundColor: 'transparent',
-                          boxSizing: 'border-box',
-                          aspectRatio: '1 / 1',
-                          padding: '0',
-                          flexShrink: 0,
-                          flexGrow: 0
+                          width: 'auto',
+                          fontFamily: 'Plus Jakarta Sans, sans-serif',
+                          fontWeight: 500,
+                          fontSize: '16px',
+                          color: '#3b82f6'
                         }}
                       >
-                        <ArrowRight size={12} strokeWidth={2.5} style={{ color: '#EE6A28' }} />
-                      </span>
-                    </a>
+                        Readmore
+                        <span 
+                          className="flex items-center justify-center rounded-full border-2 border-orange-500 flex-shrink-0"
+                          style={{
+                            width: '24px',
+                            height: '24px',
+                            minWidth: '24px',
+                            minHeight: '24px',
+                            borderRadius: '50%',
+                            backgroundColor: 'transparent',
+                            boxSizing: 'border-box',
+                            aspectRatio: '1 / 1',
+                            padding: '0',
+                            flexShrink: 0,
+                            flexGrow: 0
+                          }}
+                        >
+                          <ArrowRight size={12} strokeWidth={2.5} style={{ color: '#EE6A28' }} />
+                        </span>
+                      </a>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
 
             <div className="text-center">
@@ -182,7 +214,7 @@ export default function Rides() {
                   className="flex-shrink-0" 
                   style={{ 
                     width: '15%',
-                    backgroundColor: '#0A88B7'
+                    backgroundColor: '#081E4C'
                   }}
                 />
                 <span 
