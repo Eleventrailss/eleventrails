@@ -8,28 +8,33 @@ const BUCKET_NAME = 'uploads'
  * @returns Public URL or null if not found
  */
 export function getSupabaseImageUrl(path: string | null | undefined): string | null {
-  if (!path) return null
-  
-  // If already a full URL (http/https), return as is
+  if (!path) return null;
+
+  // Jika sudah URL penuh, langsung return
   if (path.startsWith('http://') || path.startsWith('https://')) {
-    return path
+    return path;
   }
-  
-  // If it's a local path starting with /, return as is (for backward compatibility)
+
+  // Jika path dimulai dengan '/', kemungkinan itu local path — biarkan saja
   if (path.startsWith('/')) {
-    return path
+    return path;
   }
-  
-  // Get Supabase URL from environment
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+
+  // Ambil URL Supabase
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   if (!supabaseUrl) {
-    console.error('NEXT_PUBLIC_SUPABASE_URL is not set')
-    return path
+    console.error('NEXT_PUBLIC_SUPABASE_URL is not set');
+    return path;
   }
-  
-  // Construct Supabase Storage public URL
-  return `${supabaseUrl}/storage/v1/object/public/${BUCKET_NAME}/${path}`
+
+  // Hindari duplikasi "uploads/" (bucket name)
+  const cleanedPath = path.startsWith(`${BUCKET_NAME}/`)
+    ? path.replace(`${BUCKET_NAME}/`, '')
+    : path;
+
+  return `${supabaseUrl}/storage/v1/object/public/${BUCKET_NAME}/${cleanedPath}`;
 }
+
 
 /**
  * Upload file to Supabase Storage
