@@ -453,22 +453,29 @@ function AddRidesContent() {
     // If count === currentCount, do nothing
   }
 
-  const uploadImageToLocal = async (
+  const uploadImageToSupabase = async (
     file: File, 
     folder: 'rides' | 'stories', 
     subfolder: string, 
     customFileName?: string
   ): Promise<string | null> => {
     try {
+      // Get file extension
+      const fileExt = file.name.split('.').pop() || 'jpg'
+      
+      // Build path: folder/subfolder/customFileName.ext
+      const fileName = customFileName 
+        ? `${customFileName}.${fileExt}`
+        : `${Date.now()}.${fileExt}`
+      
+      const path = `${folder}/${subfolder}/${fileName}`
+      
+      // Upload to Supabase Storage via API route (bypasses RLS)
       const formData = new FormData()
       formData.append('file', file)
-      formData.append('folder', folder)
-      formData.append('subfolder', subfolder)
-      if (customFileName) {
-        formData.append('customFileName', customFileName)
-      }
+      formData.append('path', path)
 
-      const response = await fetch('/api/upload', {
+      const response = await fetch('/api/upload-file', {
         method: 'POST',
         body: formData
       })
@@ -482,7 +489,7 @@ function AddRidesContent() {
       const data = await response.json()
       return data.url
     } catch (err) {
-      console.error('Error uploading image:', err)
+      console.error('Error uploading image to Supabase:', err)
       return null
     }
   }
@@ -536,7 +543,7 @@ function AddRidesContent() {
       let secondaryPictureUrl = null
 
       if (primaryPictureFile) {
-        const uploadedUrl = await uploadImageToLocal(
+        const uploadedUrl = await uploadImageToSupabase(
           primaryPictureFile, 
           'rides', 
           'primary', 
@@ -552,7 +559,7 @@ function AddRidesContent() {
       }
 
       if (secondaryPictureFile) {
-        const uploadedUrl = await uploadImageToLocal(
+        const uploadedUrl = await uploadImageToSupabase(
           secondaryPictureFile, 
           'rides', 
           'secondary', 
@@ -614,7 +621,7 @@ function AddRidesContent() {
           const file = galleryPhotoFiles[photo.id]
           
           if (file) {
-            const uploadedUrl = await uploadImageToLocal(
+            const uploadedUrl = await uploadImageToSupabase(
               file,
               'rides',
               'gallery',
@@ -671,7 +678,7 @@ function AddRidesContent() {
       <AdminSidebar />
       <div className={`transition-all duration-300 ${isCollapsed ? 'lg:ml-0' : 'lg:ml-64'}`}>
         <AdminNavbar />
-        <main className="p-6 lg:p-8 px-[30px]" style={{ paddingTop: '100px' }}>
+        <main className="p-6 lg:p-8 px-[30px]" style={{ paddingTop: '200px' }}>
             <div className="mb-6">
               <h1 className="text-white text-2xl sm:text-3xl font-bold mb-4">Add Rides</h1>
               
