@@ -24,12 +24,13 @@ export default function Hero() {
             <div className="inline-flex items-center justify-center mb-4 w-[132px] h-[30px] rounded-[24px] bg-orange-500/15">
               <span className="text-orange-400 text-[12px] font-semibold tracking-wider uppercase">ElevenTrails</span>
             </div>
-            <h1 className="font-rubik-one text-4xl sm:text-5xl lg:text-[64px] font-bold text-white mb-6 leading-tight w-full max-w-full lg:w-[519px]">
-              UNLEASH THE
+            <h1 className="font-rubik-one text-4xl sm:text-5xl lg:text-[60px] font-bold text-white mb-6 leading-tight w-full max-w-full lg:w-[700px]">
+              <span className="text-orange-500">CHASE</span> ADVENTURE
               <br />
-              THRILL OF THE
+              ACROSS <span className="text-orange-500">LOMBOK'S</span>
               <br />
-              <span className="text-orange-500">OPEN ROAD</span>
+              <span className="text-orange-500">HIDDEN</span> TRAILS
+              
             </h1>
             <p className="text-gray-300 text-base sm:text-lg mb-8 max-w-xl mx-auto lg:mx-0">
               Experience the ultimate dirt bike adventure across stunning trails and challenging terrain.
