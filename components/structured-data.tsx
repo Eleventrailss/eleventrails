@@ -33,7 +33,7 @@ export default function StructuredData() {
       "availability": "https://schema.org/InStock",
       "validFrom": new Date().toISOString()
     },
-    "tourBookingPage": `${siteUrl}/rides`,
+    "tourBookingPage": `${siteUrl}/tracks`,
     "keywords": [
       "dirt bike tour",
       "enduro tour",
@@ -164,7 +164,7 @@ export default function StructuredData() {
       "@type": "SearchAction",
       "target": {
         "@type": "EntryPoint",
-        "urlTemplate": `${siteUrl}/rides?search={search_term_string}`
+        "urlTemplate": `${siteUrl}/tracks?search={search_term_string}`
       },
       "query-input": "required name=search_term_string"
     },
@@ -185,8 +185,8 @@ export default function StructuredData() {
         {
           "@type": "ListItem",
           "position": 2,
-          "name": "Rides",
-          "item": `${siteUrl}/rides`
+          "name": "Tracks",
+          "item": `${siteUrl}/tracks`
         },
         {
           "@type": "ListItem",

@@ -33,7 +33,7 @@ export default function HeroRidesDetail() {
             margin: '0'
           }}
         >
-          RIDES DETAIL
+          TRACKS DETAIL
         </h1>
       </div>
     </section>

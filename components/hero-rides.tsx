@@ -33,7 +33,7 @@ export default function HeroRides() {
             margin: '0'
           }}
         >
-          RIDES
+          TRACKS
         </h1>
       </div>
     </section>

@@ -177,8 +177,8 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="/rides" className="text-gray-400 hover:text-white transition">
-                  Rides
+                <a href="/tracks" className="text-gray-400 hover:text-white transition">
+                  Tracks
                 </a>
               </li>
               <li>

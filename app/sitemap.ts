@@ -19,7 +19,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/rides`,
+      url: `${baseUrl}/tracks`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.9,
@@ -48,7 +48,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     if (!error && rides) {
       const ridePages: MetadataRoute.Sitemap = rides.map((ride) => ({
-        url: `${baseUrl}/rides/${ride.id}`,
+        url: `${baseUrl}/tracks/${ride.id}`,
         lastModified: ride.updated_at ? new Date(ride.updated_at) : new Date(),
         changeFrequency: 'weekly',
         priority: 0.8,

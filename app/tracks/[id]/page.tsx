@@ -112,7 +112,7 @@ const iconMap: Record<string, any> = {
   ChevronUp
 }
 
-export default function RidesDetailPage() {
+export default function TracksDetailPage() {
   const params = useParams()
   const router = useRouter()
   const rideId = params?.id as string
@@ -195,7 +195,7 @@ export default function RidesDetailPage() {
       }
     } catch (error: any) {
       console.error('Error fetching ride:', error)
-      router.push('/rides')
+      router.push('/tracks')
     } finally {
       setLoading(false)
     }
@@ -298,7 +298,7 @@ export default function RidesDetailPage() {
               margin: '0'
             }}
           >
-            RIDES DETAIL
+            TRACKS DETAIL
           </h1>
         </div>
       </section>

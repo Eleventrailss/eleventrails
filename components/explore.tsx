@@ -235,7 +235,7 @@ export default function Explore() {
               </>
             )}
             <a 
-              href="/rides"
+              href="/tracks"
               className="flex items-stretch overflow-hidden rounded-none font-bold transition hover:opacity-90 scale-80 sm:scale-100"
               style={{
                 width: '234px',
@@ -254,7 +254,7 @@ export default function Explore() {
                 className="bg-orange-500 hover:bg-orange-600 text-white flex items-center justify-center" 
                 style={{ width: '85%' }}
               >
-                EXPLORE RIDES
+                EXPLORE TRACKS
               </span>
             </a>
           </div>

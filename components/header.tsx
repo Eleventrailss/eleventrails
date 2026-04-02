@@ -99,7 +99,7 @@ export default function Header() {
             <nav className="flex gap-3 lg:gap-6">
               <Link href="/" className="text-gray-300 hover:text-white transition text-sm lg:text-base">Home</Link>
               <Link href="/about" className="text-gray-300 hover:text-white transition text-sm lg:text-base">About</Link>
-              <Link href="/rides" className="text-gray-300 hover:text-white transition text-sm lg:text-base">Rides</Link>
+              <Link href="/tracks" className="text-gray-300 hover:text-white transition text-sm lg:text-base">Tracks</Link>
               <Link href="/stories" className="text-gray-300 hover:text-white transition text-sm lg:text-base">Stories</Link>
               <Link href="/faq" className="text-gray-300 hover:text-white transition text-sm lg:text-base">FAQ</Link>
             </nav>
@@ -198,11 +198,11 @@ export default function Header() {
               About
             </Link>
             <Link
-              href="/rides"
+              href="/tracks"
               className="text-gray-300 hover:text-white transition-colors text-base py-2"
               onClick={() => setIsOpen(false)}
             >
-              Track
+              Tracks
             </Link>
             <Link
               href="/stories"

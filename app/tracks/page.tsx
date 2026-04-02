@@ -101,7 +101,7 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RidesPage() {
+export default function TracksPage() {
   return (
     <main className="bg-slate-950 w-full overflow-x-hidden max-w-full">
       <Header />

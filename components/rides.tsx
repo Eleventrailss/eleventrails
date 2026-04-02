@@ -120,7 +120,7 @@ export default function Rides() {
             lineHeight: "1.2",
           }}
         >
-          CHOOSE YOUR RIDES
+          CHOOSE YOUR TRACKS
         </h2>
 
         {loading ? (
@@ -188,7 +188,7 @@ export default function Rides() {
                       </p>
 
                       <a
-                        href={`/rides/${ride.id}`}
+                        href={`/tracks/${ride.id}`}
                         className="inline-flex items-center gap-2 no-underline hover:opacity-80 transition"
                         style={{
                           width: "auto",
@@ -230,7 +230,7 @@ export default function Rides() {
 
             <div className="text-center">
               <a
-                href="/rides"
+                href="/tracks"
                 className="flex items-stretch mx-auto overflow-hidden rounded-none font-bold transition hover:opacity-90 scale-80 sm:scale-100"
                 style={{
                   width: "234px",
@@ -246,7 +246,7 @@ export default function Rides() {
                   className="bg-orange-500 hover:bg-orange-600 text-white flex items-center justify-center"
                   style={{ width: "85%" }}
                 >
-                  EXPLORE RIDES
+                  EXPLORE TRACKS
                 </span>
               </a>
             </div>

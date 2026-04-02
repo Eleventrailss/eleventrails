@@ -73,7 +73,7 @@ export default function ListRides() {
               overflowWrap: 'break-word'
             }}
           >
-            THE RIDES OF YOUR LIFE
+            THE TRACKS OF YOUR LIFE
           </h2>
           <p className="text-gray-600 text-lg text-center mb-12 sm:mb-16 max-w-3xl mx-auto px-4 break-words" style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>
             Explore our curated selection of dirt bike tours, enduro adventures, and trail riding experiences designed to give you the ultimate off-road adventure in Lombok, Indonesia.
@@ -125,7 +125,7 @@ export default function ListRides() {
                     <p className="text-gray-600 text-sm mb-3">{ride.short_description || ''}</p>
                   {/* 6. Readmore - label biru, panah oranye dengan background lingkaran transparan */}
                   <a 
-                    href={`/rides/${ride.id}`} 
+                    href={`/tracks/${ride.id}`} 
                     className="inline-flex items-center gap-2 no-underline hover:opacity-80 transition"
                     style={{
                       width: '93px',
