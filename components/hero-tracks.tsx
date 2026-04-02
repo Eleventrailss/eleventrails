@@ -1,4 +1,4 @@
-export default function HeroRidesDetail() {
+export default function HeroTracks() {
   return (
     <section className="relative -mt-[180px] pt-[600px] sm:pt-[180px] pb-5 sm:pb-0 min-h-[400px] sm:min-h-[400px] lg:min-h-[668px] w-full max-w-[1452px] mx-auto bg-slate-950 overflow-visible">
       <div className="absolute inset-0">
@@ -33,7 +33,7 @@ export default function HeroRidesDetail() {
             margin: '0'
           }}
         >
-          TRACKS DETAIL
+          TRACKS
         </h1>
       </div>
     </section>

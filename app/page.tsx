@@ -4,7 +4,7 @@ import Header from "@/components/header"
 import Hero from "@/components/hero"
 import Explore from "@/components/explore"
 import Gear from "@/components/gear"
-import Rides from "@/components/rides"
+import Tracks from "@/components/tracks"
 import Team from "@/components/team"
 import Testimonials from "@/components/testimonials"
 import Stories from "@/components/stories"
@@ -160,7 +160,7 @@ export default function Home() {
       <Hero />
       <Explore />
       <Gear />
-      <Rides />
+      <Tracks />
       <Team />
       <Testimonials />
       <Stories />

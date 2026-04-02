@@ -15,7 +15,7 @@ interface Ride {
   type: "group" | "personal"
 }
 
-export default function Rides() {
+export default function Tracks() {
   const [rides, setRides] = useState<Ride[]>([])
   const [loading, setLoading] = useState(true)
   const [isMarqueeActive, setIsMarqueeActive] = useState(false)

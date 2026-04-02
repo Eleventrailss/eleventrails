@@ -1,8 +1,8 @@
 import { Suspense } from "react"
 import type { Metadata } from 'next'
 import Header from "@/components/header"
-import HeroRides from "@/components/hero-rides"
-import ListRides from "@/components/list-rides"
+import HeroTracks from "@/components/hero-tracks"
+import ListTracks from "@/components/list-tracks"
 import Testimonials from "@/components/testimonials"
 import Values from "@/components/values"
 import CTA from "@/components/cta"
@@ -105,8 +105,8 @@ export default function TracksPage() {
   return (
     <main className="bg-slate-950 w-full overflow-x-hidden max-w-full">
       <Header />
-      <HeroRides />
-      <ListRides />
+      <HeroTracks />
+      <ListTracks />
       <Testimonials />
       <Values />
       <Suspense fallback={null}>
